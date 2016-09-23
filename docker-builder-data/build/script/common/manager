@@ -1,0 +1,284 @@
+#!/bin/bash
+
+# root
+
+ROOT_DIR=`realpath "$0"`
+ROOT_DIR=`dirname "$ROOT_DIR"`
+ROOT_DIR=`dirname "$ROOT_DIR"`
+ROOT_DIR=`dirname "$ROOT_DIR"`
+
+# dirs
+
+SCRIPT_DIR=$ROOT_DIR/script
+COMMON_SCRIPT_DIR=$SCRIPT_DIR/common
+PACKET_SCRIPT_DIR=$SCRIPT_DIR/packet
+PACKET_DIR=$ROOT_DIR/packet
+ENV_DIR=$ROOT_DIR/env
+ENVFLAGS_DIR=$ROOT_DIR/envflags
+
+# vars
+
+INITIAL_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
+INITIAL_PATH=$PATH
+INITIAL_LDFLAGS=$LDFLAGS
+INITIAL_CPPFLAGS=$CPPFLAGS
+
+
+clean_packet_directory() {
+    if [ ! -z "$DRY_RUN" ]; then
+        return 0
+    fi
+    rm -f -r "$PACKET_DIR/$1/$2" || true
+    rm -f "$PACKET_DIR/$1/$2.done" || true
+}
+
+check_packet_function() {
+    if [ ! -f "$PACKET_DIR/$1/$2.done" ]; then
+        return 1
+    fi
+}
+
+prepare_build() {
+    if ! cp -r $2/* "$1/"; then
+        return 1
+    fi
+}
+
+call_packet_function() {
+    local NAME=$1
+    local FUNC=$2
+    local PREV_FUNC=$3
+    local NEXT_FUNC=$4
+    local PREPARE_FUNC=$5
+    local FINALIZE_FUNC=$6
+
+    local FUNC_NAME=pk$FUNC
+    local CURRENT_PACKET_DIR=$PACKET_DIR/$NAME
+    local DONE_FILE=$CURRENT_PACKET_DIR/$FUNC.done
+    local FUNC_CURRENT_PACKET_DIR=$CURRENT_PACKET_DIR/$FUNC
+    local PREV_FUNC_CURRENT_PACKET_DIR=$CURRENT_PACKET_DIR/$PREV_FUNC
+    local NEXT_FUNC_CURRENT_PACKET_DIR=$CURRENT_PACKET_DIR/$NEXT_FUNC
+
+    echo "$FUNC $NAME"
+    if [ ! -z "$DRY_RUN" ]; then
+        return 0
+    fi
+
+    rm -f "$DONE_FILE" || true
+
+    mkdir -p $FUNC_CURRENT_PACKET_DIR
+    cd $FUNC_CURRENT_PACKET_DIR
+    source "$PACKET_SCRIPT_DIR/$NAME.sh"
+
+    if [ ! -z "$PREPARE_FUNC" ]; then
+        if ! "$PREPARE_FUNC" "$FUNC_CURRENT_PACKET_DIR" "$PREV_FUNC_CURRENT_PACKET_DIR" "$NEXT_FUNC_CURRENT_PACKET_DIR"; then
+            return 1
+        fi
+    fi
+
+    if ! "$FUNC_NAME" "$FUNC_CURRENT_PACKET_DIR" "$PREV_FUNC_CURRENT_PACKET_DIR" "$NEXT_FUNC_CURRENT_PACKET_DIR"; then
+        return 1
+    fi
+
+    if [ ! -z "$FINALIZE_FUNC" ]; then
+        if ! "$FINALIZE_FUNC" "$FUNC_CURRENT_PACKET_DIR" "$PREV_FUNC_CURRENT_PACKET_DIR" "$NEXT_FUNC_CURRENT_PACKET_DIR"; then
+            return 1
+        fi
+    fi
+
+    echo 1 > "$DONE_FILE"
+}
+
+clean_download() {
+    clean_packet_directory $1 download
+}
+
+clean_unpack() {
+    clean_packet_directory $1 download
+}
+
+clean_build() {
+    clean_packet_directory $1 build
+}
+
+clean_install() {
+    clean_packet_directory $1 install
+}
+
+clean() {
+    clean_download $1
+    clean_unpack $1
+    clean_build $1
+    clean_install $1
+}
+
+download() {
+    if ! (check_packet_function $1 download || call_packet_function $1 download "" unpack); then
+        return 1
+    fi
+}
+
+unpack() {
+    if ! (check_packet_function $1 unpack || (download $1 && call_packet_function $1 unpack download build)); then
+        return 1
+    fi
+}
+
+build() {
+    if check_packet_function $1 build; then
+        return 0
+    fi
+
+    if ! unpack $1; then
+        return 1
+    fi
+
+    set_environment_deps $1
+    if [ ! "$?" -eq "0" ]; then
+        return 1
+    fi
+
+    if ! call_packet_function $1 build unpack install prepare_build; then
+        return 1
+    fi
+}
+
+install() {
+    if ! (install_deps $1 && (check_packet_function $1 install || (build $1 && call_packet_function $1 install build))); then
+        return 1
+    fi
+}
+
+download_with_deps() {
+    source $PACKET_SCRIPT_DIR/$1.sh
+    local CURRENT_DEPS=$DEPS
+    for DEP in $CURRENT_DEPS; do
+        if [ ! -z "$DEP"]; then
+            if ! download $DEP; then
+                return 1
+            fi
+        fi
+    done
+    if ! download $1; then
+        return 1
+    fi
+}
+
+unpack_with_deps() {
+    source $PACKET_SCRIPT_DIR/$1.sh
+    local CURRENT_DEPS=$DEPS
+    for DEP in $CURRENT_DEPS; do
+        if [ ! -z "$DEP"]; then
+            if ! unpack $DEP; then
+                return 1
+            fi
+        fi
+    done
+    if ! unpack $1; then
+        return 1
+    fi
+}
+
+install_deps() {
+    source $PACKET_SCRIPT_DIR/$1.sh
+    local CURRENT_DEPS=$DEPS
+    for DEP in $CURRENT_DEPS; do
+        if [ ! -z "$DEP"]; then
+            if ! install $DEP; then
+                return 1
+            fi
+        fi
+    done
+}
+
+clear_environment() {
+    if [ ! -z "$DRY_RUN" ]; then
+        return 0
+    fi
+    rm -r -f "$ENVFLAGS_DIR"
+    rm -r -f "$ENV_DIR"
+}
+
+add_environment_deps() {
+    if ! install_deps $1; then
+        return 1
+    fi
+
+    export LD_LIBRARY_PATH="$ENV_DIR/lib:$INITIAL_LD_LIBRARY_PATH"
+    export PATH="$ENV_DIR/bin:$INITIAL_PATH"
+    export LDFLAGS="-L$ENV_DIR/lib $INITIAL_LDFLAGS"
+    export CPPFLAGS="-I$ENV_DIR/include $INITIAL_CPPFLAGS -fpermissive" 
+
+    source $PACKET_SCRIPT_DIR/$1.sh
+    local CURRENT_DEPS=$DEPS
+    for DEP in $CURRENT_DEPS; do
+        if [ ! -z "$DEP"]; then
+            if ! add_environment $DEP; then
+                return 1
+            fi
+        fi
+    done
+}
+
+add_environment() {
+    local NAME=$1
+    local DONE_FILE=$ENVFLAGS_DIR/$NAME.done
+
+    if [ -f "$DONE_FILE" ]; then
+        return 0
+    fi
+
+    if ! install $NAME; then
+        return 1
+    fi
+
+    add_environment_deps $NAME
+    if [ ! "$?" -eq "0" ]; then
+        return 1
+    fi
+
+    if [ ! -z "$DRY_RUN" ]; then
+        return 0
+    fi
+
+    mkdir -p $ENV_DIR
+    if ! cp -r "$PACKET_DIR/$NAME/install/*" "$WORK_ENV_DIR/"; then
+        return 1
+    fi
+
+    mkdir -p "$ENVFLAGS_DIR"
+    echo 1 > "$DONE_FILE"
+}
+
+set_environment_deps() {
+    clear_environment
+    add_environment_deps $1
+    if [ ! "$?" -eq "0" ]; then
+        return 1
+    fi
+
+    if [ "$2" = "shell" ]; then
+        cd $PACKET_DIR/$1/build
+        /bin/bash -i
+    fi
+}
+
+set_environment() {
+    clear_environment
+    add_environment $1
+    if [ ! "$?" -eq "0" ]; then
+        return 1
+    fi
+
+    if [ "$2" = "shell" ]; then
+        cd $PACKET_DIR/$1/build
+        /bin/bash -i
+    fi
+}
+
+dry_run() {
+    DRY_RUN=1
+    "$@"
+}
+
+"$@"
