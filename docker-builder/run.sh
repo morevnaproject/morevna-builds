@@ -7,10 +7,12 @@ DATA_DIR="$BASE_DIR/docker-builder-data"
 
 BUILD_DIR=$DATA_DIR/build
 
-$SCRIPT_DIR/stop.sh
+docker stop "builder" || true
+docker rm "builder" || true
 
-docker run -itd \
+docker run -it \
     --name "builder" \
     -v "$BUILD_DIR:/build" \
-    my/builder
+    my/builder \
+    /build/script/common/manager.sh "$@"
 

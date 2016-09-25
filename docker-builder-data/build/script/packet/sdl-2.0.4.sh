@@ -1,7 +1,7 @@
 DEPS=""
 
-PK_DIRNAME="tiff-4.0.6"
+PK_DIRNAME="SDL2-2.0.4"
 PK_ARCHIVE="$PK_DIRNAME.tar.gz"
-PK_URL="http://download.osgeo.org/libtiff/$PK_ARCHIVE"
+PK_URL="https://www.libsdl.org/release/$PK_ARCHIVE"
 
 source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh

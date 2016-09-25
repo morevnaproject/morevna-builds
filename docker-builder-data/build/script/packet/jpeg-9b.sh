@@ -1,29 +1,7 @@
 DEPS=""
 
-PK_DIRNAME="jpegsrc.v9b"
+PK_DIRNAME="jpeg-9b"
+PK_ARCHIVE="jpegsrc.v9b.tar.gz"
+PK_URL="http://ijg.org/files/$PK_ARCHIVE"
 
-pkdownload() {
-    if ! wget "http://ijg.org/files/$PK_DIRNAME.tar.gz"; then
-        return 1
-    fi
-}
-
-pkunpack() {
-    if ! tar -xzf "$2/$PK_DIRNAME.tar.gz"; then
-        return 1
-    fi
-}
-
-pkbuild() {
-    cd "$1/$PK_DIRNAME"
-    if ! ./configure "-prefix=$3" && make; then
-        return 1
-    fi
-}
-
-pkinstall() {
-    cd $2
-    if ! make install; then
-        return 1
-    fi
-}
+source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh

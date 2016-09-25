@@ -1,7 +1,7 @@
 DEPS=""
 
-PK_DIRNAME="tiff-4.0.6"
+PK_DIRNAME="cmake-3.6.2"
 PK_ARCHIVE="$PK_DIRNAME.tar.gz"
-PK_URL="http://download.osgeo.org/libtiff/$PK_ARCHIVE"
+PK_URL="https://cmake.org/files/v3.6/$PK_ARCHIVE"
 
 source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh

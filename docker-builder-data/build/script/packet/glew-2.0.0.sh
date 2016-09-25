@@ -1,29 +1,23 @@
 DEPS=""
 
 PK_DIRNAME="glew-2.0.0"
+PK_ARCHIVE="$PK_DIRNAME.tgz"
+PK_URL="https://sourceforge.net/projects/glew/files/glew/2.0.0/$PK_ARCHIVE/download"
 
-pkdownload() {
-    if ! wget "https://sourceforge.net/projects/glew/files/glew/2.0.0/$PK_DIRNAME.tgz/download"; then
-        return 1
-    fi
-}
-
-pkunpack() {
-    if ! tar -xzf "$2/$PK_DIRNAME.tgz"; then
-        return 1
-    fi
-}
+source $INCLUDE_SCRIPT_DIR/inc-pkallunpack-default.sh
+source $INCLUDE_SCRIPT_DIR/inc-pkinstall_release-default.sh
 
 pkbuild() {
-    cd "$1/$PK_DIRNAME"
-    if ! ./configure "-prefix=$3" && make; then
+    cd "$BUILD_PACKET_DIR/$PK_DIRNAME"
+    
+    if ! GLEW_PREFIX=$INSTALL_PACKET_DIR GLEW_DEST=$INSTALL_PACKET_DIR make -j${THREADS}; then
         return 1
     fi
 }
 
 pkinstall() {
-    cd $2
-    if ! make install; then
+    cd "$BUILD_PACKET_DIR/$PK_DIRNAME"
+    if ! GLEW_PREFIX=$INSTALL_PACKET_DIR GLEW_DEST=$INSTALL_PACKET_DIR make install; then
         return 1
     fi
 }

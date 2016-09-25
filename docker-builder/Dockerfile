@@ -11,10 +11,15 @@ RUN apt-get -yq install \
     g++ \
     make
 
-# Install base libs
+# Install tools
 RUN apt-get -yq install \
     sudo \
     multiarch-support \
+    realpath \
+    pkg-config
+
+# Install base libs
+RUN apt-get -yq install \
     libpng12-dev \
     libfreetype6-dev \
     libxml2-dev \
@@ -63,6 +68,7 @@ RUN apt-get -yq install \
     libxcb-keysyms1-dev \
     libxcb-image0-dev \
     libxcb-glx0-dev \
+    libxcb-xfixes0-dev \
     libfontconfig1-dev \
     libfreetype6-dev \
     libxi-dev \
@@ -74,12 +80,14 @@ RUN apt-get -yq install \
     libglib2.0-dev \
     libglu1-mesa-dev
 
-# additional tools
 RUN apt-get -yq install \
-    realpath \
-    libxcb-xfixes0-dev \
-    bash
+	liblzma-dev \
+	liblzo2-dev \
+	freeglut3-dev
+	
+RUN apt-get -yq install gfortran
+RUN apt-get -yq install ratfor
+RUN apt-get -yq install csh
+RUN apt-get -yq install libxcb-xinerama0-dev
+RUN apt-get -yq install xsltproc
 
-# Launcher
-ADD conf/launch.sh /
-CMD /bin/bash -c /launch.sh
