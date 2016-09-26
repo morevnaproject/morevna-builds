@@ -56,3 +56,4 @@ RUN apt-get -yq install libxcb-xinerama0-dev
 RUN apt-get -yq install xsltproc
 RUN apt-get -yq install libudev-dev
 
+CMD mkdir /build

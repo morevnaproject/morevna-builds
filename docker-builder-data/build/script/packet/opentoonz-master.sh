@@ -40,7 +40,8 @@ pkbuild() {
 		set_done $NAME build.configure
     fi
 	
-	if ! make; then
+    # making in single thread is too slow, but life is too short...
+	if ! (make -j${THREADS} || make -j${THREADS} || make); then
 		return 1
 	fi
 }

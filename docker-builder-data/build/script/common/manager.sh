@@ -29,6 +29,10 @@ export INCLUDE_SCRIPT_DIR=$SCRIPT_DIR/include
 export PACKET_SCRIPT_DIR=$SCRIPT_DIR/packet
 export PACKET_DIR=$ROOT_DIR/packet/$PLATFORM
 
+if [ ! -z $PACKET_BUILD_DIR ]; then
+	export PACKET_DIR=$PACKET_BUILD_DIR/$PLATFORM
+fi
+
 # vars
 
 INITIAL_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
@@ -103,7 +107,7 @@ set_done() {
 }
 
 set_undone_silent() {
-    rm -f "$PACKET_DIR/$1/$2.*.done"
+    rm -f $PACKET_DIR/$1/$2.*.done
 	rm -f "$PACKET_DIR/$1/$2.done"
 }
 
@@ -117,7 +121,7 @@ clean_packet_directory_silent() {
         return 0
     fi
 	set_undone_silent $1 $2
-    rm -f -r "$PACKET_DIR/$1/$2"
+    rm -rf "$PACKET_DIR/$1/$2"
 }
 
 clean_packet_directory() {
@@ -413,6 +417,16 @@ clean_env_release() {
 clean() {
     clean_download $1
     clean_unpack $1
+    clean_envdeps $1
+    clean_build $1
+    clean_install $1
+    clean_env $1
+    clean_install_release $1
+    clean_envdeps_release $1
+    clean_env_release $1
+}
+
+clean_all_install() {
     clean_envdeps $1
     clean_build $1
     clean_install $1

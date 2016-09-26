@@ -17,7 +17,8 @@ pkbuild() {
 		set_done $NAME build.cunfigure
     fi
     
-    if ! make; then
+    # making in single thread is too slow, but life is too short...
+	if ! (make -j${THREADS} || make -j${THREADS} || make); then
         return 1
     fi
 }
@@ -28,7 +29,8 @@ pkinstall() {
         return 1
     fi
     
-    if ! cp -f "/lib/x86_64-linux-gnu/libudev.so.0" "$INSTALL_PACKET_DIR/lib/libudev.so.0"; then
+    if ! (cp -f "/lib/x86_64-linux-gnu/libudev.so.0" "$INSTALL_PACKET_DIR/lib/libudev.so.0" \
+     || cp -f "/lib/i386-linux-gnu/libudev.so.0" "$INSTALL_PACKET_DIR/lib/libudev.so.0"); then
         return 1
     fi
     

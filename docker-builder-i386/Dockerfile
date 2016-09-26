@@ -89,3 +89,5 @@ RUN apt-get -yq install ratfor
 RUN apt-get -yq install csh
 RUN apt-get -yq install libxcb-xinerama0-dev
 RUN apt-get -yq install xsltproc
+
+CMD mkdir /build
