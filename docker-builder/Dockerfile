@@ -18,42 +18,6 @@ RUN apt-get -yq install \
     realpath \
     pkg-config
 
-# Install base libs
-RUN apt-get -yq install \
-    libpng12-dev \
-    libfreetype6-dev \
-    libxml2-dev \
-    libjasper-dev \
-    libffi-dev \
-    libasound2-dev \
-    libdirectfb-dev \
-    x11proto-xext-dev \
-    libxfixes-dev \
-    libxinerama-dev \
-    libxdamage-dev \
-    libxcomposite-dev \
-    libxcursor-dev \
-    libxft-dev \
-    libxrender-dev \
-    libxt-dev \
-    libxrandr-dev \
-    libxi-dev \
-    libxext-dev \
-    libx11-dev \
-    libxtst-dev \
-    x11proto-gl-dev \
-    libx11-xcb-dev \
-    libpthread-stubs0-dev \
-    libxml-parser-perl \
-    libdb-dev uuid-dev \
-    libdbus-1-dev \
-    python-dev \
-    gettext \
-    autopoint \
-    libpciaccess-dev \
-    libudev-dev \
-    bzip2
-
 # qt deps see: http://doc.qt.io/qt-5/linux-requirements.html
 RUN apt-get -yq install \
     libxrender-dev \
@@ -90,4 +54,5 @@ RUN apt-get -yq install ratfor
 RUN apt-get -yq install csh
 RUN apt-get -yq install libxcb-xinerama0-dev
 RUN apt-get -yq install xsltproc
+RUN apt-get -yq install libudev-dev
 
