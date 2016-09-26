@@ -436,6 +436,13 @@ clean_all_install() {
     clean_env_release $1
 }
 
+clean_all_env() {
+    clean_envdeps $1
+    clean_env $1
+    clean_envdeps_release $1
+    clean_env_release $1
+}
+
 #############
 
 set_undone_download() {
