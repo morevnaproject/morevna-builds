@@ -6,7 +6,7 @@ BASE_DIR=`dirname "$SCRIPT_DIR"`
 
 if [ ! -d "$HOME/.config/OpenToonz" ]; then
     mkdir -p $HOME/.config/OpenToonz
-    cp -r $BASE_DIR/share/openttonz/stuff $HOME/.config/OpenToonz/
+    cp -r $BASE_DIR/share/openttoonz/stuff $HOME/.config/OpenToonz/
 
 cat << EOF > $HOME/.config/OpenToonz/SystemVar.ini
 [General]

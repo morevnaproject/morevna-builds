@@ -7,10 +7,6 @@ PK_URL="https://sourceforge.net/projects/boost/files/boost/1.61.0/$PK_ARCHIVE/do
 source $INCLUDE_SCRIPT_DIR/inc-pkallunpack-default.sh
 source $INCLUDE_SCRIPT_DIR/inc-pkinstall_release-default.sh
 
-pkbuild() {
-	return 0
-}
-
 pkinstall() {
 	mkdir -p "$INSTALL_PACKET_DIR/include/"
 	if ! cp -r "$BUILD_PACKET_DIR/$PK_DIRNAME/boost" "$INSTALL_PACKET_DIR/include/"; then

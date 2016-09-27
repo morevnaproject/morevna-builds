@@ -1,4 +1,4 @@
-DEPS="jpeg-9b png-1.6.25 lz4-master glew-2.0.0 usb-1.0.20 sdl-2.0.4 superlu-4.3 cmake-3.6.2 openblas-master boost-1.61.0 qt-5.7"
+DEPS="jpeg-9b png-1.6.25 lz4-master glew-2.0.0 usb-1.0.20 sdl-2.0.4 superlu-4.3 cmake-3.6.2 freeglut-3.0.0 openblas-master boost-1.61.0 qt-5.7"
 
 PK_DIRNAME="opentoonz"
 PK_URL="https://github.com/opentoonz/$PK_DIRNAME.git"
@@ -52,6 +52,15 @@ pkinstall() {
         return 1
     fi
     if ! cp -f "$FILES_PACKET_DIR/launch-opentoonz.sh" "$INSTALL_PACKET_DIR/bin"; then
+        return 1
+    fi
+    if ! cp -f $BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/tiff-4.0.3/libtiff/.libs/libtiff.so* "$INSTALL_PACKET_DIR/lib"; then
+        return 1
+    fi
+    if ! cp -f $BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/tiff-4.0.3/libtiff/.libs/libtiffxx.so* "$INSTALL_PACKET_DIR/lib"; then
+        return 1
+    fi
+    if ! cp -f "/usr/bin/realpath" "$INSTALL_PACKET_DIR/bin"; then
         return 1
     fi
 }

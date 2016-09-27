@@ -1,4 +1,4 @@
-DEPS="xcb-1.12"
+DEPS="xcbfull-1.12"
 
 PK_DIRNAME="qt-everywhere-opensource-src-5.7.0"
 PK_ARCHIVE="$PK_DIRNAME.tar.gz"

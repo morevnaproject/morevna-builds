@@ -185,6 +185,7 @@ call_packet_function() {
     mkdir -p $FUNC_CURRENT_PACKET_DIR
     cd $FUNC_CURRENT_PACKET_DIR
     
+	source $INCLUDE_SCRIPT_DIR/inc-pkall-none.sh
     source "$PACKET_SCRIPT_DIR/$NAME.sh"
     [ ! $? -eq 0 ] && return 1
 
@@ -287,7 +288,7 @@ build() {
 }
 
 install() {
-    if ! (check_packet_function $1 install || (build $1 && call_packet_function $1 install)); then
+    if ! (check_packet_function $1 install || (envdeps $1 && build $1 && call_packet_function $1 install)); then
         return 1
     fi
 }
@@ -437,6 +438,8 @@ clean_all_install() {
 }
 
 clean_all_env() {
+    clean_install $1
+    clean_install_release $1
     clean_envdeps $1
     clean_env $1
     clean_envdeps_release $1

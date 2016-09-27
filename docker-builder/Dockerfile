@@ -6,33 +6,17 @@ RUN apt-get -yq update
 # Upgrade
 RUN apt-get -yq upgrade
 
-# Install compilers
-RUN apt-get -yq install \
-    g++ \
-    make
-
 # Install tools
 RUN apt-get -yq install \
     sudo \
-    multiarch-support \
     realpath \
-    pkg-config
+    pkg-config \
+    g++ \
+    make
 
 # qt deps see: http://doc.qt.io/qt-5/linux-requirements.html
 RUN apt-get -yq install \
     libxrender-dev \
-    libxcb1-dev \
-    libxcb-render0-dev \
-    libxcb-render-util0-dev \
-    libxcb-shape0-dev \
-    libxcb-randr0-dev \
-    libxcb-sync0-dev \
-    libxcb-shm0-dev \
-    libxcb-icccm4-dev \
-    libxcb-keysyms1-dev \
-    libxcb-image0-dev \
-    libxcb-glx0-dev \
-    libxcb-xfixes0-dev \
     libfontconfig1-dev \
     libfreetype6-dev \
     libxi-dev \
@@ -43,17 +27,31 @@ RUN apt-get -yq install \
     libice-dev \
     libglib2.0-dev \
     libglu1-mesa-dev
+    
+# xcb (for qt)
+#RUN apt-get -yq install \
+#    libxcb1-dev \
+#    libxcb-glx0-dev \
+#    libxcb-icccm4-dev \
+#    libxcb-image0-dev \
+#    libxcb-keysyms1-dev \
+#    libxcb-randr0-dev \
+#    libxcb-render0-dev \
+#    libxcb-render-util0-dev \
+#    libxcb-shape0-dev \
+#    libxcb-sync0-dev \
+#    libxcb-shm0-dev \
+#    libxcb-xfixes0-dev \
+#    libxcb-xinerama0-dev
 
-RUN apt-get -yq install \
-	liblzma-dev \
-	liblzo2-dev \
-	freeglut3-dev
-	
+# other deps
+
+RUN apt-get -yq install liblzma-dev
+RUN apt-get -yq install liblzo2-dev
 RUN apt-get -yq install gfortran
-RUN apt-get -yq install ratfor
 RUN apt-get -yq install csh
-RUN apt-get -yq install libxcb-xinerama0-dev
 RUN apt-get -yq install xsltproc
 RUN apt-get -yq install libudev-dev
+RUN apt-get -yq install m4
 
 CMD mkdir /build
