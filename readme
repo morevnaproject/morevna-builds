@@ -16,3 +16,55 @@ ready environment will placed into:
 
 "dry_run" option for paranoics:
 	./run-native dry_run with_deps unpack MEGAPROGRAM-1.0.0 
+
+	
+List of commands
+	<action> <packet>
+		do <action> for <packet>
+		List of actions:
+			- download
+			- unpack
+			- build
+			- install
+			- install_release
+			- envdeps
+			- envdeps_release
+			- env
+			- env_release
+
+	dry_run <any other command>
+		- simulate activity
+
+	with_deps <command> <packet>
+		- execute <command> for <packet> and all deps
+	
+	clean_ACTION <packet>
+		- remove all data of completed ACTION for <packet>
+		ex.: clean_unpack MEGAPROGRAM-1.0.0
+
+	clean_all_unpack <packet>
+		- cleans download and unpack
+		see: clean_ACTION <packet>
+
+	clean_all_env <packet>
+		- cleans install, install_release, envdeps, envdeps_release, env and env_release
+		see: clean_ACTION <packet>
+
+	clean_all_install <packet>
+		- cleans all env and build
+		see: clean_all_env <packet>, clean_ACTION <packet>
+
+	clean_all <packet>
+		- remove all data of all completed actions for <packet>
+	
+	set_undone_ACTION <packet>
+	set_undone_all_unpack <packet>
+	set_undone_all_env <packet>
+	set_undone_all_install <packet>
+	set_undone_all <packet>
+		- mark ACTION incomplete for <packet>, but keep action data
+		see: clean_* comands
+		
+	shell <packet>
+		- run shell in environment of <packet>
+		
