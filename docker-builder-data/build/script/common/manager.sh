@@ -85,7 +85,7 @@ copy() {
 			return 1
 		fi
 		if [ "$(ls -A $1)" ]; then
-			if ! cp -rlf $1/* "$2/"; then
+			if ! cp -rlfP $1/* "$2/"; then
 				return 1
 			fi
 		fi
@@ -435,8 +435,11 @@ clean_all_unpack() {
 }
 
 clean() {
-	clean_all_unpack $1
-    clean_all_install $1
+	message "$1 clean all"
+    if [ ! -z "$DRY_RUN" ]; then
+        return 0
+    fi
+    rm -rf "$PACKET_DIR/$1"
 }
 
 #############
@@ -515,7 +518,12 @@ with_deps() {
 shell() {
     set_environment_vars $1
     cd $PACKET_DIR/$1
-    /bin/bash -i
+    set -- "${@:2}"
+    if [ -z "$@" ]; then
+    	/bin/bash -i
+	else
+		"$@"
+    fi
 }
 
 dry_run() {

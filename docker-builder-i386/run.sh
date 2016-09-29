@@ -26,5 +26,5 @@ docker run -it \
     -v "$SCRIPT_BUILD_DIR:/build/script" \
     -e PLATFORM=linux-i386 \
     my/builder-i386 \
-    /build/script/common/manager.sh "$@"
+    setarch i686 /build/script/common/manager.sh "$@"
 
