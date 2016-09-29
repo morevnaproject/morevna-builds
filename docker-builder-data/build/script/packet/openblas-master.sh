@@ -8,7 +8,11 @@ source $INCLUDE_SCRIPT_DIR/inc-pkinstall_release-default.sh
 
 pkbuild() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME"
-    if ! PREFIX=${INSTALL_PACKET_DIR} make -j${THREADS}; then
+    local PK_MAKE_ARG=""
+    if [ "$PLATFORM" = "linux-i386" ]; then
+    	PK_MAKE_ARG="BINARY=32"
+    fi
+	if ! PREFIX=${INSTALL_PACKET_DIR} make $PK_MAKE_ARG -j${THREADS}; then
         return 1
     fi
 }
