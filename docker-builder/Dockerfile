@@ -9,7 +9,6 @@ RUN apt-get -yq upgrade
 # Install tools
 RUN apt-get -yq install \
     sudo \
-    realpath \
     pkg-config \
     g++ \
     make

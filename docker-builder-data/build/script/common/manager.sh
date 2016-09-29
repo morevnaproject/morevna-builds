@@ -15,8 +15,9 @@ export THREADS
 
 # root
 
-ROOT_DIR=`realpath "$0"`
-ROOT_DIR=`dirname "$ROOT_DIR"`
+OLDDIR=`pwd`
+ROOT_DIR=$(cd `dirname "$0"`; pwd)
+cd "$OLDDIR"
 ROOT_DIR=`dirname "$ROOT_DIR"`
 ROOT_DIR=`dirname "$ROOT_DIR"`
 export ROOT_DIR

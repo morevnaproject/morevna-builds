@@ -1,7 +1,8 @@
 #!/bin/bash
 
-SCRIPT_FILE=`realpath "$0"`
-SCRIPT_DIR=`dirname "$SCRIPT_FILE"`
+OLDDIR=`pwd`
+SCRIPT_DIR=$(cd `dirname "$0"`; pwd)
+cd "$OLDDIR"
 BASE_DIR=`dirname "$SCRIPT_DIR"`
 DATA_DIR="$BASE_DIR/docker-builder-data"
 

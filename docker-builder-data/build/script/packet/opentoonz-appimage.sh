@@ -6,7 +6,7 @@ PK_APPDIR_NAME="opentoonz"
 pkinstall() {
 	# copy files from envdeps (install requires envdeps explicit)
 	
-	local APPDIR="$INSTALL_RELEASE_PACKET_DIR/$PK_APPDIR_NAME.AppDir"
+	local APPDIR="$INSTALL_PACKET_DIR/$PK_APPDIR_NAME.AppDir"
 	mkdir -p "$APPDIR/usr"
 	if ! cp "$ENVDEPS_PACKET_DIR/bin/AppRun" "$APPDIR/"; then
 		return 1
