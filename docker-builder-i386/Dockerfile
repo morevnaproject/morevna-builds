@@ -53,5 +53,6 @@ RUN apt-get -yq install csh
 RUN apt-get -yq install xsltproc
 RUN apt-get -yq install libudev-dev
 RUN apt-get -yq install m4
+RUN apt-get -yq install libfuse-dev
 
 CMD mkdir /build

@@ -1,11 +1,9 @@
-DEPS="png-1.6.25 fuse-2.9.7 cmake-3.6.2"
+DEPS="png-1.6.25 cmake-3.6.2"
 
 PK_DIRNAME="AppImageKit"
 PK_URL="https://github.com/probonopd/$PK_DIRNAME.git"
 
 source $INCLUDE_SCRIPT_DIR/inc-pkallunpack-git.sh
-source $INCLUDE_SCRIPT_DIR/inc-pkinstall-default.sh
-source $INCLUDE_SCRIPT_DIR/inc-pkinstall_release-default.sh
 
 pkbuild() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME"
@@ -18,6 +16,14 @@ pkbuild() {
     fi
 	
 	if ! make -j${THREADS}; then
+		return 1
+	fi
+}
+
+pkinstall() {
+	mkdir -p "$INSTALL_PACKET_DIR/bin"
+	if ! (cp -f "$BUILD_PACKET_DIR/$PK_DIRNAME/AppImageAssistant" "$INSTALL_PACKET_DIR/bin/" \
+	 && cp -f "$BUILD_PACKET_DIR/$PK_DIRNAME/AppRun" "$INSTALL_PACKET_DIR/bin/"); then
 		return 1
 	fi
 }

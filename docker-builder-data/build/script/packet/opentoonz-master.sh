@@ -60,7 +60,4 @@ pkinstall() {
     if ! cp -f $BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/tiff-4.0.3/libtiff/.libs/libtiffxx.so* "$INSTALL_PACKET_DIR/lib"; then
         return 1
     fi
-    if ! cp -f "/usr/bin/realpath" "$INSTALL_PACKET_DIR/bin"; then
-        return 1
-    fi
 }

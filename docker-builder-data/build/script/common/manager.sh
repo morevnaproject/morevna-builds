@@ -65,13 +65,13 @@ INITIAL_PKG_CONFIG_PATH=$PKG_CONFIG_PATH
 # 6.  |    env
 #     |    |
 #     |    envdeps*
-#     | 
-# 7. install_release
 #     |
 #     | env_release^
+#     |  | 
+# 7.  | envdeps_release
 #     |  |
-# 8.  | envdeps_release
-#     |  |
+# 8. install_release
+#     |
 # 9. env_release
 #     |
 #    envdeps_release*
@@ -300,7 +300,7 @@ env() {
     
     local NAME=$1
     
-    if ! (install $1 && envdeps $1); then
+    if ! (envdeps $1 && install $1); then
         return 1
     fi
 
@@ -317,12 +317,6 @@ env() {
 	    return 1
 	fi
 	set_done $NAME env
-}
-
-install_release() {
-    if ! (check_packet_function $1 install_release || (install $1 && call_packet_function $1 install_release)); then
-        return 1
-    fi
 }
 
 envdeps_release() {
@@ -350,6 +344,12 @@ envdeps_release() {
 	set_done $NAME envdeps_release
 }
 
+install_release() {
+    if ! (check_packet_function $1 install_release || (envdeps_release $1 && install $1 && call_packet_function $1 install_release)); then
+        return 1
+    fi
+}
+
 env_release() {
     if check_packet_function $1 env_release; then
         return 0
@@ -357,7 +357,7 @@ env_release() {
     
     local NAME=$1
     
-    if ! (install_release $1 && envdeps_release $1); then
+    if ! (envdeps_release $1 && install_release $1); then
         return 1
     fi
 

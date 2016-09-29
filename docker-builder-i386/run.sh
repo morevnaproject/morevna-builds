@@ -22,6 +22,7 @@ mkdir -p $PACKET_BUILD_DIR
 docker run -it \
     --name "builder-i386" \
     $DOCKER_RUN_OPTIONS \
+    --privileged=true \
     -v "$PACKET_BUILD_DIR:/build/packet" \
     -v "$SCRIPT_BUILD_DIR:/build/script" \
     -e PLATFORM=linux-i386 \

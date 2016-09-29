@@ -8,8 +8,8 @@ source $INCLUDE_SCRIPT_DIR/inc-pkallunpack-default.sh
 source $INCLUDE_SCRIPT_DIR/inc-pkinstall_release-default.sh
 
 pkinstall() {
-	mkdir -p "$INSTALL_PACKET_DIR/include/"
-	if ! cp -r "$BUILD_PACKET_DIR/$PK_DIRNAME/boost" "$INSTALL_PACKET_DIR/include/"; then
+	mkdir -p "$INSTALL_PACKET_DIR/include/boost"
+	if ! copy "$BUILD_PACKET_DIR/$PK_DIRNAME/boost" "$INSTALL_PACKET_DIR/include/boost"; then
         return 1
     fi
 }
