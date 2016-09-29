@@ -415,28 +415,6 @@ clean_env_release() {
     clean_packet_directory $1 env_release
 }
 
-clean() {
-    clean_download $1
-    clean_unpack $1
-    clean_envdeps $1
-    clean_build $1
-    clean_install $1
-    clean_env $1
-    clean_install_release $1
-    clean_envdeps_release $1
-    clean_env_release $1
-}
-
-clean_all_install() {
-    clean_envdeps $1
-    clean_build $1
-    clean_install $1
-    clean_env $1
-    clean_install_release $1
-    clean_envdeps_release $1
-    clean_env_release $1
-}
-
 clean_all_env() {
     clean_install $1
     clean_install_release $1
@@ -444,6 +422,21 @@ clean_all_env() {
     clean_env $1
     clean_envdeps_release $1
     clean_env_release $1
+}
+
+clean_all_install() {
+    clean_build $1
+    clean_all_env $1
+}
+
+clean_all_unpack() {
+    clean_download $1
+    clean_unpack $1
+}
+
+clean() {
+	clean_all_unpack $1
+    clean_all_install $1
 }
 
 #############
@@ -484,16 +477,28 @@ set_undone_env_release() {
     set_undone $1 env_release
 }
 
-clean() {
-    set_undone_download $1
-    set_undone_unpack $1
-    set_undone_envdeps $1
-    set_undone_build $1
+set_undone_all_env() {
     set_undone_install $1
-    set_undone_env $1
     set_undone_install_release $1
+    set_undone_envdeps $1
+    set_undone_env $1
     set_undone_envdeps_release $1
     set_undone_env_release $1
+}
+
+set_undone_all_install() {
+    set_undone_build $1
+    set_undone_all_env $1
+}
+
+set_undone_all_unpack() {
+    set_undone_download $1
+    set_undone_unpack $1
+}
+
+set_undone_all() {
+	set_undone_all_unpack $1
+    set_undone_all_install $1
 }
 
 #############
