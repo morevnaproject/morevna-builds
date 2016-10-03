@@ -6,6 +6,7 @@ arch=i386
 suite=wheezy
 chroot_dir="/var/chroot/$suite"
 apt_mirror="ftp://ftp.debian.org/debian/"
+docker_image="my/debian-$arch:$suite"
 
 export DEBIAN_FRONTEND=noninteractive
 debootstrap --arch $arch $suite $chroot_dir $apt_mirror

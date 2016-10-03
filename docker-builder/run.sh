@@ -8,9 +8,6 @@ DATA_DIR="$BASE_DIR/docker-builder-data"
 
 BUILD_DIR=$DATA_DIR/build
 
-docker stop "builder" || true
-docker rm "builder" || true
-
 CONFIG_FILE="$BASE_DIR/config.sh"
 PACKET_BUILD_DIR="$BUILD_DIR/packet"
 SCRIPT_BUILD_DIR="$BUILD_DIR/script"
@@ -19,6 +16,9 @@ if [ -f $CONFIG_FILE ]; then
 fi
 export PACKET_BUILD_DIR
 mkdir -p $PACKET_BUILD_DIR
+
+docker stop "builder" || true
+docker rm "builder" || true
 
 docker run -it \
     --name "builder" \

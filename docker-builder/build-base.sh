@@ -2,9 +2,9 @@
 
 set -e
 
-arch=i386
+arch=amd64
 suite=wheezy
-docker_image="my/debian-$arch:$suite"
+docker_image="debian:7"
 
 OLDDIR=`pwd`
 SCRIPT_DIR=$(cd `dirname "$0"`; pwd)

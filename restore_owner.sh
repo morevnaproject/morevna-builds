@@ -12,3 +12,4 @@ if [ -f $CONFIG_FILE ]; then
 fi
 
 sudo chown -R `id -un`:`id -gn` $PACKET_BUILD_DIR
+sudo chown -R `id -un`:`id -gn` "$BASE_DIR/docker/image"
