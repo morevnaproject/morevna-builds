@@ -43,6 +43,11 @@ INITIAL_CFLAGS=$CFLAGS
 INITIAL_CPPFLAGS=$CPPFLAGS
 INITIAL_PKG_CONFIG_PATH=$PKG_CONFIG_PATH
 
+DRY_RUN=
+NO_CHECK_DEPS=
+declare -A COMPLETION_STATUS
+
+
 ###################################
 #
 # Fairy Tale
@@ -58,9 +63,9 @@ INITIAL_PKG_CONFIG_PATH=$PKG_CONFIG_PATH
 #     | env^
 #     |  |
 # 3.  | envdeps  
-#     |  |   |
-# 4. build   |
-#     |      |
+#     |  | | |
+# 4. build | |
+#     |    | |
 # 5. install |
 #     |    | |
 # 6.  |    env
@@ -70,14 +75,24 @@ INITIAL_PKG_CONFIG_PATH=$PKG_CONFIG_PATH
 #     | env_release^
 #     |  | 
 # 7.  | envdeps_release
-#     |  |
-# 8. install_release
-#     |
-# 9. env_release
-#     |
+#     |  |           | 
+# 8. install_release |
+#            |       |
+# 9.        env_release
+#            |
 #    envdeps_release*
 #
 ###################################
+
+FUNC_DEPS_download=""
+FUNC_DEPS_unpack="download"
+FUNC_DEPS_envdeps="-env"
+FUNC_DEPS_build="unpack envdeps"
+FUNC_DEPS_install="build envdeps"
+FUNC_DEPS_env="install envdeps"
+FUNC_DEPS_envdeps_release="-env_release"
+FUNC_DEPS_install_release="install envdeps_release"
+FUNC_DEPS_env_release="install_release envdeps_release"
 
 
 copy() {
@@ -103,13 +118,27 @@ message() {
     echo " ------ $1"
 }
 
+try_do_nothing() {
+	if [ -z "$DRY_RUN" ]; then
+		return 1
+	fi
+	set_done $1 $2
+}
+
 set_done() {
-	touch "$PACKET_DIR/$1/$2.done"
+	local COMPLETION_KEY="$1:$2"
+	if [ -z "$DRY_RUN" ]; then
+		touch "$PACKET_DIR/$1/$2.done"
+	fi
+	COMPLETION_STATUS[$COMPLETION_KEY]=complete
 }
 
 set_undone_silent() {
-    rm -f $PACKET_DIR/$1/$2.*.done
-	rm -f "$PACKET_DIR/$1/$2.done"
+	if [ -z "$DRY_RUN" ]; then
+    	rm -f $PACKET_DIR/$1/$2.*.done
+		rm -f "$PACKET_DIR/$1/$2.done"
+	fi
+	COMPLETION_STATUS[$COMPLETION_KEY]=incomplete
 }
 
 set_undone() {
@@ -118,10 +147,8 @@ set_undone() {
 }
 
 clean_packet_directory_silent() {
-    if [ ! -z "$DRY_RUN" ]; then
-        return 0
-    fi
 	set_undone_silent $1 $2
+    try_do_nothing $1 $2 && return 0
     rm -rf "$PACKET_DIR/$1/$2"
 }
 
@@ -170,6 +197,7 @@ call_packet_function() {
     local FUNC=$2
     local PREPARE_FUNC=$3
     local FINALIZE_FUNC=$4
+    local COMPARE_RESULTS=$5
 
     set_environment_vars $NAME
 
@@ -177,16 +205,27 @@ call_packet_function() {
     local FUNC_CURRENT_PACKET_DIR=$CURRENT_PACKET_DIR/$FUNC
 
     message "$NAME $FUNC"
-    if [ ! -z "$DRY_RUN" ]; then
-        return 0
-    fi
+    try_do_nothing $NAME $FUNC && return 0
+	echo "${DRY_RUN_DONE[@]}"
 
-    set_undone_silent $NAME $FUNC
+	local PREV_DATE=
+	local PREV_HASH=
+	if [ "$COMPARE_RESULTS" = "compare_results" ]; then
+		if check_packet_function $NAME $FUNC; then
+			PREV_DATE=`date -Ins -r "$PACKET_DIR/$1/$2.done"`
+			[ ! $? -eq 0 ] && return 1
+			PREV_HASH=`tar -cf - "$FUNC_CURRENT_PACKET_DIR" --exclude=.git | md5sum` 
+			[ ! $? -eq 0 ] && return 1
+		fi
+	fi
+
+   	set_undone_silent $NAME $FUNC
 
     mkdir -p $FUNC_CURRENT_PACKET_DIR
     cd $FUNC_CURRENT_PACKET_DIR
     
 	source $INCLUDE_SCRIPT_DIR/inc-pkall-none.sh
+    [ ! $? -eq 0 ] && return 1
     source "$PACKET_SCRIPT_DIR/$NAME.sh"
     [ ! $? -eq 0 ] && return 1
 
@@ -206,6 +245,18 @@ call_packet_function() {
         fi
     fi
 
+	if [ ! -z "$PREV_DATE"]; then
+		if [ ! -z "$PREV_HASH"]; then
+			local HASH=`tar -cf - "$FUNC_CURRENT_PACKET_DIR" --exclude=.git | md5sum` 
+			[ ! $? -eq 0 ] && return 1
+			if [ "$HASH" = "$PREV_HASH" ]; then
+				touch -d "$PREV_DATE" "$PACKET_DIR/$NAME/$FUNC.done"
+				message "$NAME $FUNC - not changed"
+				return 0
+			fi
+		fi
+	fi
+
     set_done $NAME $FUNC
 }
 
@@ -214,7 +265,9 @@ foreach_deps() {
     local FUNC=$2
     local RECURSIVE=$3
     
-    source $PACKET_SCRIPT_DIR/$NAME.sh
+	source $INCLUDE_SCRIPT_DIR/inc-pkall-none.sh
+    [ ! $? -eq 0 ] && return 1
+    source "$PACKET_SCRIPT_DIR/$NAME.sh"
     [ ! $? -eq 0 ] && return 1
     
     local CURRENT_DEPS=$DEPS
@@ -233,6 +286,94 @@ foreach_deps() {
 	done
 }
 
+is_complete() {
+	local NAME=$1
+	local FUNC=$2
+	local SUBFUNCS_VAR_NAME=FUNC_DEPS_$FUNC
+    local SUBFUNCS=${!SUBFUNCS_VAR_NAME}
+    local COMPLETION_KEY="$NAME:$FUNC"
+	if [ ! -z ${COMPLETION_STATUS[$COMPLETION_KEY]} ]; then
+		if [ "${COMPLETION_STATUS[$COMPLETION_KEY]}" = "complete" ]; then
+			return 0
+		else
+			return 1
+		fi
+	fi
+	
+	COMPLETION_STATUS[$COMPLETION_KEY]=incomplete
+	
+	if ! check_packet_function $1 $2; then
+		return 1
+	fi
+	if [ ! -z "$NO_CHECK_DEPS" ]; then
+		COMPLETION_STATUS[$COMPLETION_KEY]=complete
+		return 0
+	fi
+
+	source $INCLUDE_SCRIPT_DIR/inc-pkall-none.sh
+    [ ! $? -eq 0 ] && return 1
+    source "$PACKET_SCRIPT_DIR/$NAME.sh"
+    [ ! $? -eq 0 ] && return 1
+
+	local CURRENT_DEPS=$DEPS
+	for SUBFUNC in $SUBFUNCS; do
+		local SUBFUNC_LOCAL=$SUBFUNC
+		if [ "${SUBFUNC_LOCAL:0:1}" = "-" ]; then
+			SUBFUNC_LOCAL=${SUBFUNC_LOCAL:1}
+		    for DEP in $CURRENT_DEPS; do
+		        if [ ! -z "$DEP" ]; then
+		        	local DEP_LOCAL=$DEP
+					if ! is_complete $DEP_LOCAL $SUBFUNC_LOCAL; then
+						return 1
+					fi
+		    	    if [ "$PACKET_DIR/$NAME/$FUNC.done" -ot "$PACKET_DIR/$DEP_LOCAL/$SUBFUNC_LOCAL.done" ]; then
+		        		return 1
+		    	    fi
+		        fi
+		    done 
+		else
+			if ! is_complete $NAME $SUBFUNC_LOCAL; then
+				return 1
+			fi
+    	    if [ "$PACKET_DIR/$NAME/$FUNC.done" -ot "$PACKET_DIR/$NAME/$SUBFUNC_LOCAL.done" ]; then
+        		return 1
+    	    fi
+		fi
+	done
+
+	COMPLETION_STATUS[$COMPLETION_KEY]=complete
+}
+
+prepare() {
+	local NAME=$1
+	local FUNC=$2
+	local SUBFUNCS_VAR_NAME=FUNC_DEPS_$FUNC
+    local SUBFUNCS=${!SUBFUNCS_VAR_NAME}
+	
+	source $INCLUDE_SCRIPT_DIR/inc-pkall-none.sh
+    [ ! $? -eq 0 ] && return 1
+    source "$PACKET_SCRIPT_DIR/$NAME.sh"
+    [ ! $? -eq 0 ] && return 1
+
+	local CURRENT_DEPS=$DEPS
+	local DODEPS=
+	for SUBFUNC in $SUBFUNCS; do
+		local SUBFUNC_LOCAL=$SUBFUNC
+		if [ "${SUBFUNC_LOCAL:0:1}" = "-" ]; then
+			SUBFUNC_LOCAL=${SUBFUNC_LOCAL:1}
+		    for DEP in $CURRENT_DEPS; do
+		        if [ ! -z "$DEP" ]; then
+					if ! $SUBFUNC_LOCAL $DEP; then
+						return 1
+					fi
+		        fi
+		    done 
+		elif ! $SUBFUNC_LOCAL $NAME; then
+			return 1
+		fi
+	done
+}
+
 add_envdeps() {
 	if ! copy "$PACKET_DIR/$1/env" "$PACKET_DIR/$2/envdeps"; then
 	    return 1
@@ -245,34 +386,33 @@ add_envdeps_release() {
 	fi
 }
 
+update() {
+    local NAME=$1
+    prepare $NAME download || return 1
+    call_packet_function $NAME download "" "" compare_results || return 1
+}
+
 download() {
-    if ! (check_packet_function $1 download || call_packet_function $1 download); then
-        return 1
-    fi
+    local NAME=$1
+    is_complete $NAME download && return 0
+    prepare     $NAME download || return 1
+    call_packet_function $NAME download || return 1
 }
 
 unpack() {
-    if ! (check_packet_function $1 unpack || (download $1 && call_packet_function $1 unpack)); then
-        return 1
-    fi
+    local NAME=$1
+    is_complete $NAME unpack && return 0
+    prepare     $NAME unpack || return 1
+    call_packet_function $NAME unpack || return 1
 }
 
 envdeps() {
-    if check_packet_function $1 envdeps; then
-        return 0
-    fi
-
     local NAME=$1
-
-	if ! foreach_deps $NAME env; then
-		return 1
-	fi
+    is_complete $NAME envdeps && return 0 
+	prepare     $NAME envdeps || return 1
 
     message "$NAME envdeps"
-    
-    if [ ! -z "$DRY_RUN" ]; then
-    	return 0
-    fi
+    try_do_nothing $NAME envdeps && return 0
 
     clean_packet_directory_silent $NAME envdeps
     mkdir -p "$PACKET_DIR/$NAME/envdeps"
@@ -283,33 +423,26 @@ envdeps() {
 }
 
 build() {
-    if ! (check_packet_function $1 build || (envdeps $1 && unpack $1 && call_packet_function $1 build prepare_build)); then
-        return 1
-    fi
+    local NAME=$1
+    is_complete $NAME build && return 0
+    prepare     $NAME build || return 1
+    call_packet_function $NAME build prepare_build || return 1
 }
 
 install() {
-    if ! (check_packet_function $1 install || (envdeps $1 && build $1 && call_packet_function $1 install)); then
-        return 1
-    fi
+    local NAME=$1
+    is_complete $NAME install && return 0
+    prepare     $NAME install || return 1
+    call_packet_function $NAME install || return 1
 }
 
 env() {
-    if check_packet_function $1 env; then
-        return 0
-    fi
-    
     local NAME=$1
-    
-    if ! (envdeps $1 && install $1); then
-        return 1
-    fi
+    is_complete $NAME env && return 0
+    prepare     $NAME env || return 1
 
     message "$NAME env"
-    
-    if [ ! -z "$DRY_RUN" ]; then
-    	return 0
-    fi
+    try_do_nothing $NAME env && return 0
             
     clean_packet_directory_silent $NAME env
     mkdir -p "$PACKET_DIR/$NAME/env"
@@ -321,21 +454,12 @@ env() {
 }
 
 envdeps_release() {
-    if check_packet_function $1 envdeps_release; then
-        return 0
-    fi
-
     local NAME=$1
-
-	if ! foreach_deps $NAME env_release; then
-		return 1
-	fi
+    is_complete $NAME envdeps_release && return 0
+	prepare     $NAME envdeps_release || return 1
 
 	message "$NAME envdeps_release"
-
-    if [ ! -z "$DRY_RUN" ]; then
-    	return 0
-    fi
+    try_do_nothing $NAME envdeps_release && return 0
 
     clean_packet_directory_silent $NAME envdeps_release
     mkdir -p "$PACKET_DIR/$NAME/envdeps_release"
@@ -346,27 +470,19 @@ envdeps_release() {
 }
 
 install_release() {
-    if ! (check_packet_function $1 install_release || (envdeps_release $1 && install $1 && call_packet_function $1 install_release)); then
-        return 1
-    fi
+    local NAME=$1
+    is_complete $NAME install_release && return 0
+    prepare     $NAME install_release || return 1
+    call_packet_function $NAME install_release || return 1
 }
 
 env_release() {
-    if check_packet_function $1 env_release; then
-        return 0
-    fi
-    
     local NAME=$1
-    
-    if ! (envdeps_release $1 && install_release $1); then
-        return 1
-    fi
+    is_complete $NAME env_release && return 0
+    prepare     $NAME env_release || return 1
 
 	message "$NAME env_release"
-
-    if [ ! -z "$DRY_RUN" ]; then
-    	return 0
-    fi
+    try_do_nothing $NAME env_release && return 0
             
     clean_packet_directory_silent $NAME env_release
     mkdir -p "$PACKET_DIR/$NAME/env_release"
@@ -437,9 +553,7 @@ clean_all_unpack() {
 
 clean() {
 	message "$1 clean all"
-    if [ ! -z "$DRY_RUN" ]; then
-        return 0
-    fi
+	try_do_nothing $NAME clean_all && return 0
     rm -rf "$PACKET_DIR/$1"
 }
 
@@ -532,4 +646,10 @@ dry_run() {
     "$@"
 }
 
+no_check_deps() {
+    NO_CHECK_DEPS=1
+    "$@"
+}
+
 "$@"
+
