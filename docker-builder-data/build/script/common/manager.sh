@@ -195,15 +195,11 @@ prepare_build() {
 }
 
 prepare_install() {
-    if ! cp -f $BUILD_PACKET_DIR/version-* "$INSTALL_PACKET_DIR/"; then
-        return 1
-    fi
+    cp -f $BUILD_PACKET_DIR/version-* "$INSTALL_PACKET_DIR/" || true
 }
 
 prepare_install_release() {
-    if ! cp -f $INSTALL_PACKET_DIR/version-* "$INSTALL_RELEASE_PACKET_DIR/"; then
-        return 1
-    fi
+    cp -f $INSTALL_PACKET_DIR/version-* "$INSTALL_RELEASE_PACKET_DIR/" || true
 }
 
 set_environment_vars() {

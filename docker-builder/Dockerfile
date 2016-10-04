@@ -55,5 +55,6 @@ RUN apt-get -yq install m4
 RUN apt-get -yq install libfuse-dev
 RUN apt-get -yq install git
 RUN apt-get -yq install wget
+RUN apt-get -yq install bzip2
 
 CMD mkdir /build
