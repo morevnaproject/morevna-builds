@@ -114,6 +114,30 @@ copy() {
 	fi
 }
 
+readdir() {
+    local FILE=$1
+    if [ -d "$FILE" ]; then
+        echo "directory begin"
+        ls -1 "$1" | while read SUBFILE; do
+            if [ "$SUBFILE" = ".git" ]; then
+                continue
+            fi
+            local STAT=`stat -c%F:%a:%s "$FILE/$SUBFILE"`
+            echo "$STAT:$SUBFILE"
+            readdir "$FILE/$SUBFILE"
+        done
+        echo "directory end"
+    else
+        local MD5=`md5sum -b "$FILE"`
+        echo "file:${MD5:0:32}"
+    fi
+}
+
+md5() {
+    local MD5=`readdir "$1" | md5sum -b`
+    echo "${MD5:0:32}"
+}
+
 message() {
     echo " ------ $1"
 }
@@ -134,6 +158,7 @@ set_done() {
 }
 
 set_undone_silent() {
+	local COMPLETION_KEY="$1:$2"
 	if [ -z "$DRY_RUN" ]; then
     	rm -f $PACKET_DIR/$1/$2.*.done
 		rm -f "$PACKET_DIR/$1/$2.done"
@@ -220,18 +245,15 @@ call_packet_function() {
     try_do_nothing $NAME $FUNC && return 0
 	echo "${DRY_RUN_DONE[@]}"
 
-	local PREV_DATE=
 	local PREV_HASH=
 	if [ "$COMPARE_RESULTS" = "compare_results" ]; then
 		if check_packet_function $NAME $FUNC; then
-			PREV_DATE=`date -Ins -r "$PACKET_DIR/$1/$2.done"`
-			[ ! $? -eq 0 ] && return 1
-			PREV_HASH=`tar -cf - "$FUNC_CURRENT_PACKET_DIR" --exclude=.git | md5sum` 
+			PREV_HASH=`md5 "$FUNC_CURRENT_PACKET_DIR"` 
 			[ ! $? -eq 0 ] && return 1
 		fi
+	else
+   		set_undone_silent $NAME $FUNC
 	fi
-
-   	set_undone_silent $NAME $FUNC
 
     mkdir -p $FUNC_CURRENT_PACKET_DIR
     cd $FUNC_CURRENT_PACKET_DIR
@@ -257,12 +279,11 @@ call_packet_function() {
         fi
     fi
 
-	if [ ! -z "$PREV_DATE"]; then
-		if [ ! -z "$PREV_HASH"]; then
-			local HASH=`tar -cf - "$FUNC_CURRENT_PACKET_DIR" --exclude=.git | md5sum` 
+	if check_packet_function $NAME $FUNC; then
+		if [ ! -z "$PREV_HASH" ]; then
+			local HASH=`md5 "$FUNC_CURRENT_PACKET_DIR"` 
 			[ ! $? -eq 0 ] && return 1
 			if [ "$HASH" = "$PREV_HASH" ]; then
-				touch -d "$PREV_DATE" "$PACKET_DIR/$NAME/$FUNC.done"
 				message "$NAME $FUNC - not changed"
 				return 0
 			fi
@@ -643,13 +664,13 @@ with_deps() {
 }
 
 shell() {
+	echo "Set environment for $1"
     set_environment_vars $1
     cd $PACKET_DIR/$1
-    set -- "${@:2}"
-    if [ -z "$@" ]; then
+    if [ -z "${*:2}" ]; then
     	/bin/bash -i
 	else
-		"$@"
+		"${@:2}"
     fi
 }
 
