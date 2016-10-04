@@ -72,7 +72,9 @@ image_unmount() {
 	fi
 
 	echo "Unmount subs"
-	sudo "/tmp/$INSTANCE_NAME.umount.sh"
+	sudo "/tmp/$INSTANCE_NAME.umount.sh" \
+		|| (echo "next try after 10 seconds" && sleep 10 && sudo "/tmp/$INSTANCE_NAME.umount.sh") \
+		|| (echo "final try after 10 seconds" && sleep 10 && sudo "/tmp/$INSTANCE_NAME.umount.sh")
 	sudo rm -f "/tmp/$INSTANCE_NAME.umount.sh"
 
 	echo "Remove -.chroot.sh file"
