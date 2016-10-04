@@ -169,6 +169,18 @@ prepare_build() {
     fi
 }
 
+prepare_install() {
+    if ! cp -f $BUILD_PACKET_DIR/version-* "$INSTALL_PACKET_DIR/"; then
+        return 1
+    fi
+}
+
+prepare_install_release() {
+    if ! cp -f $INSTALL_PACKET_DIR/version-* "$INSTALL_RELEASE_PACKET_DIR/"; then
+        return 1
+    fi
+}
+
 set_environment_vars() {
     export NAME=$1
 
@@ -433,7 +445,7 @@ install() {
     local NAME=$1
     is_complete $NAME install && return 0
     prepare     $NAME install || return 1
-    call_packet_function $NAME install || return 1
+    call_packet_function $NAME install prepare_install || return 1
 }
 
 env() {
@@ -473,7 +485,7 @@ install_release() {
     local NAME=$1
     is_complete $NAME install_release && return 0
     prepare     $NAME install_release || return 1
-    call_packet_function $NAME install_release || return 1
+    call_packet_function $NAME install_release prepare_install_release || return 1
 }
 
 env_release() {

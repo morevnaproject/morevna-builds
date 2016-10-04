@@ -53,5 +53,7 @@ RUN apt-get -yq install xsltproc
 RUN apt-get -yq install libudev-dev
 RUN apt-get -yq install m4
 RUN apt-get -yq install libfuse-dev
+RUN apt-get -yq install git
+RUN apt-get -yq install wget
 
 CMD mkdir /build

@@ -7,8 +7,8 @@ source $INCLUDE_SCRIPT_DIR/inc-pkallunpack-git.sh
 source $INCLUDE_SCRIPT_DIR/inc-pkinstall_release-default.sh
 
 pkbuild() {
-    if ! (cp "$FILES_PACKET_DIR/Makefile.in" "$PK_DIRNAME/thirdparty/tiff-4.0.3/libtiff/" \
-     && cp "$FILES_PACKET_DIR/FindTIFF.cmake" "$PK_DIRNAME/toonz/cmake/"); then
+    if ! (cp --remove-destination "$FILES_PACKET_DIR/Makefile.in" "$PK_DIRNAME/thirdparty/tiff-4.0.3/libtiff/" \
+     && cp --remove-destination "$FILES_PACKET_DIR/FindTIFF.cmake" "$PK_DIRNAME/toonz/cmake/"); then
         return 1
     fi
 	
@@ -27,7 +27,7 @@ pkbuild() {
 		set_done $NAME build.libtiff
     fi
 
-	if ! cp "$ENVDEPS_PACKET_DIR/lib/libsuperlu_4.3.a" "$BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/superlu/libsuperlu_4.1.a"; then
+	if ! cp --remove-destination "$ENVDEPS_PACKET_DIR/lib/libsuperlu_4.3.a" "$BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/superlu/libsuperlu_4.1.a"; then
 		return 1
 	fi
 

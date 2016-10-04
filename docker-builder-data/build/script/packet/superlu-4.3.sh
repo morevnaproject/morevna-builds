@@ -10,8 +10,8 @@ source $INCLUDE_SCRIPT_DIR/inc-pkinstall_release-default.sh
 pkbuild() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME"
 	
-	if ! (cp -f "$FILES_PACKET_DIR/mc64ad.c" "$BUILD_PACKET_DIR/$PK_DIRNAME/SRC/" \
-	 && cp -f "$FILES_PACKET_DIR/make.inc" "$BUILD_PACKET_DIR/$PK_DIRNAME/"); then
+	if ! (cp --remove-destination "$FILES_PACKET_DIR/mc64ad.c" "$BUILD_PACKET_DIR/$PK_DIRNAME/SRC/" \
+	 && cp --remove-destination "$FILES_PACKET_DIR/make.inc" "$BUILD_PACKET_DIR/$PK_DIRNAME/"); then
 		return 1
 	fi
 

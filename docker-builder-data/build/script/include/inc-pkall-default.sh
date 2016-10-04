@@ -1,5 +1,6 @@
 
 # PK_URL
+# PK_VERSION
 # PK_ARCHIVE
 # PK_DIRNAME
 
