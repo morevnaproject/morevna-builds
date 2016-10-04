@@ -15,8 +15,8 @@ COMMAND_ERROR=
 image_mount_add() {
 	echo "Mount: $1 -> $2"
 	sudo mkdir -p "$IMAGE_MOUNT_DIR$2"
-	sudo mount -R "$1" "$IMAGE_MOUNT_DIR$2"
-	echo "umount -Rfl \"$IMAGE_MOUNT_DIR$2\"" >> "/tmp/$INSTANCE_NAME.umount.sh"
+	sudo mount --bind "$1" "$IMAGE_MOUNT_DIR$2"
+	echo "umount -f \"$IMAGE_MOUNT_DIR$2\"" >> "/tmp/$INSTANCE_NAME.umount.sh"
 }
 
 image_mount() {
@@ -104,7 +104,7 @@ image_command() {
 		return 1
 	fi
 
-	if ! sudo -E chroot "$IMAGE_MOUNT_DIR" "/$INSTANCE_NAME.chroot.sh" $@; then
+	if ! env -i /usr/bin/sudo -i chroot "$IMAGE_MOUNT_DIR" "/$INSTANCE_NAME.chroot.sh" $@; then
 		COMMAND_ERROR=1
 		echo "Command returned with error"
 	fi
