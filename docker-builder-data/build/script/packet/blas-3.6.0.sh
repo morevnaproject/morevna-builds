@@ -16,7 +16,7 @@ pkbuild() {
 
 pkinstall() {
 	mkdir -p "$INSTALL_PACKET_DIR/lib"
-	if ! cp -r "$BUILD_PACKET_DIR/$PK_DIRNAME/blas_LINUX.a" "$INSTALL_PACKET_DIR/lib/libblas.a"; then
+	if ! cp --remove-destination -r "$BUILD_PACKET_DIR/$PK_DIRNAME/blas_LINUX.a" "$INSTALL_PACKET_DIR/lib/libblas.a"; then
 		return 1
 	fi
 }

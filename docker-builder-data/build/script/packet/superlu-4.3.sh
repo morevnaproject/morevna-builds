@@ -21,7 +21,7 @@ pkbuild() {
 }
 
 pkinstall() {
-	if ! cp -r "$BUILD_PACKET_DIR/$PK_DIRNAME/lib" "$INSTALL_PACKET_DIR"; then
+	if ! cp --remove-destination -r "$BUILD_PACKET_DIR/$PK_DIRNAME/lib" "$INSTALL_PACKET_DIR"; then
 		return 1
 	fi
 }

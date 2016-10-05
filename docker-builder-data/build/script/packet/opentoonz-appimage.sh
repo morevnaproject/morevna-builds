@@ -8,19 +8,19 @@ pkinstall() {
 	
 	local APPDIR="$INSTALL_PACKET_DIR/$PK_APPDIR_NAME.AppDir"
 	mkdir -p "$APPDIR/usr/lib"
-	if ! cp "$ENVDEPS_PACKET_DIR/bin/AppRun" "$APPDIR/"; then
+	if ! cp --remove-destination "$ENVDEPS_PACKET_DIR/bin/AppRun" "$APPDIR/"; then
 		return 1
 	fi
-    if ! (cp "$FILES_PACKET_DIR/opentoonz.desktop" "$APPDIR/" \
-     && cp "$FILES_PACKET_DIR/opentoonz.png" "$APPDIR/"); then
+    if ! (cp --remove-destination "$FILES_PACKET_DIR/opentoonz.desktop" "$APPDIR/" \
+     && cp --remove-destination "$FILES_PACKET_DIR/opentoonz.png" "$APPDIR/"); then
         return 1
     fi
-    if ! (cp -f /lib/x86_64-linux-gnu/libudev.so* "$APPDIR/usr/lib/" \
-     || cp -f /lib/i386-linux-gnu/libudev.so* "$APPDIR/usr/lib/"); then
+    if ! (cp --remove-destination /lib/x86_64-linux-gnu/libudev.so* "$APPDIR/usr/lib/" \
+     || cp --remove-destination /lib/i386-linux-gnu/libudev.so* "$APPDIR/usr/lib/"); then
         return 1
     fi
-    if ! (cp -f /usr/lib/x86_64-linux-gnu/libgfortran.so* "$APPDIR/usr/lib/" \
-     || cp -f /usr/lib/i386-linux-gnu/libgfortran.so* "$APPDIR/usr/lib/"); then
+    if ! (cp --remove-destination /usr/lib/x86_64-linux-gnu/libgfortran.so* "$APPDIR/usr/lib/" \
+     || cp --remove-destination /usr/lib/i386-linux-gnu/libgfortran.so* "$APPDIR/usr/lib/"); then
         return 1
     fi
         

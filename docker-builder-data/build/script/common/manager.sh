@@ -103,12 +103,12 @@ copy() {
 			return 1
 		fi
 		if [ "$(ls -A $1)" ]; then
-			if ! cp -rlfP $1/* "$2/"; then
+			if ! cp --remove-destination -rlP $1/* "$2/"; then
 				return 1
 			fi
 		fi
 	elif [ -f "$1" ]; then
-		if ! (mkdir -p `dirname $2` && cp -l "$1" "$2"); then
+		if ! (mkdir -p `dirname $2` && cp --remove-destination -l "$1" "$2"); then
 			return 1
 		fi
 	else
@@ -200,11 +200,11 @@ prepare_build() {
 }
 
 prepare_install() {
-    cp -f $BUILD_PACKET_DIR/version-* "$INSTALL_PACKET_DIR/" || true
+    cp --remove-destination $BUILD_PACKET_DIR/version-* "$INSTALL_PACKET_DIR/" || true
 }
 
 prepare_install_release() {
-    cp -f $INSTALL_PACKET_DIR/version-* "$INSTALL_RELEASE_PACKET_DIR/" || true
+    cp --remove-destination $INSTALL_PACKET_DIR/version-* "$INSTALL_RELEASE_PACKET_DIR/" || true
 }
 
 set_environment_vars() {

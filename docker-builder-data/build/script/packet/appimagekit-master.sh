@@ -22,8 +22,9 @@ pkbuild() {
 
 pkinstall() {
 	mkdir -p "$INSTALL_PACKET_DIR/bin"
-	if ! (cp -f "$BUILD_PACKET_DIR/$PK_DIRNAME/AppImageAssistant" "$INSTALL_PACKET_DIR/bin/" \
-	 && cp -f "$BUILD_PACKET_DIR/$PK_DIRNAME/AppRun" "$INSTALL_PACKET_DIR/bin/"); then
+	if ! (cp --remove-destination "$BUILD_PACKET_DIR/$PK_DIRNAME/AppImageAssistant" "$INSTALL_PACKET_DIR/bin/" \
+	 && cp --remove-destination "$BUILD_PACKET_DIR/$PK_DIRNAME/AppRun" "$INSTALL_PACKET_DIR/bin/" \
+	 && cp --remove-destination "$BUILD_PACKET_DIR/$PK_DIRNAME/desktopintegration" "$INSTALL_PACKET_DIR/bin/"); then
 		return 1
 	fi
 }
