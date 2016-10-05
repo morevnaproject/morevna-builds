@@ -38,10 +38,13 @@ run() {
 		echo "Cannot find version, pheraps appimage not ready. Cancel."
 		return 1
 	fi
-	if ! ls $PUBLISH_DIR/opentoonz-$VERSION-$COMMIT-*-$PLATFORM_SUFFIX.appimage 1> /dev/null 2>&1; then
+	if ! ls $PUBLISH_DIR/OpenToonz-$VERSION-$COMMIT-*-$PLATFORM_SUFFIX.appimage 1> /dev/null 2>&1; then
 		echo "Publish new version $VERSION-$COMMIT-$PLATFORM_SUFFIX"
-		rm -f $PUBLISH_DIR/opentoonz-*-$PLATFORM_SUFFIX.appimage
-		cp $DIR/opentoonz.appimage $PUBLISH_DIR/opentoonz-$VERSION-$COMMIT-$DATE-$PLATFORM_SUFFIX.appimage
+		rm -f $PUBLISH_DIR/OpenToonz-*-$PLATFORM_SUFFIX.appimage
+		cp $DIR/opentoonz.appimage $PUBLISH_DIR/OpenToonz-$VERSION-$COMMIT-$DATE-$PLATFORM_SUFFIX.appimage
+		if [ -f "$PUBLISH_DIR/publish.sh" ]; then
+			"$PUBLISH_DIR/publish.sh" "$PUBLISH_DIR/OpenToonz-$VERSION-$COMMIT-$DATE-$PLATFORM_SUFFIX.appimage"
+		fi
 	else
 		echo "Version $VERSION-$COMMIT-$PLATFORM_SUFFIX already published"
 	fi
