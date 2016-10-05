@@ -44,6 +44,8 @@ INITIAL_CPPFLAGS=$CPPFLAGS
 INITIAL_PKG_CONFIG_PATH=$PKG_CONFIG_PATH
 
 DRY_RUN=
+FORCE=
+CLEAN_BEFORE_DO=
 NO_CHECK_DEPS=
 declare -A COMPLETION_STATUS
 
@@ -183,6 +185,9 @@ clean_packet_directory() {
 }
 
 check_packet_function() {
+	if [ ! -z "$FORCE" ]; then
+		return 1
+	fi
     if [ ! -f "$PACKET_DIR/$1/$2.done" ]; then
         return 1
     fi
@@ -399,6 +404,12 @@ prepare() {
 			return 1
 		fi
 	done
+	
+	if [ ! -z "$CLEAN_BEFORE_DO" ]; then
+		if ! clean_packet_directory $NAME $FUNC; then
+			return 1
+		fi
+	fi
 }
 
 add_envdeps() {
@@ -675,6 +686,16 @@ dry_run() {
 
 no_check_deps() {
     NO_CHECK_DEPS=1
+    "$@"
+}
+
+force() {
+    FORCE=1
+    "$@"
+}
+
+clean_before_do() {
+	CLEAN_BEFORE_DO=1
     "$@"
 }
 
