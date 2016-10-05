@@ -1,4 +1,4 @@
 [Desktop Entry]
 Name=OpenToonz
-Exec=launch-opentoonz.sh
+Exec=launch-opentoonz.sh.wrapper
 Icon=opentoonz

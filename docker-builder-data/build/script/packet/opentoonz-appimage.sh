@@ -11,6 +11,9 @@ pkinstall() {
 	if ! cp --remove-destination "$ENVDEPS_PACKET_DIR/bin/AppRun" "$APPDIR/"; then
 		return 1
 	fi
+	if ! cp --remove-destination "$ENVDEPS_PACKET_DIR/bin/desktopintegration" "$APPDIR/bin/launch-opentoonz.sh.wrapper"; then
+		return 1
+	fi
     if ! (cp --remove-destination "$FILES_PACKET_DIR/opentoonz.desktop" "$APPDIR/" \
      && cp --remove-destination "$FILES_PACKET_DIR/opentoonz.png" "$APPDIR/"); then
         return 1
