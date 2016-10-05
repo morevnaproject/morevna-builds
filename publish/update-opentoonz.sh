@@ -27,7 +27,7 @@ run() {
 	echo ""
 	
 	sudo $SCRIPT update opentoonz-master
-	sudo $SCRIPT install_release opentoonz-appimage
+	sudo $SCRIPT clean_before_do install_release opentoonz-appimage
 	local DIR="$PACKET_BUILD_DIR/$PLATFORM/opentoonz-appimage/install_release"
 	local VERSION_FILE="$PACKET_BUILD_DIR/$PLATFORM/opentoonz-appimage/envdeps_release/version-opentoonz-master"
 	local VERSION=`cat "$VERSION_FILE" | cut -d'-' -f 1`
