@@ -7,7 +7,7 @@ pkinstall() {
 	# copy files from envdeps (install requires envdeps explicit)
 	
 	local APPDIR="$INSTALL_PACKET_DIR/$PK_APPDIR_NAME.AppDir"
-	mkdir -p "$APPDIR/usr"
+	mkdir -p "$APPDIR/usr/lib"
 	if ! cp "$ENVDEPS_PACKET_DIR/bin/AppRun" "$APPDIR/"; then
 		return 1
 	fi
@@ -15,6 +15,15 @@ pkinstall() {
      && cp "$FILES_PACKET_DIR/opentoonz.png" "$APPDIR/"); then
         return 1
     fi
+    if ! (cp -f /lib/x86_64-linux-gnu/libudev.so* "$APPDIR/usr/lib/" \
+     || cp -f /lib/i386-linux-gnu/libudev.so* "$APPDIR/usr/lib/"); then
+        return 1
+    fi
+    if ! (cp -f /usr/lib/x86_64-linux-gnu/libgfortran.so* "$APPDIR/usr/lib/" \
+     || cp -f /usr/lib/i386-linux-gnu/libgfortran.so* "$APPDIR/usr/lib/"); then
+        return 1
+    fi
+        
 }
 
 pkinstall_release() {

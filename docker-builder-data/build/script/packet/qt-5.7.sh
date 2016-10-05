@@ -29,11 +29,6 @@ pkinstall() {
         return 1
     fi
     
-    if ! (cp -f "/lib/x86_64-linux-gnu/libudev.so.0" "$INSTALL_PACKET_DIR/lib/libudev.so.0" \
-     || cp -f "/lib/i386-linux-gnu/libudev.so.0" "$INSTALL_PACKET_DIR/lib/libudev.so.0"); then
-        return 1
-    fi
-    
 cat << EOF > "$INSTALL_PACKET_DIR/bin/qt.conf"
 [Paths]
 Prefix=..
