@@ -87,12 +87,12 @@ declare -A COMPLETION_STATUS
 FUNC_DEPS_download=""
 FUNC_DEPS_unpack="download"
 FUNC_DEPS_envdeps="-env"
-FUNC_DEPS_build="unpack envdeps"
-FUNC_DEPS_install="build envdeps"
-FUNC_DEPS_env="install envdeps"
+FUNC_DEPS_build="envdeps unpack"
+FUNC_DEPS_install="envdeps build"
+FUNC_DEPS_env="envdeps install"
 FUNC_DEPS_envdeps_release="-env_release"
-FUNC_DEPS_install_release="install envdeps_release"
-FUNC_DEPS_env_release="install_release envdeps_release"
+FUNC_DEPS_install_release="envdeps_release install"
+FUNC_DEPS_env_release="envdeps_release install_release"
 
 
 copy() {
