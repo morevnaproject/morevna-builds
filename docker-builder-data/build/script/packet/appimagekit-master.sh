@@ -24,7 +24,8 @@ pkinstall() {
 	mkdir -p "$INSTALL_PACKET_DIR/bin"
 	if ! (cp --remove-destination "$BUILD_PACKET_DIR/$PK_DIRNAME/AppImageAssistant" "$INSTALL_PACKET_DIR/bin/" \
 	 && cp --remove-destination "$BUILD_PACKET_DIR/$PK_DIRNAME/AppRun" "$INSTALL_PACKET_DIR/bin/" \
-	 && cp --remove-destination "$BUILD_PACKET_DIR/$PK_DIRNAME/desktopintegration" "$INSTALL_PACKET_DIR/bin/"); then
+	 && cp --remove-destination "$BUILD_PACKET_DIR/$PK_DIRNAME/desktopintegration" "$INSTALL_PACKET_DIR/bin/" \
+	 && chmod a+x "$INSTALL_PACKET_DIR/bin/desktopintegration"); then
 		return 1
 	fi
 }

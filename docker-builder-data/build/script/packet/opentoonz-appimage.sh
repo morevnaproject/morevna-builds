@@ -7,11 +7,13 @@ pkinstall() {
 	# copy files from envdeps (install requires envdeps explicit)
 	
 	local APPDIR="$INSTALL_PACKET_DIR/$PK_APPDIR_NAME.AppDir"
+	mkdir -p "$APPDIR/usr"
+	mkdir -p "$APPDIR/usr/bin"
 	mkdir -p "$APPDIR/usr/lib"
 	if ! cp --remove-destination "$ENVDEPS_PACKET_DIR/bin/AppRun" "$APPDIR/"; then
 		return 1
 	fi
-	if ! cp --remove-destination "$ENVDEPS_PACKET_DIR/bin/desktopintegration" "$APPDIR/bin/launch-opentoonz.sh.wrapper"; then
+	if ! cp --remove-destination "$ENVDEPS_PACKET_DIR/bin/desktopintegration" "$APPDIR/usr/bin/launch-opentoonz.sh.wrapper"; then
 		return 1
 	fi
     if ! (cp --remove-destination "$FILES_PACKET_DIR/opentoonz.desktop" "$APPDIR/" \
@@ -26,7 +28,6 @@ pkinstall() {
      || cp --remove-destination /usr/lib/i386-linux-gnu/libgfortran.so* "$APPDIR/usr/lib/"); then
         return 1
     fi
-        
 }
 
 pkinstall_release() {
@@ -34,10 +35,13 @@ pkinstall_release() {
         return 1
     fi
 
-	# copy files from envdeps_release (install_releas requires envdeps_release explicit)
+	# copy files from envdeps_release (install_release requires envdeps_release explicit)
 	
 	local APPDIR="$INSTALL_RELEASE_PACKET_DIR/$PK_APPDIR_NAME.AppDir"
 	if ! copy "$ENVDEPS_RELEASE_PACKET_DIR" "$APPDIR/usr"; then
+		return 1
+	fi
+	if ! (cd "$INSTALL_RELEASE_PACKET_DIR" && tar -czf "$PK_APPDIR_NAME.tar.gz" "$PK_APPDIR_NAME.AppDir"); then
 		return 1
 	fi
 	if ! AppImageAssistant "$APPDIR" "$INSTALL_RELEASE_PACKET_DIR/$PK_APPDIR_NAME.appimage"; then

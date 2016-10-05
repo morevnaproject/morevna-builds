@@ -34,9 +34,16 @@ run() {
 	local COMMIT=`cat "$VERSION_FILE" | cut -d'-' -f 2-`
 	COMMIT="${COMMIT:0:5}"
 	local DATE=`date -u +%Y.%m.%d`
+	if [ -z "$COMMIT" ]; then
+		echo "Cannot find version, pheraps appimage not ready. Cancel."
+		return 1
+	fi
 	if ! ls $PUBLISH_DIR/opentoonz-$VERSION-$COMMIT-*-$PLATFORM_SUFFIX.appimage 1> /dev/null 2>&1; then
+		echo "Publish new version $VERSION-$COMMIT-$PLATFORM_SUFFIX"
 		rm -f $PUBLISH_DIR/opentoonz-*-$PLATFORM_SUFFIX.appimage
 		cp $DIR/opentoonz.appimage $PUBLISH_DIR/opentoonz-$VERSION-$COMMIT-$DATE-$PLATFORM_SUFFIX.appimage
+	else
+		echo "Version $VERSION-$COMMIT-$PLATFORM_SUFFIX already published"
 	fi
 }
 

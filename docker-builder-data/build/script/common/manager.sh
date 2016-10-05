@@ -200,11 +200,15 @@ prepare_build() {
 }
 
 prepare_install() {
-    cp --remove-destination $BUILD_PACKET_DIR/version-* "$INSTALL_PACKET_DIR/" || true
+    if ls $BUILD_PACKET_DIR/version-* 1> /dev/null 2>&1; then
+        cp --remove-destination $BUILD_PACKET_DIR/version-* "$INSTALL_PACKET_DIR/" || true
+    fi
 }
 
 prepare_install_release() {
-    cp --remove-destination $INSTALL_PACKET_DIR/version-* "$INSTALL_RELEASE_PACKET_DIR/" || true
+    if ls $INSTALL_PACKET_DIR/version-* 1> /dev/null 2>&1; then
+        cp --remove-destination $INSTALL_PACKET_DIR/version-* "$INSTALL_RELEASE_PACKET_DIR/" || true
+    fi
 }
 
 set_environment_vars() {

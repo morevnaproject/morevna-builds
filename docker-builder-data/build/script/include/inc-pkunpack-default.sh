@@ -18,7 +18,7 @@ pkunpack() {
 	fi
 
 	if [ -z "$PK_VERSION" ]; then
-		PK_VERSION="$(echo "$ARG" | cut -d'-' -f 2-)"
+		PK_VERSION="$(echo "$NAME" | cut -d'-' -f 2-)"
 	fi
 	echo "$PK_VERSION" > "$UNPACK_PACKET_DIR/version-$NAME"
 	[ ! $? -eq 0 ] && return 1

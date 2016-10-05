@@ -16,7 +16,9 @@ image_mount_add() {
 	echo "Mount: $1 -> $2"
 	sudo mkdir -p "$IMAGE_MOUNT_DIR$2"
 	sudo mount --bind "$1" "$IMAGE_MOUNT_DIR$2"
-	echo "umount -f \"$IMAGE_MOUNT_DIR$2\"" >> "/tmp/$INSTANCE_NAME.umount.sh"
+	echo "umount -f \"$IMAGE_MOUNT_DIR$2\" \\" >> "/tmp/$INSTANCE_NAME.umount.sh"
+	echo "|| (echo \"next try after 10 seconds\" && sleep 10 && umount -f \"$IMAGE_MOUNT_DIR$2\") \\" >> "/tmp/$INSTANCE_NAME.umount.sh"
+	echo "|| (echo \"final try after 10 seconds\" && sleep 10 && umount -f \"$IMAGE_MOUNT_DIR$2\")" >> "/tmp/$INSTANCE_NAME.umount.sh"
 }
 
 image_mount() {
@@ -72,9 +74,7 @@ image_unmount() {
 	fi
 
 	echo "Unmount subs"
-	sudo "/tmp/$INSTANCE_NAME.umount.sh" \
-		|| (echo "next try after 10 seconds" && sleep 10 && sudo "/tmp/$INSTANCE_NAME.umount.sh") \
-		|| (echo "final try after 10 seconds" && sleep 10 && sudo "/tmp/$INSTANCE_NAME.umount.sh")
+	sudo "/tmp/$INSTANCE_NAME.umount.sh"
 	sudo rm -f "/tmp/$INSTANCE_NAME.umount.sh"
 
 	echo "Remove -.chroot.sh file"
@@ -305,4 +305,9 @@ elif [ "$1" = "run" ]; then
     run $@
 else
 	echo "Unknown command: $1"
+	COMMAND_ERROR=1
+fi
+
+if [ ! -z "$COMMAND_ERROR" ]; then
+	false
 fi

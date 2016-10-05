@@ -1,4 +1,6 @@
 [Desktop Entry]
+Type=Application
 Name=OpenToonz
 Exec=launch-opentoonz.sh.wrapper
 Icon=opentoonz
+Categories=Graphics
