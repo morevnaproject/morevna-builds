@@ -13,8 +13,6 @@ PK_ARCHIVE="$PK_DIRNAME.tar.bz2"
 PK_URL="http://ffmpeg.org/releases/$PK_ARCHIVE"
 
 PK_CONFIGURE_OPTIONS=" \
- --disable-static \
- --enable-shared \
  --enable-rpath \
  --enable-gpl \
  --enable-libx264 \
@@ -23,4 +21,3 @@ PK_CONFIGURE_OPTIONS=" \
  --enable-libvorbis"
 
 source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh
-		

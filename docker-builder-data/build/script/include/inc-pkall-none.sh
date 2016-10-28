@@ -8,6 +8,12 @@ PK_CONFIGURE_OPTIONS=
 PK_CFLAGS=
 PK_CPPFLAGS=
 
+PK_CONFIGURE_OPTIONS_DEFAULT=" \
+ --prefix=$INSTALL_PACKET_DIR \
+ --disable-static \
+ --enable-shared "
+
+
 pkdownload() {
 	return 0
 }

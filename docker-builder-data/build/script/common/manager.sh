@@ -141,6 +141,15 @@ md5() {
     echo "${MD5:0:32}"
 }
 
+remove_recursive() {
+	rm -f "$1/$2"
+	for FILE in $1; do
+		if [ -d "$1/$FILE" ]; then 
+			remove_recursive "$1/$FILE" $2
+		fi
+	done
+}
+
 message() {
     echo " ------ $1"
 }
