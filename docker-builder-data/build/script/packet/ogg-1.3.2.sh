@@ -1,7 +1,7 @@
 DEPS=""
 
-PK_DIRNAME="SDL2-2.0.4"
+PK_DIRNAME="libogg-1.3.2"
 PK_ARCHIVE="$PK_DIRNAME.tar.gz"
-PK_URL="https://www.libsdl.org/release/$PK_ARCHIVE"
+PK_URL="http://downloads.xiph.org/releases/ogg/$PK_ARCHIVE"
 
 source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh

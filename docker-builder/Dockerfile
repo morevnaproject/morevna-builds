@@ -1,4 +1,5 @@
 FROM debian:7
+ARG ALL_PROXY
 
 # Update
 RUN apt-get -yq update
@@ -27,34 +28,37 @@ RUN apt-get -yq install \
     libglib2.0-dev \
     libglu1-mesa-dev
     
-# xcb (for qt)
-#RUN apt-get -yq install \
-#    libxcb1-dev \
-#    libxcb-glx0-dev \
-#    libxcb-icccm4-dev \
-#    libxcb-image0-dev \
-#    libxcb-keysyms1-dev \
-#    libxcb-randr0-dev \
-#    libxcb-render0-dev \
-#    libxcb-render-util0-dev \
-#    libxcb-shape0-dev \
-#    libxcb-sync0-dev \
-#    libxcb-shm0-dev \
-#    libxcb-xfixes0-dev \
-#    libxcb-xinerama0-dev
-
 # other deps
 
 RUN apt-get -yq install liblzma-dev
 RUN apt-get -yq install liblzo2-dev
+RUN apt-get -yq install libudev-dev
+RUN apt-get -yq install libfuse-dev
+RUN apt-get -yq install libdb-dev
+RUN apt-get -yq install libasound2-dev
+
 RUN apt-get -yq install gfortran
 RUN apt-get -yq install csh
 RUN apt-get -yq install xsltproc
-RUN apt-get -yq install libudev-dev
 RUN apt-get -yq install m4
-RUN apt-get -yq install libfuse-dev
+RUN apt-get -yq install automake
+RUN apt-get -yq install intltool
+RUN apt-get -yq install libtool
+
 RUN apt-get -yq install git
 RUN apt-get -yq install wget
 RUN apt-get -yq install bzip2
 
-CMD mkdir /build
+RUN apt-get -yq install libffi-dev
+RUN apt-get -yq install libmount-dev
+RUN apt-get -yq install libbz2-dev
+RUN apt-get -yq install libdbus-1-dev
+RUN apt-get -yq install libcroco3-dev
+RUN apt-get -yq install flex
+RUN apt-get -yq install bison
+RUN apt-get -yq install python-dev
+RUN apt-get -yq install libxtst-dev
+RUN apt-get -yq install xutils-dev
+RUN apt-get -yq install libegl1-mesa-dev
+
+RUN mkdir /build
