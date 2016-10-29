@@ -60,5 +60,6 @@ RUN apt-get -yq install python-dev
 RUN apt-get -yq install libxtst-dev
 RUN apt-get -yq install xutils-dev
 RUN apt-get -yq install libegl1-mesa-dev
+RUN apt-get -yq install libdirectfb-dev
 
 RUN mkdir /build

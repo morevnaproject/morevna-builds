@@ -1,4 +1,4 @@
-DEPS="gtk-3.22.2 atkmm-2.22.7 cairomm-1.10.0 pangomm-2.34.0"
+DEPS="gtk-3.14.14 atkmm-2.22.7 cairomm-1.10.0 pangomm-2.34.0"
 
 PK_DIRNAME="gtkmm-3.14.0"
 PK_ARCHIVE="$PK_DIRNAME.tar.xz"

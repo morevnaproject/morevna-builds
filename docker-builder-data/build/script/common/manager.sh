@@ -43,6 +43,7 @@ INITIAL_CFLAGS=$CFLAGS
 INITIAL_CPPFLAGS=$CPPFLAGS
 INITIAL_PKG_CONFIG_PATH=$PKG_CONFIG_PATH
 INITIAL_XDG_DATA_DIRS=$XDG_DATA_DIRS
+INITIAL_ACLOCAL_PATH=$ACLOCAL_PATH
 
 DRY_RUN=
 FORCE=
@@ -142,7 +143,7 @@ md5() {
 }
 
 remove_recursive() {
-	rm -f "$1/$2"
+	rm -f $1/$2
 	for FILE in $1; do
 		if [ -d "$1/$FILE" ]; then 
 			remove_recursive "$1/$FILE" $2
@@ -242,7 +243,8 @@ set_environment_vars() {
     export CFLAGS="-I$ENVDEPS_PACKET_DIR/include $INITIAL_CFLAGS"
     export CPPFLAGS="-I$ENVDEPS_PACKET_DIR/include $INITIAL_CPPFLAGS"
     export PKG_CONFIG_PATH="$ENVDEPS_PACKET_DIR/lib/pkgconfig:$INITIAL_PKG_CONFIG_PATH"
-    export XDG_DATA_DIRS="$ENVDEPS_PACKET_DIR/share:$INITIAL_XDG_DATA_DIRS" 
+    export XDG_DATA_DIRS="$ENVDEPS_PACKET_DIR/share:$INITIAL_XDG_DATA_DIRS"
+    export ACLOCAL_PATH="$ENVDEPS_PACKET_DIR/share/aclocal:$INITIAL_ACLOCAL_PATH" 
 }
 
 call_packet_function() {

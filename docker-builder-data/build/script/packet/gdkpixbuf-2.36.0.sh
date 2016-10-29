@@ -4,6 +4,8 @@ PK_DIRNAME="gdk-pixbuf-2.36.0"
 PK_ARCHIVE="$PK_DIRNAME.tar.xz"
 PK_URL="https://download.gnome.org/sources/gdk-pixbuf/2.36/$PK_ARCHIVE"
 
-PK_CONFIGURE_OPTIONS="--enable-introspection=yes"
+PK_CONFIGURE_OPTIONS=" \
+ --enable-introspection=yes \
+ --enable-relocations=yes "
 
 source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh

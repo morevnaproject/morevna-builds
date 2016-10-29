@@ -1,4 +1,4 @@
-DEPS="harfbuzz-1.3.2 fontconfig-2.12.1 cairo-1.14.6 gobjectintrospection-1.50.0"
+DEPS="harfbuzz-1.3.2 fontconfig-2.11.0 cairo-1.14.6 gobjectintrospection-1.50.0"
 
 PK_DIRNAME="pango-1.40.3"
 PK_ARCHIVE="$PK_DIRNAME.tar.xz"

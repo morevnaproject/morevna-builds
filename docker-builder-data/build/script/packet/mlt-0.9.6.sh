@@ -1,26 +1,15 @@
-# + ffmpeg
-# + xml
-# + fftw
-# + samplerate
-# ? sdl
-# ? sox
-# + jack
-# + glib
-
 DEPS="ffmpeg-3.1.5 xml-2.9.4 fftw-3.3.5 samplerate-0.1.9 sox-14.4.2 sdl-1.2.15 jack-0.125.0 glib-2.50.0"
 
-PK_DIRNAME="mlt-6.2.0"
-PK_ARCHIVE="v6.2.0.tar.gz"
+PK_DIRNAME="mlt-0.9.6"
+PK_ARCHIVE="v0.9.6.tar.gz"
 PK_URL="https://github.com/mltframework/mlt/archive/$PK_ARCHIVE"
 
 PK_CONFIGURE_OPTIONS=" \
  --enable-gpl \
- --enable-gpl3 \
  --disable-decklink \
  --disable-gtk2 \
  --disable-opengl \
- --disable-qt \
- --disable-rtaudio"
+ --disable-qt"
 
 source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh
 

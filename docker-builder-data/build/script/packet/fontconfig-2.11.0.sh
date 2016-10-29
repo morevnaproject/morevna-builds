@@ -1,8 +1,8 @@
 DEPS=""
 
-PK_DIRNAME="yasm-1.3.0"
+PK_DIRNAME="fontconfig-2.11.0"
 PK_ARCHIVE="$PK_DIRNAME.tar.gz"
-PK_URL="http://www.tortall.net/projects/yasm/releases/$PK_ARCHIVE"
+PK_URL="https://www.freedesktop.org/software/fontconfig/release/$PK_ARCHIVE"
 
 source $INCLUDE_SCRIPT_DIR/inc-pkallunpack-default.sh
 source $INCLUDE_SCRIPT_DIR/inc-pkbuild-default.sh

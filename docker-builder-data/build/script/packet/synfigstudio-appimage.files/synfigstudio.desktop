@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Synfig Studio
+Exec=launch.sh
+Icon=synfigstudio
+Categories=Graphics

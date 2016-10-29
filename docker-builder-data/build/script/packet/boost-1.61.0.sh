@@ -21,4 +21,6 @@ pkinstall() {
     if ! ./b2 install; then
         return 1
     fi
+    rm -rf "$INSTALL_RELEASE_PACKET_DIR/include"
+    remove_recursive "$INSTALL_RELEASE_PACKET_DIR/lib" *.a
 }

@@ -77,6 +77,7 @@ pkbuild() {
 		autoreconf --install --force || return 1
 		./configure \
 			--prefix=$INSTALL_PACKET_DIR \
+			--sysconfdir=$INSTALL_PACKET_DIR/etc \
 			--with-boost-libdir=$ENVDEPS_PACKET_DIR/lib \
 			--without-opengl || return 1
 		set_done $NAME build.configure
