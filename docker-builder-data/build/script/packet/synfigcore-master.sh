@@ -66,6 +66,7 @@ DEPS=" \
 
 PK_DIRNAME="synfig"
 PK_URL="https://github.com/synfig/$PK_DIRNAME.git"
+PK_GIT_OPTIONS="--branch testing"
 
 source $INCLUDE_SCRIPT_DIR/inc-pkallunpack-git.sh
 source $INCLUDE_SCRIPT_DIR/inc-pkinstall_release-default.sh

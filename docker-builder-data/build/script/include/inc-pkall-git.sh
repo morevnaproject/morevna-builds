@@ -2,6 +2,11 @@
 # PK_URL
 # PK_VERSION
 # PK_DIRNAME
+# PK_CONFIGURE_OPTIONS
+# PK_CFLAGS
+# PK_CPPFLAGS
+# PK_CONFIGURE_OPTIONS_DEFAULT
+# PK_GIT_OPTIONS
 
 source $INCLUDE_SCRIPT_DIR/inc-pkallunpack-git.sh
 source $INCLUDE_SCRIPT_DIR/inc-pkallinstall-default.sh

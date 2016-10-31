@@ -21,6 +21,7 @@ DEPS="synfigcore-master gtkmm-3.14.0 adwaitaicontheme-3.22.0 gnomethemesstandard
 
 PK_DIRNAME="synfig"
 PK_URL="https://github.com/synfig/$PK_DIRNAME.git"
+PK_GIT_OPTIONS="--branch testing"
 PK_CPPFLAGS="-std=c++11"
 
 source $INCLUDE_SCRIPT_DIR/inc-pkallunpack-git.sh
