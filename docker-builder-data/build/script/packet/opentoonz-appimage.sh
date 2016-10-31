@@ -38,14 +38,12 @@ pkinstall_release() {
 	# copy files from envdeps_release (install_release requires envdeps_release explicit)
 	
 	local APPDIR="$INSTALL_RELEASE_PACKET_DIR/$PK_APPDIR_NAME.AppDir"
-	if ! copy "$ENVDEPS_RELEASE_PACKET_DIR" "$APPDIR/usr"; then
-		return 1
-	fi
-	if ! (cd "$INSTALL_RELEASE_PACKET_DIR" && tar -czf "$PK_APPDIR_NAME.tar.gz" "$PK_APPDIR_NAME.AppDir"); then
-		return 1
-	fi
-	if ! AppImageAssistant "$APPDIR" "$INSTALL_RELEASE_PACKET_DIR/$PK_APPDIR_NAME.appimage"; then
-		return 1
-	fi
+	copy "$ENVDEPS_RELEASE_PACKET_DIR" "$APPDIR/usr" || return 1
+	
+	# clean boost
+	rm -f $APPDIR/usr/lib/libboost_* || return 1
+	
+	(cd "$INSTALL_RELEASE_PACKET_DIR" && tar -czf "$PK_APPDIR_NAME.tar.gz" "$PK_APPDIR_NAME.AppDir") || return 1
+	AppImageAssistant "$APPDIR" "$INSTALL_RELEASE_PACKET_DIR/$PK_APPDIR_NAME.appimage" || return 1
 	rm -rf "$APPDIR"
 }
