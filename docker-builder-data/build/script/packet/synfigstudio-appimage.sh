@@ -45,12 +45,12 @@ pkinstall_release() {
 	copy "$ENVDEPS_RELEASE_PACKET_DIR" "$APPDIR/usr" || return 1
 	
 	# clean bin
-	rm -f $APPDIR/usr/bin/* || return 1
-	cp $INSTALL_PACKET_DIR/$PK_APPDIR_NAME.AppDir/usr/bin/*       $APPDIR/usr/bin/ || return 1
-	cp $ENVDEPS_RELEASE_PACKET_DIR/bin/melt                       $APPDIR/usr/bin/ || return 1
-	cp $ENVDEPS_RELEASE_PACKET_DIR/bin/identify                   $APPDIR/usr/bin/ || return 1
-	cp $ENVDEPS_RELEASE_PACKET_DIR/bin/synfig                     $APPDIR/usr/bin/ || return 1
-	cp $ENVDEPS_RELEASE_PACKET_DIR/bin/synfigstudio               $APPDIR/usr/bin/ || return 1
+	#rm -f $APPDIR/usr/bin/* || return 1
+	#cp $INSTALL_PACKET_DIR/$PK_APPDIR_NAME.AppDir/usr/bin/*       $APPDIR/usr/bin/ || return 1
+	#cp $ENVDEPS_RELEASE_PACKET_DIR/bin/melt                       $APPDIR/usr/bin/ || return 1
+	#cp $ENVDEPS_RELEASE_PACKET_DIR/bin/identify                   $APPDIR/usr/bin/ || return 1
+	#cp $ENVDEPS_RELEASE_PACKET_DIR/bin/synfig                     $APPDIR/usr/bin/ || return 1
+	#cp $ENVDEPS_RELEASE_PACKET_DIR/bin/synfigstudio               $APPDIR/usr/bin/ || return 1
 			
 	# clean boost
 	rm -f $APPDIR/usr/lib/libboost_* || return 1
