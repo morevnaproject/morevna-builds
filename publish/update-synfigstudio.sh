@@ -23,13 +23,15 @@ run() {
 	local PLATFORM_SUFFIX=$3
 
 	echo ""
-	echo "Update opentoonz for $PLATFORM_SUFFIX"
+	echo "Update synfigstudio for $PLATFORM_SUFFIX"
 	echo ""
 	
-	sudo $SCRIPT update opentoonz-master
-	sudo $SCRIPT clean_before_do install_release opentoonz-appimage
-	local DIR="$PACKET_BUILD_DIR/$PLATFORM/opentoonz-appimage/install_release"
-	local VERSION_FILE="$PACKET_BUILD_DIR/$PLATFORM/opentoonz-appimage/envdeps_release/version-opentoonz-master"
+	sudo $SCRIPT update synfigetl-master
+	sudo $SCRIPT update synfigcore-master
+	sudo $SCRIPT update synfigstudio-master
+	sudo $SCRIPT clean_before_do install_release synfigstudio-appimage
+	local DIR="$PACKET_BUILD_DIR/$PLATFORM/synfigstudio-appimage/install_release"
+	local VERSION_FILE="$PACKET_BUILD_DIR/$PLATFORM/synfigstudio-appimage/envdeps_release/version-synfigstudio-master"
 	local VERSION=`cat "$VERSION_FILE" | cut -d'-' -f 1`
 	local COMMIT=`cat "$VERSION_FILE" | cut -d'-' -f 2-`
 	COMMIT="${COMMIT:0:5}"
@@ -38,12 +40,12 @@ run() {
 		echo "Cannot find version, pheraps appimage not ready. Cancel."
 		return 1
 	fi
-	if ! ls $PUBLISH_DIR/OpenToonz-$VERSION-*-$COMMIT-$PLATFORM_SUFFIX.appimage 1> /dev/null 2>&1; then
+if ! ls $PUBLISH_DIR/SynfigStudio-$VERSION-*-$COMMIT-$PLATFORM_SUFFIX.appimage 1> /dev/null 2>&1; then
 		echo "Publish new version $VERSION-$COMMIT-$PLATFORM_SUFFIX"
-		rm -f $PUBLISH_DIR/OpenToonz-*-$PLATFORM_SUFFIX.appimage
-		cp $DIR/opentoonz.appimage $PUBLISH_DIR/OpenToonz-$VERSION-$DATE-$COMMIT-$PLATFORM_SUFFIX.appimage
-		if [ -f "$PUBLISH_DIR/publish-opentoonz.sh" ]; then
-			"$PUBLISH_DIR/publish-opentoonz.sh" "$PUBLISH_DIR/OpenToonz-$VERSION-$DATE-$COMMIT-$PLATFORM_SUFFIX.appimage"
+		rm -f $PUBLISH_DIR/SynfigStudio-*-$PLATFORM_SUFFIX.appimage
+		cp $DIR/synfigstudio.appimage $PUBLISH_DIR/SynfigStudio-$VERSION-$DATE-$COMMIT-$PLATFORM_SUFFIX.appimage
+		if [ -f "$PUBLISH_DIR/publish-synfigstudio.sh" ]; then
+			"$PUBLISH_DIR/publish-synfigstudio.sh" "$PUBLISH_DIR/SynfigStudio-$VERSION-$DATE-$COMMIT-$PLATFORM_SUFFIX.appimage"
 		fi
 	else
 		echo "Version $VERSION-$COMMIT-$PLATFORM_SUFFIX already published"
