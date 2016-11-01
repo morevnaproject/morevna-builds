@@ -14,4 +14,4 @@ fi
 export PACKET_BUILD_DIR
 mkdir -p $PACKET_BUILD_DIR
 
-docker build -t my/builder-i386 $DOCKER_BUILD_OPTIONS "$SCRIPT_DIR"
+docker build -t morevna/build-debian-7-32 $DOCKER_BUILD_OPTIONS "$SCRIPT_DIR"

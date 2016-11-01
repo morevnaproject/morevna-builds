@@ -17,15 +17,15 @@ fi
 export PACKET_BUILD_DIR
 mkdir -p $PACKET_BUILD_DIR
 
-docker stop "builder" || true
-docker rm "builder" || true
+docker stop "build-debian-7-64" || true
+docker rm "build-debian-7-64" || true
 
 docker run -it \
-    --name "builder" \
+    --name "build-debian-7-64" \
     --privileged=true \
     $DOCKER_RUN_OPTIONS \
     -v "$PACKET_BUILD_DIR:/build/packet" \
     -v "$SCRIPT_BUILD_DIR:/build/script" \
-    my/builder \
+    morevna/build-debian-7-64 \
     /build/script/common/manager.sh "$@"
 

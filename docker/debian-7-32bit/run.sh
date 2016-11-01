@@ -17,16 +17,16 @@ fi
 export PACKET_BUILD_DIR
 mkdir -p $PACKET_BUILD_DIR
 
-docker stop "builder-i386" || true
-docker rm "builder-i386" || true
+docker stop "build-debian-7-32" || true
+docker rm "build-debian-7-32" || true
 
 docker run -it \
-    --name "builder-i386" \
+    --name "build-debian-7-32" \
     $DOCKER_RUN_OPTIONS \
     --privileged=true \
     -v "$PACKET_BUILD_DIR:/build/packet" \
     -v "$SCRIPT_BUILD_DIR:/build/script" \
     -e PLATFORM=linux-i386 \
-    my/builder-i386 \
+    morevna/build-debian-7-32 \
     setarch i686 /build/script/common/manager.sh "$@"
 

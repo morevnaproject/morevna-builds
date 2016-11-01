@@ -1,6 +1,6 @@
 Build docker:
 
-	cd docker-builder
+	cd docker
 	./build.sh  # sudo?
 
 Example usage:
