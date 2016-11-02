@@ -7,7 +7,6 @@ export TASK=synfig-linux
 
 OLDDIR=`pwd`
 BASE_DIR=$(cd `dirname "$0"`; pwd)
-BASE_DIR=`dirname "$BASE_DIR"`
 cd "$OLDDIR"
 DATA_DIR="$BASE_DIR/docker-builder-data"
 BUILD_DIR=$DATA_DIR/build
