@@ -21,9 +21,9 @@ if [ -f $CONFIG_FILE ]; then
 fi
 
 run() {
-	local SCRIPT=$1
-	local PLATFORM=$2
-	local PLATFORM_SUFFIX=${ARCH}bit
+	export SCRIPT=$1
+	export PLATFORM=$2
+	export PLATFORM_SUFFIX=${ARCH}bit
 
 	echo ""
 	echo "Update opentoonz for $PLATFORM_SUFFIX"

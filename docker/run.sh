@@ -43,5 +43,7 @@ docker run -it \
     $DOCKER_RUN_OPTIONS \
     -v "${PACKET_BUILD_DIR}:/build/packet" \
     -v "${SCRIPT_BUILD_DIR}:/build/script" \
+    -e ARCH \
+    -e PLATFORM \
     morevna/${IMAGE} \
     "$@"
