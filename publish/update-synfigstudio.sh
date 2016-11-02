@@ -56,5 +56,5 @@ if [ -z "$1" ] || [ -z "$2" ]; then
 run "$BASE_DIR/docker/debian-7-64bit/run.sh" "linux-x64" "64bits"
 run "$BASE_DIR/docker/debian-7-32bit/run.sh" "linux-i386" "32bits"
 else
-run "$BASE_DIR/docker-builder/run.sh" "$1" "$2"
+run "$BASE_DIR/docker/debian-7-$2/run.sh" "$1" "$2"
 fi
