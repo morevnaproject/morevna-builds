@@ -21,7 +21,7 @@ RUN dnf -y install mingw32-nsis
 
 RUN dnf -y install p7zip ImageMagick
 
-RUN dnf -y install make wget
+RUN dnf -y install make wget xz
 
 #RUN dnf -y install synfig
 
