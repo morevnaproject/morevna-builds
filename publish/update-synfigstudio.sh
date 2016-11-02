@@ -2,6 +2,9 @@
 
 set -e
 
+export IMAGE=build-debian-7
+export TASK=synfig-linux
+
 OLDDIR=`pwd`
 BASE_DIR=$(cd `dirname "$0"`; pwd)
 BASE_DIR=`dirname "$BASE_DIR"`
@@ -20,16 +23,16 @@ fi
 run() {
 	local SCRIPT=$1
 	local PLATFORM=$2
-	local PLATFORM_SUFFIX=$3
+	local PLATFORM_SUFFIX=${ARCH}bit
 
 	echo ""
 	echo "Update synfigstudio for $PLATFORM_SUFFIX"
 	echo ""
 	
-	sudo $SCRIPT update synfigetl-master
-	sudo $SCRIPT update synfigcore-master
-	sudo $SCRIPT update synfigstudio-master
-	sudo $SCRIPT clean_before_do install_release synfigstudio-appimage
+	$SCRIPT /build/script/common/manager.sh update synfigetl-master
+	$SCRIPT /build/script/common/manager.sh update synfigcore-master
+	$SCRIPT /build/script/common/manager.sh update synfigstudio-master
+	$SCRIPT /build/script/common/manager.sh clean_before_do install_release synfigstudio-appimage
 	local DIR="$PACKET_BUILD_DIR/$PLATFORM/synfigstudio-appimage/install_release"
 	local VERSION_FILE="$PACKET_BUILD_DIR/$PLATFORM/synfigstudio-appimage/envdeps_release/version-synfigstudio-master"
 	local VERSION=`cat "$VERSION_FILE" | cut -d'-' -f 1`
@@ -53,8 +56,11 @@ if ! ls $PUBLISH_DIR/SynfigStudio-$VERSION-*-$COMMIT-$PLATFORM_SUFFIX.appimage 1
 }
 
 if [ -z "$1" ] || [ -z "$2" ]; then
-run "$BASE_DIR/docker/debian-7-64bit/run.sh" "linux-x64" "64bits"
-run "$BASE_DIR/docker/debian-7-32bit/run.sh" "linux-i386" "32bits"
+export ARCH=64
+run "$BASE_DIR/docker/run.sh" "linux-x64"
+export ARCH=32
+run "$BASE_DIR/docker/run.sh" "linux-i386"
 else
-run "$BASE_DIR/docker/debian-7-$2/run.sh" "$1" "$2"
+export ARCH=$2
+run "$BASE_DIR/docker/run.sh" "$1"
 fi

@@ -2,6 +2,9 @@
 
 set -e
 
+export IMAGE=build-debian-7
+export TASK=opentoonz-linux
+
 OLDDIR=`pwd`
 BASE_DIR=$(cd `dirname "$0"`; pwd)
 BASE_DIR=`dirname "$BASE_DIR"`
@@ -20,14 +23,14 @@ fi
 run() {
 	local SCRIPT=$1
 	local PLATFORM=$2
-	local PLATFORM_SUFFIX=$3
+	local PLATFORM_SUFFIX=${ARCH}bit
 
 	echo ""
 	echo "Update opentoonz for $PLATFORM_SUFFIX"
 	echo ""
 	
-	sudo $SCRIPT update opentoonz-master
-	sudo $SCRIPT clean_before_do install_release opentoonz-appimage
+	sudo $SCRIPT /build/script/common/manager.sh update opentoonz-master
+	sudo $SCRIPT /build/script/common/manager.sh clean_before_do install_release opentoonz-appimage
 	local DIR="$PACKET_BUILD_DIR/$PLATFORM/opentoonz-appimage/install_release"
 	local VERSION_FILE="$PACKET_BUILD_DIR/$PLATFORM/opentoonz-appimage/envdeps_release/version-opentoonz-master"
 	local VERSION=`cat "$VERSION_FILE" | cut -d'-' -f 1`
@@ -49,9 +52,13 @@ run() {
 		echo "Version $VERSION-$COMMIT-$PLATFORM_SUFFIX already published"
 	fi
 }
+
 if [ -z "$1" ] || [ -z "$2" ]; then
-run "$BASE_DIR/docker/debian-7-64bit/run.sh" "linux-x64" "64bit"
-run "$BASE_DIR/docker/debian-7-32bit/run.sh" "linux-i386" "32bit"
+export ARCH=64
+run "$BASE_DIR/docker/run.sh" "linux-x64"
+export ARCH=32
+run "$BASE_DIR/docker/run.sh" "linux-i386"
 else
-run "$BASE_DIR/docker/debian-7-$2/run.sh" "$1" "$2"
+export ARCH=$2
+run "$BASE_DIR/docker/run.sh" "$1"
 fi
