@@ -16,7 +16,7 @@ export PACKET_BUILD_DIR
 mkdir -p $PACKET_BUILD_DIR
 
 if [ -z "${IMAGE}" ];then
-    export IMAGE=fedora-cross-win
+    export IMAGE=build-fedora-cross-win
 fi
 
 if [ -z "$TASK" ];then
