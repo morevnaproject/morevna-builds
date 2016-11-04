@@ -25,7 +25,6 @@ RUN apt-get -yq install \
     libx11-xcb-dev \
     libsm-dev \
     libice-dev \
-    libglib2.0-dev \
     libglu1-mesa-dev
     
 # other deps
