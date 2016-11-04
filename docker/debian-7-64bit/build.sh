@@ -1,9 +1,8 @@
 #!/bin/bash
 
-OLDDIR=`pwd`
 SCRIPT_DIR=$(cd `dirname "$0"`; pwd)
-cd "$OLDDIR"
 BASE_DIR=`dirname "$SCRIPT_DIR"`
+BASE_DIR=`dirname "$BASE_DIR"`
 
 CONFIG_FILE="$BASE_DIR/config.sh"
 PACKET_BUILD_DIR="$BUILD_DIR/packet"

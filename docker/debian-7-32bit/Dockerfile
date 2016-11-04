@@ -1,4 +1,4 @@
-FROM my/debian-i386:wheezy
+FROM morevna/debian-i386:wheezy
 ARG ALL_PROXY
 
 # Update

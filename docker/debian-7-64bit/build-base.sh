@@ -6,21 +6,23 @@ arch=amd64
 suite=wheezy
 docker_image="debian:7"
 
-OLDDIR=`pwd`
 SCRIPT_DIR=$(cd `dirname "$0"`; pwd)
-cd "$OLDDIR"
 BASE_DIR=`dirname "$SCRIPT_DIR"`
-
+BASE_DIR=`dirname "$BASE_DIR"`
 CONFIG_FILE="$BASE_DIR/config.sh"
 if [ -f $CONFIG_FILE ]; then
 	source $CONFIG_FILE
 fi
 
+IMAGE_FILE="$SCRIPT_DIR/debian-$suite-$arch.tar.gz"
+if [ ! -f "$IMAGE_FILE" ]; then
+    "$SCRIPT_DIR/build-tgz.sh"
+fi
 
-if [ -f debian-$suite-$arch.tar.gz ]; then
-    docker import - $docker_image < debian-$suite-$arch.tar.gz
+
+if [ -f "$IMAGE_FILE" ]; then
+    docker import - $docker_image < "$IMAGE_FILE"
 else
-    echo "File debian-$suite-$arch.tar.gz not found"
-    echo "You may try to create it by command ./build-tgz.sh"
-    echo "or download it from http://icystar.com/downloads/debian-wheezy-i386.tar.gz"
+    echo "File $IMAGE_FILE not found"
+    echo "You may try to create it by command $SCRIPT_DIR/build-tgz.sh"
 fi

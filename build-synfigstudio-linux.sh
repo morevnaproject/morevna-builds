@@ -2,12 +2,7 @@
 
 set -e
 
-export IMAGE=build-debian-7
-export TASK=synfig-linux
-
-OLDDIR=`pwd`
 BASE_DIR=$(cd `dirname "$0"`; pwd)
-cd "$OLDDIR"
 DATA_DIR="$BASE_DIR/docker-builder-data"
 BUILD_DIR=$DATA_DIR/build
 PUBLISH_DIR=$BASE_DIR/publish
@@ -20,18 +15,18 @@ if [ -f $CONFIG_FILE ]; then
 fi
 
 run() {
-	export SCRIPT=$1
-	export PLATFORM=$2
-	export PLATFORM_SUFFIX=${ARCH}bit
+	local SCRIPT=$1
+	local PLATFORM=$2
+	local PLATFORM_SUFFIX=$3
 
 	echo ""
 	echo "Update synfigstudio for $PLATFORM_SUFFIX"
 	echo ""
 	
-	$SCRIPT /build/script/common/manager.sh update synfigetl-master
-	$SCRIPT /build/script/common/manager.sh update synfigcore-master
-	$SCRIPT /build/script/common/manager.sh update synfigstudio-master
-	$SCRIPT /build/script/common/manager.sh clean_before_do install_release synfigstudio-appimage
+	$SCRIPT update synfigetl-master
+	$SCRIPT update synfigcore-master
+	$SCRIPT update synfigstudio-master
+	$SCRIPT clean_before_do install_release synfigstudio-appimage
 	local DIR="$PACKET_BUILD_DIR/$PLATFORM/synfigstudio-appimage/install_release"
 	local VERSION_FILE="$PACKET_BUILD_DIR/$PLATFORM/synfigstudio-appimage/envdeps_release/version-synfigstudio-master"
 	local VERSION=`cat "$VERSION_FILE" | cut -d'-' -f 1`
@@ -42,7 +37,7 @@ run() {
 		echo "Cannot find version, pheraps appimage not ready. Cancel."
 		return 1
 	fi
-if ! ls $PUBLISH_DIR/SynfigStudio-$VERSION-*-$COMMIT-$PLATFORM_SUFFIX.appimage 1> /dev/null 2>&1; then
+	if ! ls $PUBLISH_DIR/SynfigStudio-$VERSION-*-$COMMIT-$PLATFORM_SUFFIX.appimage 1> /dev/null 2>&1; then
 		echo "Publish new version $VERSION-$COMMIT-$PLATFORM_SUFFIX"
 		rm -f $PUBLISH_DIR/SynfigStudio-*-$PLATFORM_SUFFIX.appimage
 		cp $DIR/synfigstudio.appimage $PUBLISH_DIR/SynfigStudio-$VERSION-$DATE-$COMMIT-$PLATFORM_SUFFIX.appimage
@@ -54,12 +49,5 @@ if ! ls $PUBLISH_DIR/SynfigStudio-$VERSION-*-$COMMIT-$PLATFORM_SUFFIX.appimage 1
 	fi
 }
 
-if [ -z "$1" ] || [ -z "$2" ]; then
-export ARCH=64
-run "$BASE_DIR/docker/run.sh" "linux-x64"
-export ARCH=32
-run "$BASE_DIR/docker/run.sh" "linux-i386"
-else
-export ARCH=$2
-run "$BASE_DIR/docker/run.sh" "$1"
-fi
+run "$BASE_DIR/docker/debian-7-64bit/run.sh" "linux-x64" "64bits"
+run "$BASE_DIR/docker/debian-7-32bit/run.sh" "linux-i386" "32bits"

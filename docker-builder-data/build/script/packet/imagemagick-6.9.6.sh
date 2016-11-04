@@ -1,6 +1,6 @@
 DEPS="jpeg-9b png-1.6.25 tiff-4.0.6 xml-2.9.4 fftw-3.3.5"
 
-PK_DIRNAME="ImageMagick-6.9.6-2"
+PK_DIRNAME="ImageMagick-6.9.6-3"
 PK_ARCHIVE="$PK_DIRNAME.tar.gz"
 PK_URL="http://www.imagemagick.org/download/$PK_ARCHIVE"
 

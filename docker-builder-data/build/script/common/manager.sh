@@ -126,6 +126,9 @@ readdir() {
             if [ "$SUBFILE" = ".git" ]; then
                 continue
             fi
+            if [[ "$SUBFILE" == *.po ]]; then
+                continue
+            fi
             local STAT=`stat -c%F:%a:%s "$FILE/$SUBFILE"`
             echo "$STAT:$SUBFILE"
             readdir "$FILE/$SUBFILE"
