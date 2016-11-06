@@ -25,6 +25,10 @@ RUN dnf -y install make wget xz which
 
 #RUN dnf -y install synfig
 
+RUN cd /opt && git clone https://gitlab.com/morevnaproject-builds/synfig-linux64
+COPY files/synfig /usr/local/bin/synfig
+RUN chmod +x /usr/local/bin/synfig
+
 #RUN groupadd -g 1111 konstantin && useradd -u 1111 -g konstantin konstantin
 
 #RUN groupadd sudo && usermod -aG sudo konstantin
