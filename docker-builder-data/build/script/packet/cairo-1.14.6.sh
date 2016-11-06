@@ -1,4 +1,4 @@
-DEPS="png-1.6.25 pixman-0.34.0 xcbfull-1.12"
+DEPS="png-1.6.26 pixman-0.34.0 xcbfull-1.12"
 
 PK_DIRNAME="cairo-1.14.6"
 PK_ARCHIVE="$PK_DIRNAME.tar.xz"

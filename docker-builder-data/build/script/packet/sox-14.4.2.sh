@@ -1,4 +1,4 @@
-DEPS="png-1.6.25"
+DEPS="png-1.6.26"
 
 PK_DIRNAME="sox-14.4.2"
 PK_ARCHIVE="$PK_DIRNAME.tar.gz"

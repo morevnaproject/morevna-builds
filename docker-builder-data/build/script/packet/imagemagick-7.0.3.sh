@@ -1,4 +1,4 @@
-DEPS="jpeg-9b png-1.6.25 tiff-4.0.6 xml-2.9.4 fftw-3.3.5"
+DEPS="jpeg-9b png-1.6.26 tiff-4.0.6 xml-2.9.4 fftw-3.3.5"
 
 PK_DIRNAME="ImageMagick-7.0.3-4"
 PK_ARCHIVE="$PK_DIRNAME.tar.gz"
