@@ -29,6 +29,8 @@ RUN cd /opt && git clone https://gitlab.com/morevnaproject-builds/synfig-linux64
 COPY files/synfig /usr/local/bin/synfig
 RUN chmod +x /usr/local/bin/synfig
 
+RUN dnf -y install unzip
+
 #RUN groupadd -g 1111 konstantin && useradd -u 1111 -g konstantin konstantin
 
 #RUN groupadd sudo && usermod -aG sudo konstantin
