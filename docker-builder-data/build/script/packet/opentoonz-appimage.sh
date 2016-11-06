@@ -28,6 +28,10 @@ pkinstall() {
      || cp --remove-destination /usr/lib/i386-linux-gnu/libgfortran.so* "$APPDIR/usr/lib/"); then
         return 1
     fi
+    if ! (cp --remove-destination /usr/lib/x86_64-linux-gnu/libpng12.so* "$APPDIR/usr/lib/" \
+     || cp --remove-destination /usr/lib/i386-linux-gnu/libpng12.so* "$APPDIR/usr/lib/"); then
+        return 1
+    fi
 }
 
 pkinstall_release() {
