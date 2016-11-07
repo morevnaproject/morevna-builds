@@ -5,7 +5,7 @@
 # 	atk          - from gtk       | glib
 #   atspi2atk    - from gtk       | atk, atspi2
 # 	gdkpixbuf    - from gtk       | jpeg, png, tiff, jasper, glib, gobjectintrospection
-#   rsvg         - from gtk       | xml, gdkpixbuf, cairo, pango
+#   rsvg         - from gtk,adwa..| xml, gdkpixbuf, cairo, pango
 
 # 	gtk          - from gtkmm     | epoxy, rsvg, atk, atspi2atk, gdkpixbuf, cairo, pango
 #   atkmm        - from gtkmm     | atk, glibmm
@@ -14,10 +14,10 @@
 
 #   synfigcore                    | -
 #   gtkmm                         | gtk, atkmm, cairomm, pangomm
-#   adwaitaicons                  | ?
+#   adwaitaicons                  | rsvg
 #   gnomethemes                   | ?
 
-DEPS="synfigcore-master gtkmm-3.14.0 adwaitaicontheme-3.22.0 gnomethemesstandard-3.22.2"
+DEPS="synfigcore-master gtkmm-3.14.0 adwaitaicontheme-3.15.1 gnomethemesstandard-3.22.2"
 
 PK_DIRNAME="synfig"
 PK_URL="https://github.com/synfig/$PK_DIRNAME.git"
