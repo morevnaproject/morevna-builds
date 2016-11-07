@@ -12,4 +12,8 @@ if [ -f $CONFIG_FILE ]; then
 fi
 mkdir -p $PACKET_BUILD_DIR
 
+if [[ "$(docker images -q morevna/debian-i386:wheezy 2> /dev/null)" == "" ]]; then
+	bash ${SCRIPT_DIR}/build-base.sh
+fi
+
 docker build -t morevna/build-debian-7-32 $DOCKER_BUILD_OPTIONS "$SCRIPT_DIR"
