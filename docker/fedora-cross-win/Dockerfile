@@ -1,4 +1,4 @@
-FROM fedora:23
+FROM fedora:22
 MAINTAINER Konstantin Dmitriev <ksee.zelgadis@gmail.com>
 
 #VOLUME /synfig-buildroot
