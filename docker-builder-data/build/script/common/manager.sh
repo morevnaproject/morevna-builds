@@ -154,6 +154,14 @@ remove_recursive() {
 	done
 }
 
+copy_system_lib() {
+    cp --remove-destination /lib/x86_64-linux-gnu/$1* "$2" &> /dev/null \
+     || cp --remove-destination /lib/i386-linux-gnu/$1* "$2" &> /dev/null \
+     || cp --remove-destination /usr/lib/x86_64-linux-gnu/$1* "$2" &> /dev/null \
+     || cp --remove-destination /usr/lib/i386-linux-gnu/$1* "$2" &> /dev/null \
+     || (echo "$1 not found in system libraries" && return 1)
+}
+
 message() {
     echo " ------ $1"
 }

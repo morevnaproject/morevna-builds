@@ -10,28 +10,14 @@ pkinstall() {
 	mkdir -p "$APPDIR/usr"
 	mkdir -p "$APPDIR/usr/bin"
 	mkdir -p "$APPDIR/usr/lib"
-	if ! cp --remove-destination "$ENVDEPS_PACKET_DIR/bin/AppRun" "$APPDIR/"; then
-		return 1
-	fi
-	if ! cp --remove-destination "$ENVDEPS_PACKET_DIR/bin/desktopintegration" "$APPDIR/usr/bin/launch-opentoonz.sh.wrapper"; then
-		return 1
-	fi
-    if ! (cp --remove-destination "$FILES_PACKET_DIR/opentoonz.desktop" "$APPDIR/" \
-     && cp --remove-destination "$FILES_PACKET_DIR/opentoonz.png" "$APPDIR/"); then
-        return 1
-    fi
-    if ! (cp --remove-destination /lib/x86_64-linux-gnu/libudev.so* "$APPDIR/usr/lib/" \
-     || cp --remove-destination /lib/i386-linux-gnu/libudev.so* "$APPDIR/usr/lib/"); then
-        return 1
-    fi
-    if ! (cp --remove-destination /usr/lib/x86_64-linux-gnu/libgfortran.so* "$APPDIR/usr/lib/" \
-     || cp --remove-destination /usr/lib/i386-linux-gnu/libgfortran.so* "$APPDIR/usr/lib/"); then
-        return 1
-    fi
-    if ! (cp --remove-destination /usr/lib/x86_64-linux-gnu/libpng12.so* "$APPDIR/usr/lib/" \
-     || cp --remove-destination /usr/lib/i386-linux-gnu/libpng12.so* "$APPDIR/usr/lib/"); then
-        return 1
-    fi
+	cp --remove-destination "$ENVDEPS_PACKET_DIR/bin/AppRun" "$APPDIR/" || return 1
+	cp --remove-destination "$ENVDEPS_PACKET_DIR/bin/desktopintegration" "$APPDIR/usr/bin/launch-opentoonz.sh.wrapper" || return 1
+    cp --remove-destination "$FILES_PACKET_DIR/opentoonz.desktop" "$APPDIR/" || return 1
+    cp --remove-destination "$FILES_PACKET_DIR/opentoonz.png" "$APPDIR/" || return 1
+
+    copy_system_lib libudev     "$APPDIR/usr/lib/" || return 1
+    copy_system_lib libgfortran "$APPDIR/usr/lib/" || return 1
+    copy_system_lib libpng12    "$APPDIR/usr/lib/" || return 1
 }
 
 pkinstall_release() {
