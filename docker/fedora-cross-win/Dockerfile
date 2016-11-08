@@ -17,6 +17,8 @@ RUN dnf -y install mingw64-gcc-c++ mingw64-cpp
 
 RUN dnf -y install mingw64-adwaita-icon-theme mingw64-hicolor-icon-theme mingw64-libxml++ mingw64-cairo mingw64-pango mingw64-boost mingw64-libjpeg-turbo mingw64-gtkmm30 mingw64-glibmm24 mingw64-libltdl mingw64-dlfcn mingw64-SDL mingw64-fftw
 
+RUN dnf -y install mingw32-pcre mingw64-pcre
+
 RUN dnf -y install mingw32-nsis
 
 RUN dnf -y install p7zip ImageMagick
