@@ -1,4 +1,4 @@
-FROM fedora
+FROM fedora:23
 MAINTAINER Konstantin Dmitriev <ksee.zelgadis@gmail.com>
 
 #VOLUME /synfig-buildroot
@@ -30,8 +30,6 @@ COPY files/synfig /usr/local/bin/synfig
 RUN chmod +x /usr/local/bin/synfig
 
 RUN dnf -y install unzip
-
-RUN dnf -y install mingw32-pcre mingw64-pcre
 
 #RUN groupadd -g 1111 konstantin && useradd -u 1111 -g konstantin konstantin
 
