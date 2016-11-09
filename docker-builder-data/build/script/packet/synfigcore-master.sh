@@ -60,7 +60,7 @@
 
 DEPS=" \
  synfigetl-master \
- jpeg-9b tiff-4.0.6 fftw-3.3.5 imagemagick-6.9.6 \
+ jpeg-9b tiff-4.0.6 fftw-3.3.5 imagemagick-6.9.5 \
  jack-0.125.0 ffmpeg-3.1.5 mlt-6.2.0 \
  boost-1.61.0 cairo-1.14.6 pango-1.40.3 glibmm-2.41.4 xmlpp-2.22.0"
 
