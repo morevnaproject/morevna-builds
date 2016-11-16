@@ -55,7 +55,7 @@ pkinstall() {
     cp --remove-destination $BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/tiff-4.0.3/libtiff/.libs/libtiff.so* "$INSTALL_PACKET_DIR/lib" || return 1
     cp --remove-destination $BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/tiff-4.0.3/libtiff/.libs/libtiffxx.so* "$INSTALL_PACKET_DIR/lib" || return  1
 
-    copy_system_lib libudev     "$APPDIR/usr/lib/" || return 1
-    copy_system_lib libgfortran "$APPDIR/usr/lib/" || return 1
-    copy_system_lib libpng12    "$APPDIR/usr/lib/" || return 1
+    copy_system_lib libudev     "$INSTALL_PACKET_DIR/lib/" || return 1
+    copy_system_lib libgfortran "$INSTALL_PACKET_DIR/lib/" || return 1
+    copy_system_lib libpng12    "$INSTALL_PACKET_DIR/lib/" || return 1
 }
