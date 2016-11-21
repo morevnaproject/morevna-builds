@@ -35,7 +35,7 @@ pkbuild() {
 	mkdir -p "$BUILD_PACKET_DIR/$PK_DIRNAME/toonz/build"
 	cd "$BUILD_PACKET_DIR/$PK_DIRNAME/toonz/build"
 	if ! check_packet_function $NAME build.configure; then
-		if ! cmake -DCMAKE_INSTALL_PREFIX:PATH=$INSTALL_PACKET_DIR ../sources; then
+		if ! cmake -DPNG_PNG_INCLUDE_DIR=$ENVDEPS_PACKET_DIR/include -DPNG_LIBRARY=$ENVDEPS_PACKET_DIR/lib/libpng.so -DCMAKE_INSTALL_PREFIX:PATH=$INSTALL_PACKET_DIR ../sources; then
     		return 1
     	fi
 		set_done $NAME build.configure
