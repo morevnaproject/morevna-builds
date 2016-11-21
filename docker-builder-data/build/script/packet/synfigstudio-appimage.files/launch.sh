@@ -39,10 +39,21 @@ if [ -e ${BASE_DIR}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache.in ]; then
 	sed "s?@ROOTDIR@/loaders?${BASE_DIR}/lib/gdk-pixbuf-2.0/2.10.0/loaders?" < ${BASE_DIR}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache.in > $GDK_PIXBUF_MODULE_FILE
 fi
 
-if [ "$1" = "run" ]; then
-	"${@:2}"
+cd "$BASE_DIR/bin"
+if [ "$1" = "--appimage-exec" ]; then
+	if ! "${@:2}"; then
+		cd "$OLDDIR"
+		exit 1
+	fi
 elif [ -z "$2" ]; then
-	"${BASE_DIR}/bin/synfigstudio.wrapper" "$@"
+	if ! "$BASE_DIR/bin/synfigstudio.wrapper" "$@"; then
+		cd "$OLDDIR"
+		exit 1
+	fi
 else
-	"${BASE_DIR}/bin/synfig" "$@"
+	if ! "$BASE_DIR/bin/synfig" "$@"; then
+		cd "$OLDDIR"
+		exit 1
+	fi
 fi
+cd "$OLDDIR"
