@@ -112,6 +112,15 @@ image_command() {
 	fi
 }
 
+image_copy() {
+	echo "Copy into image: $1 $2"
+	
+	if ! cp "$1" "$IMAGE_MOUNT_DIR/$2"; then
+		echo "Cannot copy \"$1\" -> \"$IMAGE_MOUNT_DIR/$2\""
+		return 1
+	fi
+}
+
 chroot_file_begin() {
 	echo "#!/bin/sh" > "/tmp/$INSTANCE_NAME.chroot.sh"
 	echo "" >> "/tmp/$INSTANCE_NAME.chroot.sh"
@@ -212,6 +221,8 @@ build() {
 				image_mount "${FULLROW:5}"
 			elif [ "${ROW:0:4}" = "RUN " ]; then
 				image_command "${FULLROW:4}"
+			elif [ "${ROW:0:5}" = "COPY " ]; then
+				image_copy ${FULLROW:5}
 			elif [ ! "${FULLROW:0:1}" = "#" ]; then
 				if [ ! -z "$FULLROW" ]; then
 					echo "Unknown command: $FULLROW"
