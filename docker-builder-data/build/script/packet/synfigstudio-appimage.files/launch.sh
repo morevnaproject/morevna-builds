@@ -39,21 +39,24 @@ if [ -e ${BASE_DIR}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache.in ]; then
 	sed "s?@ROOTDIR@/loaders?${BASE_DIR}/lib/gdk-pixbuf-2.0/2.10.0/loaders?" < ${BASE_DIR}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache.in > $GDK_PIXBUF_MODULE_FILE
 fi
 
-cd "$BASE_DIR/bin"
+export APPIMAGE_ROOT="$BASE_DIR"
+if [ ! -z "$APPIMAGE_WORKDIR" ]; then
+	if ! cd "$APPIMAGE_WORKDIR"; then
+		echo "Cannot change directory to \"$APPIMAGE_WORKDIR\" (APPIMAGE_WORKDIR)"
+		exit 1
+	fi
+fi
+
 if [ "$1" = "--appimage-exec" ]; then
 	if ! "${@:2}"; then
-		cd "$OLDDIR"
 		exit 1
 	fi
 elif [ -z "$2" ]; then
 	if ! "$BASE_DIR/bin/synfigstudio.wrapper" "$@"; then
-		cd "$OLDDIR"
 		exit 1
 	fi
 else
 	if ! "$BASE_DIR/bin/synfig" "$@"; then
-		cd "$OLDDIR"
 		exit 1
 	fi
 fi
-cd "$OLDDIR"
