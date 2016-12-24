@@ -63,6 +63,9 @@ image_mount() {
 		DEST="$(echo "$ARG" | cut -d':' -f 2-)"
 		image_mount_add $SRC $DEST
 	done
+
+	echo "Add /etc/resolv.conf"
+	sudo mkdir -p $IMAGE_MOUNT_DIR/etc && cp /etc/resolv.conf $IMAGE_MOUNT_DIR/etc
 }
 
 image_unmount() {
