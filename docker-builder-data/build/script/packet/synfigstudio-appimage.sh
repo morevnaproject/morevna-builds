@@ -26,6 +26,7 @@ pkinstall() {
 	copy_system_lib libpcre     "$APPDIR/usr/lib/" || return 1
 	copy_system_lib libdirect   "$APPDIR/usr/lib/" || return 1
 	copy_system_lib libfusion   "$APPDIR/usr/lib/" || return 1
+	copy_system_lib libbz2      "$APPDIR/usr/lib/" || return 1
 }
 
 pkinstall_release() {
