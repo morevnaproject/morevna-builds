@@ -29,13 +29,12 @@ RUN cd /opt && git clone https://gitlab.com/morevnaproject-builds/synfig-linux64
 COPY files/synfig /usr/local/bin/synfig
 RUN chmod +x /usr/local/bin/synfig
 
-RUN yum -y install unzip
+RUN yum -y install unzip zip
 
 RUN yum -y install dejavu-sans-fonts  dejavu-sans-mono-fonts dejavu-serif-fonts
 
 # deps for synfig appimage
 RUN yum -y install fuse fuse-libs bzip2 bzip2-libs libXdmcp
-RUN ln -s /usr/lib64/libbz2.so.1 /usr/lib64/libbz2.so.1.0
 
 #RUN groupadd -g 1111 konstantin && useradd -u 1111 -g konstantin konstantin
 
