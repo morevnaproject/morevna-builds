@@ -28,9 +28,8 @@ pkbuild() {
 		set_done $NAME build.libtiff
     fi
 
-	if ! cp --remove-destination "$ENVDEPS_PACKET_DIR/lib/libsuperlu_4.3.a" "$BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/superlu/libsuperlu_4.1.a"; then
-		return 1
-	fi
+	cp --remove-destination "$ENVDEPS_PACKET_DIR/lib/libsuperlu_4.3.a" "$BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/superlu/libsuperlu_4.1.a" || return 1
+	cp --remove-destination $ENVDEPS_PACKET_DIR/include/superlu-4.3/* "$BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/superlu/SuperLU_4.1/include/" || return 1
 
 	mkdir -p "$BUILD_PACKET_DIR/$PK_DIRNAME/toonz/build"
 	cd "$BUILD_PACKET_DIR/$PK_DIRNAME/toonz/build"

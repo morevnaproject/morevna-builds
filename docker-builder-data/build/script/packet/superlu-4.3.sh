@@ -21,7 +21,7 @@ pkbuild() {
 }
 
 pkinstall() {
-	if ! cp --remove-destination -r "$BUILD_PACKET_DIR/$PK_DIRNAME/lib" "$INSTALL_PACKET_DIR"; then
-		return 1
-	fi
+	cp --remove-destination -r "$BUILD_PACKET_DIR/$PK_DIRNAME/lib" "$INSTALL_PACKET_DIR" || return 1
+	mkdir -p "$INSTALL_PACKET_DIR/include/superlu-4.3"
+	cp --remove-destination $BUILD_PACKET_DIR/$PK_DIRNAME/SRC/*.h "$INSTALL_PACKET_DIR/include/superlu-4.3" || return 1
 }
