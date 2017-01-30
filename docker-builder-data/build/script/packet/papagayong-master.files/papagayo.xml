@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+    <mime-type type="application/x-papagayo">
+        <comment xml:lang="en">Papagayo Project</comment>
+        <glob pattern="*.pgo" />
+    </mime-type>
+</mime-info>

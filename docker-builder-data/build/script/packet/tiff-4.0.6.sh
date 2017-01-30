@@ -1,4 +1,4 @@
-DEPS=""
+DEPS="jpeg-9b"
 
 PK_DIRNAME="tiff-4.0.6"
 PK_ARCHIVE="$PK_DIRNAME.tar.gz"

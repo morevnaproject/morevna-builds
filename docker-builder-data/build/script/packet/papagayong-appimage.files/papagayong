@@ -1,0 +1,5 @@
+#!/bin/bash
+
+SCRIPT_DIR=$(cd `dirname "$0"`; pwd)
+cd "$SCRIPT_DIR/../opt/papagayong"
+"$SCRIPT_DIR/python3" papagayo-ng.py "$@"
