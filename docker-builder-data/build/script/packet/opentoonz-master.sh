@@ -1,4 +1,4 @@
-DEPS="jpeg-9b png-1.6.26 lz4-master glew-2.0.0 usb-1.0.20 sdl-2.0.5 superlu-4.3 cmake-3.6.2 freeglut-3.0.0 openblas-master boost-1.61.0 qt-5.7"
+DEPS="jpeg-9b png-1.6.26 lz4-master glew-2.0.0 usb-1.0.20 sdl-2.0.5 superlu-5.2.1 cmake-3.6.2 freeglut-3.0.0 openblas-master boost-1.61.0 qt-5.7"
 
 PK_VERSION="1.1.2"
 PK_DIRNAME="opentoonz"
@@ -28,8 +28,9 @@ pkbuild() {
 		set_done $NAME build.libtiff
     fi
 
-	cp --remove-destination "$ENVDEPS_PACKET_DIR/lib/libsuperlu_4.3.a" "$BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/superlu/libsuperlu_4.1.a" || return 1
-	cp --remove-destination $ENVDEPS_PACKET_DIR/include/superlu-4.3/* "$BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/superlu/SuperLU_4.1/include/" || return 1
+	cp --remove-destination "$ENVDEPS_PACKET_DIR/lib/libsuperlu_5.2.1.a" "$BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/superlu/libsuperlu_4.1.a" || return 1
+	rm -rf $BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/superlu/SuperLU_4.1/include/*
+	cp --remove-destination $ENVDEPS_PACKET_DIR/include/superlu-5.2.1/* "$BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/superlu/SuperLU_4.1/include/" || return 1
 
 	mkdir -p "$BUILD_PACKET_DIR/$PK_DIRNAME/toonz/build"
 	cd "$BUILD_PACKET_DIR/$PK_DIRNAME/toonz/build"
