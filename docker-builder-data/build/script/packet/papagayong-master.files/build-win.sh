@@ -5,6 +5,7 @@
 set -e
 
 ROOT_DIR=$1
+FILES_DIR=$(cd `dirname "$0"`; pwd)
 SOURCE_DIR="$ROOT_DIR/unpack/papagayo-ng"
 BUILD_DIR="$ROOT_DIR/build"
 PREBUILT_URL="https://github.com/morevnaproject/papagayo-ng/releases/download/v1.4.0/papagayo-ng-1.4.0-win.zip"
@@ -31,7 +32,9 @@ if [ ! -f "$BUILD_DIR/papagayo-ng-$VERSION-win-installer.exe" ] \
 	cd "$BUILD_DIR/$TARGET_DIR"
 	rm -rf papagayo-ng
 	ln -s "$SOURCE_DIR" papagayo-ng
-	makensis papagayo-ng.nsi
+	cp "$FILES_DIR/papagayo-ng.nsi" .
+	cp "$FILES_DIR/papagayo-ng.bat" .
+		makensis papagayo-ng.nsi
 	
 	cd "$BUILD_DIR"
 	zip -r "$TARGET_DIR.zip" "$TARGET_DIR"
