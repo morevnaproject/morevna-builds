@@ -37,12 +37,12 @@ run() {
 		echo "Cannot find version, pheraps appimage not ready. Cancel."
 		return 1
 	fi
-	if ! ls $PUBLISH_DIR/SynfigStudio-$VERSION-*-$COMMIT-$PLATFORM_SUFFIX.appimage 1> /dev/null 2>&1; then
+	if ! ls $PUBLISH_DIR/synfigstudio-$VERSION-*-$COMMIT-$PLATFORM_SUFFIX.appimage 1> /dev/null 2>&1; then
 		echo "Publish new version $VERSION-$COMMIT-$PLATFORM_SUFFIX"
-		rm -f $PUBLISH_DIR/SynfigStudio-*-$PLATFORM_SUFFIX.appimage
-		cp $DIR/synfigstudio.appimage $PUBLISH_DIR/SynfigStudio-$VERSION-$DATE-$COMMIT-$PLATFORM_SUFFIX.appimage
+		rm -f $PUBLISH_DIR/synfigstudio-*-$PLATFORM_SUFFIX.appimage
+		cp $DIR/synfigstudio.appimage $PUBLISH_DIR/synfigstudio-$VERSION-$DATE-$COMMIT-$PLATFORM_SUFFIX.appimage
 		if [ -f "$PUBLISH_DIR/publish-synfigstudio.sh" ]; then
-			"$PUBLISH_DIR/publish-synfigstudio.sh" "$PUBLISH_DIR/SynfigStudio-$VERSION-$DATE-$COMMIT-$PLATFORM_SUFFIX.appimage"
+			"$PUBLISH_DIR/publish-synfigstudio.sh" "$PUBLISH_DIR/synfigstudio-$VERSION-$DATE-$COMMIT-$PLATFORM_SUFFIX.appimage"
 		fi
 	else
 		echo "Version $VERSION-$COMMIT-$PLATFORM_SUFFIX already published"
