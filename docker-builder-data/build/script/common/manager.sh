@@ -34,6 +34,13 @@ if [ ! -z $PACKET_BUILD_DIR ]; then
 	export PACKET_DIR=$PACKET_BUILD_DIR/$PLATFORM
 fi
 
+# toolchain
+
+if [ -f "$COMMON_SCRIPT_DIR/toolchain-$PLATFORM.sh" ]; then
+    echo "use toolchain $PLATFORM"
+    source "$COMMON_SCRIPT_DIR/toolchain-$PLATFORM.sh" || exit 1
+fi
+
 # vars
 
 INITIAL_LD_LIBRARY_PATH=$LD_LIBRARY_PATH

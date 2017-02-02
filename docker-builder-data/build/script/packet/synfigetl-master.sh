@@ -12,6 +12,7 @@ pkbuild() {
 	if ! check_packet_function $NAME build.configure; then
 		autoreconf --install --force || return 1
 		./configure \
+		 --host=$HOST \
 		 --prefix=$INSTALL_PACKET_DIR \
 		 --sysconfdir=$INSTALL_PACKET_DIR/etc \
 		 || return 1
