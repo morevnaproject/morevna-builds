@@ -1,0 +1,4 @@
+8628c8628
+< 	archive_expsym_cmds='if test "x`$SED 1q $export_symbols`" = xEXPORTS; then
+---
+> 	archive_expsym_cmds='if [[ "x`$SED 1q $export_symbols`" = xEXPORTS* ]]; then

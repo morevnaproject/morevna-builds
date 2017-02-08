@@ -13,15 +13,28 @@ if [ -f $CONFIG_FILE ]; then
 fi
 mkdir -p $PACKET_BUILD_DIR
 
-docker stop "builder" || true
-docker rm "builder" || true
+export NATIVE_PLATFORM=debian
+if [ -z "$PLATFORM" ]; then
+    export PLATFORM=linux
+fi
+if [ -z "$TASK" ]; then
+    export TASK=builder-$NATIVE_PLATFORM
+fi
+export INSTANCE=$TASK-$PLATFORM$ARCH
 
+docker stop "$INSTANCE" || true
+docker rm "$INSTANCE" || true
 docker run -it \
-    --name "builder" \
+    --name "$INSTANCE" \
     --privileged=true \
     $DOCKER_RUN_OPTIONS \
     -v "$PACKET_BUILD_DIR:/build/packet" \
     -v "$SCRIPT_BUILD_DIR:/build/script" \
+    -e NATIVE_PLATFORM="$NATIVE_PLATFORM" \
+    -e NATIVE_ARCH="$NATIVE_ARCH" \
+    -e PLATFORM="$PLATFORM" \
+    -e ARCH="$ARCH" \
+    -e THREADS="$THREADS" \
     morevna/build-debian-7-64 \
     /build/script/common/manager.sh "$@"
 

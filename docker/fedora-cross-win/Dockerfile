@@ -36,8 +36,25 @@ RUN dnf -y install dejavu-sans-fonts  dejavu-sans-mono-fonts dejavu-serif-fonts
 # deps for synfig appimage
 RUN dnf -y install fuse fuse-libs bzip2 bzip2-libs libXdmcp
 
-# additional deps for win-builds
-RUN dnf -y install mingw64-zlib
+# native build tools
+RUN dnf -y install gcc gcc-c++ make automake autoconf flex
+RUN dnf -y install bison
+RUN dnf -y install zlib-devel
+RUN dnf -y install libffi-devel
+RUN dnf -y install libmount-devel
+RUN dnf -y install python2-devel
+RUN dnf -y install xorg-x11-util-macros
+RUN dnf -y install mesa-libEGL-devel
+RUN dnf -y install freetype-devel
+RUN dnf -y install expat-devel
+RUN dnf -y install libXi-devel
+RUN dnf -y install dbus-devel
+RUN dnf -y install libXtst-devel
+RUN dnf -y install bzip2-devel
+
+# great!
+RUN rm /usr/local/bin/synfig
+
 
 #RUN groupadd -g 1111 konstantin && useradd -u 1111 -g konstantin konstantin
 

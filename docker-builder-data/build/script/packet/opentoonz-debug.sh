@@ -1,4 +1,5 @@
-DEPS="jpeg-9b png-1.6.26 lz4-master glew-2.0.0 usb-1.0.20 sdl-2.0.5 superlu-4.3 cmake-3.6.2 freeglut-3.0.0 openblas-master boost-1.61.0 qt-5.7"
+DEPS="jpeg-9b png-1.6.26 lz4-master glew-2.0.0 usb-1.0.20 sdl-2.0.5 superlu-4.3 freeglut-3.0.0 openblas-master boost-1.61.0 qt-5.7"
+DEPS_NATIVE="cmake-3.6.2"
 
 PK_VERSION="1.1.2"
 PK_DIRNAME="opentoonz"

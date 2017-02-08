@@ -1,4 +1,5 @@
 DEPS=
+DEPS_NATIVE=
 
 PK_URL=
 PK_VERSION=
@@ -42,4 +43,8 @@ pkinstall() {
 
 pkinstall_release() {
 	return 0
+}
+
+pkhook_prebuild() {
+    return 0
 }

@@ -1,4 +1,5 @@
 DEPS=""
+DEPS_NATIVE="glib-2.50.0"
 
 PK_DIRNAME="glib-2.50.0"
 PK_ARCHIVE="$PK_DIRNAME.tar.xz"

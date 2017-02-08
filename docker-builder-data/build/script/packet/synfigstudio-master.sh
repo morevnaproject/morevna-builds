@@ -17,7 +17,8 @@
 #   adwaitaicons                  | gtk, rsvg
 #   gnomethemes                   | gtk, rsvg
 
-DEPS="synfigcore-master gtkmm-3.14.0 adwaitaicontheme-3.15.1 gnomethemesstandard-3.15.2"
+DEPS="synfigcore-master gtkmm-3.22.0 adwaitaicontheme-3.22.0 gnomethemesstandard-3.22.2"
+DEPS_NATIVE="synfigcore-master"
 
 PK_DIRNAME="synfig"
 PK_URL="https://github.com/synfig/$PK_DIRNAME.git"
@@ -32,6 +33,7 @@ pkbuild() {
 	if ! check_packet_function $NAME build.configure; then
 		./bootstrap.sh || return 1
 		./configure \
+		 --host=$HOST \
 		 --prefix=$INSTALL_PACKET_DIR \
 		 --sysconfdir=$INSTALL_PACKET_DIR/etc \
 		 || return 1

@@ -1,0 +1,4 @@
+168c168
+< SDL_X11_SYM(int,_XData32,(Display *dpy,register long *data,unsigned len),(dpy,data,len),return)
+---
+> SDL_X11_SYM(int,_XData32,(Display *dpy,register const long *data,unsigned len),(dpy,data,len),return)

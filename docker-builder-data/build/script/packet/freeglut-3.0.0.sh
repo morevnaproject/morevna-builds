@@ -1,4 +1,4 @@
-DEPS="cmake-3.6.2"
+DEPS_NATIVE="cmake-3.6.2"
 
 PK_DIRNAME="freeglut-3.0.0"
 PK_ARCHIVE="$PK_DIRNAME.tar.gz"

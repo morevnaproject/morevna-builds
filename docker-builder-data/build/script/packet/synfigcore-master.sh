@@ -62,12 +62,10 @@ DEPS=" \
  synfigetl-master \
  jpeg-9b tiff-4.0.6 fftw-3.3.5 imagemagick-6.8.7 \
  ffmpeg-3.1.5 mlt-6.2.0 \
- boost-1.61.0 cairo-1.14.6 pango-1.40.3 glibmm-2.41.4 xmlpp-2.22.0"
+ boost-1.61.0 cairo-1.15.4 pango-1.40.3 glibmm-2.41.4 xmlpp-2.22.0"
 
-LINUX_DEPS="jack-0.125.0"
-
-if [ "$PLATFORM" -eq "linux-32" ] || [ "$PLATFORM" -eq "linux-64" ]; then
-    DEPS="$DEPS $LINUX_DEPS"
+if [ "$PLATFORM" = "linux" ]; then
+    DEPS="$DEPS jack-0.125.0"
 fi
 
 PK_DIRNAME="synfig"
@@ -78,18 +76,19 @@ source $INCLUDE_SCRIPT_DIR/inc-pkallunpack-git.sh
 source $INCLUDE_SCRIPT_DIR/inc-pkinstall_release-default.sh
 
 pkbuild() {
-	cd "$BUILD_PACKET_DIR/$PK_DIRNAME/synfig-core" || return 1
-	if ! check_packet_function $NAME build.configure; then
-		libtoolize --ltdl --copy --force || return 1
-		autoreconf --install --force || return 1
-		./configure \
-			--prefix=$INSTALL_PACKET_DIR \
-			--sysconfdir=$INSTALL_PACKET_DIR/etc \
-			--with-boost-libdir=$ENVDEPS_PACKET_DIR/lib \
-			--without-opengl || return 1
-		set_done $NAME build.configure
-	fi
-	make -j${THREADS} || return 1
+    cd "$BUILD_PACKET_DIR/$PK_DIRNAME/synfig-core" || return 1
+    if ! check_packet_function $NAME build.configure; then
+        libtoolize --ltdl --copy --force || return 1
+        autoreconf --install --force || return 1
+        ./configure \
+            --host=$HOST \
+            --prefix=$INSTALL_PACKET_DIR \
+            --sysconfdir=$INSTALL_PACKET_DIR/etc \
+            --with-boost-libdir=$ENVDEPS_PACKET_DIR/lib \
+            --without-opengl || return 1
+        set_done $NAME build.configure
+    fi
+    make -j${THREADS} || return 1
 }
 
 pkinstall() {

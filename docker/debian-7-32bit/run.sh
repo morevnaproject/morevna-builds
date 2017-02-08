@@ -9,20 +9,32 @@ CONFIG_FILE="$BASE_DIR/config.sh"
 PACKET_BUILD_DIR="$BUILD_DIR/packet"
 SCRIPT_BUILD_DIR="$BUILD_DIR/script"
 if [ -f $CONFIG_FILE ]; then
-	source $CONFIG_FILE
+    source $CONFIG_FILE
 fi
 mkdir -p $PACKET_BUILD_DIR
 
-docker stop "builder-i386" || true
-docker rm "builder-i386" || true
+export NATIVE_PLATFORM=debian
+if [ -z "$PLATFORM" ]; then
+    export PLATFORM=linux
+fi
+if [ -z "$TASK" ]; then
+    export TASK=builder-$NATIVE_PLATFORM
+fi
+export INSTANCE=$TASK-$PLATFORM$ARCH
 
+docker stop "$INSTANCE" || true
+docker rm "$INSTANCE" || true
 docker run -it \
-    --name "builder-i386" \
-    $DOCKER_RUN_OPTIONS \
+    --name "$INSTANCE" \
     --privileged=true \
+    $DOCKER_RUN_OPTIONS \
     -v "$PACKET_BUILD_DIR:/build/packet" \
     -v "$SCRIPT_BUILD_DIR:/build/script" \
-    -e PLATFORM=linux-i386 \
+    -e NATIVE_PLATFORM="$NATIVE_PLATFORM" \
+    -e NATIVE_ARCH="$NATIVE_ARCH" \
+    -e PLATFORM="$PLATFORM" \
+    -e ARCH="$ARCH" \
+    -e THREADS="$THREADS" \
     morevna/build-debian-7-32 \
-    setarch i686 /build/script/common/manager.sh "$@"
+    /build/script/common/manager.sh "$@"
 

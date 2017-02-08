@@ -9,16 +9,27 @@ source $INCLUDE_SCRIPT_DIR/inc-pkinstall_release-default.sh
 
 pkbuild() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME"
-	if ! check_packet_function $NAME build.configure; then
-		./bootstrap.sh --prefix=$INSTALL_PACKET_DIR --without-libraries=python || return 1
-		set_done $NAME build.configure
-	fi
-	./b2 -j${THREADS} || return 1
+    if ! check_packet_function $NAME build.configure; then
+        local LOCAL_PREFIX=$INSTALL_PACKET_DIR
+        native ./bootstrap.sh --prefix=$LOCAL_PREFIX --without-libraries=python || return 1
+        set_done $NAME build.configure
+    fi
+    
+    local LOCAL_OPTIONS=
+    if [ "$PLATFORM" = "win" ]; then
+        LOCAL_OPTIONS="toolset=gcc-win binary-format=pe abi=ms target-os=windows --user-config=$BUILD_PACKET_DIR/$PK_DIRNAME/user-config.jam"
+        echo "using gcc : win : $CXX : cflags=$CFLAGS cxxflags=$CXXFLAGS linkflags=$LDFLAGS ;" > user-config.jam
+    fi
+    ./b2 -j${THREADS} variant=release runtime-link=shared $LOCAL_OPTIONS || return 1
 }
 
 pkinstall() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME"
-    if ! ./b2 install; then
+    local LOCAL_OPTIONS=
+    if [ "$PLATFORM" = "win" ]; then
+        LOCAL_OPTIONS="toolset=gcc-win binary-format=pe abi=ms target-os=windows --user-config=$BUILD_PACKET_DIR/$PK_DIRNAME/user-config.jam"
+    fi
+    if ! ./b2 variant=release runtime-link=shared $LOCAL_OPTIONS install; then
         return 1
     fi
     rm -rf "$INSTALL_RELEASE_PACKET_DIR/include"

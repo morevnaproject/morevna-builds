@@ -1,23 +1,54 @@
 #!/bin/bash
 
-# options
+###############################################
+#
+# Input environment variables
+#
+# PLATFORM         - target platform (linux or windows)
+# ARCH             - bits (32 or 64)
+# NATIVE_PLATFORM  - folder name for store compiled utilities for build-time (debian, fedora, etc)
+# NATIVE_ARCH      - ^^^ bits (32 or 64)
+# THREADS          - amount of simultaneous threads for build process
+# PACKET_BUILD_DIR - output directory (optional)
+#
+###############################################
 
-if [ -z "$PLATFORM" ]; then
-	PLATFORM="linux-x64"
+# check options
+
+if [ -z "$NATIVE_PLATFORM" ]; then
+    NATIVE_PLATFORM="default"
 fi
-export PLATFORM
+
+if [ -z "$NATIVE_ARCH" ]; then
+    NATIVE_ARCH=`uname -m`
+    if [ "$NATIVE_ARCH" = "x86_64" ]; then
+        NATIVE_ARCH="64"
+    elif [ "$NATIVE_ARCH" = "i686" ]; then
+        NATIVE_ARCH="32"
+    fi
+fi
+
+if [ -z "$TARGET_PLATFORM" ]; then
+    TARGET_PLATFORM="$NATIVE_PLATFORM"
+fi
+
+if [ -z "$ARCH" ]; then
+    ARCH="$NATIVE_ARCH"
+fi
 
 if [ -z "$THREADS" ]; then
-	THREADS=8
+    THREADS=8
 fi
-export THREADS
 
+export NATIVE_PLATFORM
+export NATIVE_ARCH
+export PLATFORM
+export ARCH
+export THREADS
 
 # root
 
-OLDDIR=`pwd`
 ROOT_DIR=$(cd `dirname "$0"`; pwd)
-cd "$OLDDIR"
 ROOT_DIR=`dirname "$ROOT_DIR"`
 ROOT_DIR=`dirname "$ROOT_DIR"`
 export ROOT_DIR
@@ -28,23 +59,28 @@ export SCRIPT_DIR=$ROOT_DIR/script
 export COMMON_SCRIPT_DIR=$SCRIPT_DIR/common
 export INCLUDE_SCRIPT_DIR=$SCRIPT_DIR/include
 export PACKET_SCRIPT_DIR=$SCRIPT_DIR/packet
-export PACKET_DIR=$ROOT_DIR/packet/$PLATFORM
-
-if [ ! -z $PACKET_BUILD_DIR ]; then
-	export PACKET_DIR=$PACKET_BUILD_DIR/$PLATFORM
+if [ -z "$PACKET_BUILD_DIR" ]; then
+	export PACKET_BUILD_DIR=$ROOT_DIR/packet
 fi
+export PACKET_DIR=$PACKET_BUILD_DIR/$PLATFORM-$ARCH
+export NATIVE_PACKET_DIR=$PACKET_BUILD_DIR/$NATIVE_PLATFORM-$NATIVE_ARCH-native
 
 # toolchain
 
-if [ -f "$COMMON_SCRIPT_DIR/toolchain-$PLATFORM.sh" ]; then
-    echo "use toolchain $PLATFORM"
-    source "$COMMON_SCRIPT_DIR/toolchain-$PLATFORM.sh" || exit 1
+export TOOLCHAIN_SCRIPT_DIR=$SCRIPT_DIR/toolchain
+export NATIVE_TOOLCHAIN_SCRIPT="$TOOLCHAIN_SCRIPT_DIR/none.sh"
+export TOOLCHAIN_SCRIPT="$TOOLCHAIN_SCRIPT_DIR/$PLATFORM-$ARCH.sh"
+if [ ! -f "$TOOLCHAIN_SCRIPT" ]; then
+    TOOLCHAIN_SCRIPT=$NATIVE_TOOLCHAIN_SCRIPT
 fi
 
-# vars
+# initial system vars
 
-INITIAL_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
+INITIAL_HOST=$HOST
 INITIAL_PATH=$PATH
+INITIAL_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
+INITIAL_CC=$CC
+INITIAL_CXX=$CXX
 INITIAL_LDFLAGS=$LDFLAGS
 INITIAL_CFLAGS=$CFLAGS
 INITIAL_CPPFLAGS=$CPPFLAGS
@@ -53,14 +89,16 @@ INITIAL_PKG_CONFIG_PATH=$PKG_CONFIG_PATH
 INITIAL_XDG_DATA_DIRS=$XDG_DATA_DIRS
 INITIAL_ACLOCAL_PATH=$ACLOCAL_PATH
 
+# work vars
+
+IS_NATIVE=
 DRY_RUN=
 FORCE=
 CLEAN_BEFORE_DO=
 NO_CHECK_DEPS=
 declare -A COMPLETION_STATUS
 
-
-###################################
+###############################################
 #
 # Fairy Tale
 # 
@@ -68,57 +106,75 @@ declare -A COMPLETION_STATUS
 #
 # Function dependency:
 #
-# 1. download 
-#     |
-# 2. unpack
-#     |
-#     | env^
-#     |  |
-# 3.  | envdeps  
-#     |  | | |
-# 4. build | |
-#     |    | |
-# 5. install |
-#     |    | |
-# 6.  |    env
-#     |    |
-#     |    envdeps*
-#     |
-#     | env_release^
-#     |  | 
-# 7.  | envdeps_release
-#     |  |           | 
-# 8. install_release |
-#            |       |
-# 9.        env_release
-#            |
-#    envdeps_release*
+# 1.                 download 
+#                     |
+# 2.                 unpack
+#                     |
+#                     | env^
+#                     |  |
+# 3.                  | envdeps 
+#                     | | | |
+#      env^^          | | | |
+#       |             | | | |
+#       | env_native^ | | | |
+#       |  |          | | | |
+# 4.   envdeps_native | | | |
+#       |         | | | | | |
+# 5.    |         | build | |
+#       |         |  |    | |
+# 6.    |         --install |
+#       |            |    | |
+# 7.    |            |    env
+#       |            |    | |
+#       |            |    | envdeps*
+#       |            |    |
+#       |            |   envdeps_native**
+#       |            |
+# 8.   env_native    |
+#       |            |
+#    envdeps_native* |
+#                    |
+#                    | env_release^
+#                    |  | 
+# 9.                 | envdeps_release
+#                    |  |           | 
+# 10.               install_release |
+#                           |       |
+# 11.                      env_release
+#                           |
+#                          envdeps_release*
 #
-###################################
+###############################################
 
 FUNC_DEPS_download=""
 FUNC_DEPS_unpack="download"
 FUNC_DEPS_envdeps="-env"
-FUNC_DEPS_build="envdeps unpack"
-FUNC_DEPS_install="envdeps build"
+FUNC_DEPS_envdeps_native="--env -env_native"
+FUNC_DEPS_build="envdeps envdeps_native unpack"
+FUNC_DEPS_install="envdeps envdeps_native build"
 FUNC_DEPS_env="envdeps install"
+FUNC_DEPS_env_native="envdeps_native"
 FUNC_DEPS_envdeps_release="-env_release"
 FUNC_DEPS_install_release="envdeps_release install"
 FUNC_DEPS_env_release="envdeps_release install_release"
 
 
+# helpers
+
 copy() {
-	if [ -d "$1" ]; then
-		if ! mkdir -p $2; then
+    local SRC=$1
+    local DEST=$2
+	if [ -d "$SRC" ]; then
+		if ! mkdir -p $DEST; then
 			return 1
 		fi
 		if [ "$(ls -A $1)" ]; then
-			if ! cp --remove-destination -rlP $1/* "$2/"; then
+			if ! cp --remove-destination -rlP $SRC/* "$DEST/"; then
 				return 1
 			fi
 		fi
-	elif [ -f "$1" ]; then
-		if ! (mkdir -p `dirname $2` && cp --remove-destination -l "$1" "$2"); then
+	elif [ -f "$SRC" ]; then
+		if ! (mkdir -p `dirname $DEST` && cp --remove-destination -l "$SRC" "$DEST"); then
 			return 1
 		fi
 	else
@@ -149,29 +205,37 @@ readdir() {
 }
 
 md5() {
-    local MD5=`readdir "$1" | md5sum -b`
+    local FILE=$1
+    local MD5=`readdir "$FILE" | md5sum -b`
     echo "${MD5:0:32}"
 }
 
 remove_recursive() {
-	rm -f $1/$2
-	for FILE in $1; do
-		if [ -d "$1/$FILE" ]; then 
-			remove_recursive "$1/$FILE" $2
-		fi
-	done
+    local CURRENT_PATH="$1"
+    local NEEDLE="$2"
+    rm -f "$CURRENT_PATH/"$NEEDLE
+    for FILE in $CURRENT_PATH; do
+        if [ -d "$CURRENT_PATH/$FILE" ]; then
+            remove_recursive "$CURRENT_PATH/$FILE" "$NEEDLE"
+        fi
+    done
 }
 
 copy_system_lib() {
-    cp --remove-destination /lib/x86_64-linux-gnu/$1* "$2" &> /dev/null \
-     || cp --remove-destination /lib/i386-linux-gnu/$1* "$2" &> /dev/null \
-     || cp --remove-destination /usr/lib/x86_64-linux-gnu/$1* "$2" &> /dev/null \
-     || cp --remove-destination /usr/lib/i386-linux-gnu/$1* "$2" &> /dev/null \
-     || (echo "$1 not found in system libraries" && return 1)
+    local SRC_NAME=$1
+    local DST_PATH=$2
+    cp --remove-destination /lib/x86_64-linux-gnu/$SRC_NAME* "$DST_PATH" &> /dev/null \
+     || cp --remove-destination /lib/i386-linux-gnu/$SRC_NAME* "$DST_PATH" &> /dev/null \
+     || cp --remove-destination /usr/lib/x86_64-linux-gnu/$SRC_NAME* "$DST_PATH" &> /dev/null \
+     || cp --remove-destination /usr/lib/i386-linux-gnu/$SRC_NAME* "$DST_PATH" &> /dev/null \
+     || (echo "$SRC_NAME not found in system libraries" && return 1)
 }
 
+# internal functions
+
 message() {
-    echo " ------ $1"
+    local MESSAGE=$1
+    echo " ------ $MESSAGE"
 }
 
 try_do_nothing() {
@@ -182,43 +246,55 @@ try_do_nothing() {
 }
 
 set_done() {
-	local COMPLETION_KEY="$1:$2"
+    local PACKET=$1
+    local FUNC=$2
+	local COMPLETION_KEY="$PLATFORM:$ARCH:$PACKET:$FUNC"
 	if [ -z "$DRY_RUN" ]; then
-		touch "$PACKET_DIR/$1/$2.done"
+		touch "$PACKET_DIR/$PACKET/$FUNC.done"
 	fi
 	COMPLETION_STATUS[$COMPLETION_KEY]=complete
 }
 
 set_undone_silent() {
-	local COMPLETION_KEY="$1:$2"
+    local PACKET=$1
+    local FUNC=$2
+	local COMPLETION_KEY="$PLATFORM:$ARCH:$PACKET:$FUNC"
 	if [ -z "$DRY_RUN" ]; then
-    	rm -f $PACKET_DIR/$1/$2.*.done
-		rm -f "$PACKET_DIR/$1/$2.done"
+    	rm -f $PACKET_DIR/$PACKET/$FUNC.*.done
+		rm -f "$PACKET_DIR/$PACKET/$FUNC.done"
 	fi
 	COMPLETION_STATUS[$COMPLETION_KEY]=incomplete
 }
 
 set_undone() {
-	message "$1 set_undone $2"
-	set_undone_silent $1 $2
+    local PACKET=$1
+    local FUNC=$2
+	message "$PACKET set_undone $FUNC"
+	set_undone_silent $PACKET $FUNC
 }
 
 clean_packet_directory_silent() {
-	set_undone_silent $1 $2
-    try_do_nothing $1 $2 && return 0
-    rm -rf "$PACKET_DIR/$1/$2"
+    local PACKET=$1
+    local FUNC=$2
+	set_undone_silent $PACKET $FUNC
+    try_do_nothing $PACKET $FUNC && return 0
+    rm -rf "$PACKET_DIR/$PACKET/$FUNC"
 }
 
 clean_packet_directory() {
-	message "$1 clean $2"
-	clean_packet_directory_silent $1 $2
+    local PACKET=$1
+    local FUNC=$2
+	message "$PACKET clean $FUNC"
+	clean_packet_directory_silent $PACKET $FUNC
 }
 
 check_packet_function() {
+    local PACKET=$1
+    local FUNC=$2
 	if [ ! -z "$FORCE" ]; then
 		return 1
 	fi
-    if [ ! -f "$PACKET_DIR/$1/$2.done" ]; then
+    if [ ! -f "$PACKET_DIR/$PACKET/$FUNC.done" ]; then
         return 1
     fi
 }
@@ -249,22 +325,52 @@ set_environment_vars() {
     export DOWNLOAD_PACKET_DIR=$CURRENT_PACKET_DIR/download
     export UNPACK_PACKET_DIR=$CURRENT_PACKET_DIR/unpack
     export ENVDEPS_PACKET_DIR=$CURRENT_PACKET_DIR/envdeps
+    export ENVDEPS_NATIVE_PACKET_DIR=$CURRENT_PACKET_DIR/envdeps_native
     export BUILD_PACKET_DIR=$CURRENT_PACKET_DIR/build
     export INSTALL_PACKET_DIR=$CURRENT_PACKET_DIR/install
     export INSTALL_RELEASE_PACKET_DIR=$CURRENT_PACKET_DIR/install_release
     export ENV_PACKET_DIR=$CURRENT_PACKET_DIR/env
+    export ENV_NATIVE_PACKET_DIR=$CURRENT_PACKET_DIR/env_native
     export ENVDEPS_RELEASE_PACKET_DIR=$CURRENT_PACKET_DIR/envdeps_release
     export ENV_RELEASE_PACKET_DIR=$CURRENT_PACKET_DIR/env_release
 
-    export LD_LIBRARY_PATH="$ENV_PACKET_DIR/lib:$ENV_PACKET_DIR/lib64:$ENVDEPS_PACKET_DIR/lib:$ENVDEPS_PACKET_DIR/lib64:$INITIAL_LD_LIBRARY_PATH"
-    export PATH="$ENVDEPS_PACKET_DIR/bin:$INITIAL_PATH"
-    export LDFLAGS="-L$ENVDEPS_PACKET_DIR/lib -L$ENVDEPS_PACKET_DIR/lib64 $INITIAL_LDFLAGS"
-    export CFLAGS="-I$ENVDEPS_PACKET_DIR/include $INITIAL_CFLAGS"
-    export CPPFLAGS="-I$ENVDEPS_PACKET_DIR/include $INITIAL_CPPFLAGS"
-    export CXXFLAGS="-I$ENVDEPS_PACKET_DIR/include $INITIAL_CXXFLAGS"
-    export PKG_CONFIG_PATH="$ENVDEPS_PACKET_DIR/lib/pkgconfig:$INITIAL_PKG_CONFIG_PATH"
-    export XDG_DATA_DIRS="$ENVDEPS_PACKET_DIR/share:$INITIAL_XDG_DATA_DIRS"
-    export ACLOCAL_PATH="$ENVDEPS_PACKET_DIR/share/aclocal:$INITIAL_ACLOCAL_PATH" 
+    export HOST=$TOOLCHAIN_HOST
+
+    export PATH="\
+$ENVDEPS_NATIVE_PACKET_DIR/bin:\
+$ENV_NATIVE_PACKET_DIR/bin:\
+$ENVDEPS_PACKET_DIR/bin:\
+$ENV_PACKET_DIR/bin:\
+$TOOLCHAIN_PATH"
+
+    export LD_LIBRARY_PATH="\
+$ENVDEPS_NATIVE_PACKET_DIR/lib:\
+$ENVDEPS_NATIVE_PACKET_DIR/lib64\
+$ENV_NATIVE_PACKET_DIR/lib:\
+$ENV_NATIVE_PACKET_DIR/lib64:\
+$ENVDEPS_PACKET_DIR/lib:\
+$ENVDEPS_PACKET_DIR/lib64:\
+$ENV_PACKET_DIR/lib:\
+$ENV_PACKET_DIR/lib64:\
+$TOOLCHAIN_LD_LIBRARY_PATH"
+
+    export CC=$TOOLCHAIN_CC
+    export CXX=$TOOLCHAIN_CXX
+
+    if [ -z "$CC" ]; then
+        export -n CC
+    fi
+    if [ -z "$CXX" ]; then
+        export -n CXX
+    fi
+
+    export LDFLAGS="-L$ENVDEPS_PACKET_DIR/lib -L$ENVDEPS_PACKET_DIR/lib64 $TOOLCHAIN_LDFLAGS"
+    export CFLAGS="-I$ENVDEPS_PACKET_DIR/include $TOOLCHAIN_CFLAGS"
+    export CPPFLAGS="-I$ENVDEPS_PACKET_DIR/include $TOOLCHAIN_CPPFLAGS"
+    export CXXFLAGS="-I$ENVDEPS_PACKET_DIR/include $TOOLCHAIN_CXXFLAGS"
+    export PKG_CONFIG_PATH="$ENVDEPS_PACKET_DIR/lib/pkgconfig:$TOOLCHAIN_PKG_CONFIG_PATH"
+    export XDG_DATA_DIRS="$ENVDEPS_PACKET_DIR/share:$TOOLCHAIN_XDG_DATA_DIRS"
+    export ACLOCAL_PATH="$ENVDEPS_PACKET_DIR/share/aclocal:$TOOLCHAIN_ACLOCAL_PATH" 
 }
 
 call_packet_function() {
@@ -333,120 +439,255 @@ foreach_deps() {
     local NAME=$1
     local FUNC=$2
     local RECURSIVE=$3
+    local NATIVE=$4
+    local WAS_NATIVE=$IS_NATIVE
     
 	source $INCLUDE_SCRIPT_DIR/inc-pkall-none.sh
     [ ! $? -eq 0 ] && return 1
     source "$PACKET_SCRIPT_DIR/$NAME.sh"
     [ ! $? -eq 0 ] && return 1
-    
+    if [ ! -z "$WAS_NATIVE" ]; then
+        DEPS="$DEPS $DEPS_NATIVE"
+        DEPS_NATIVE=
+    fi
+        
     local CURRENT_DEPS=$DEPS
+    local CURRENT_DEPS_NATIVE=$DEPS_NATIVE
+    local PROCESS_SELF=""
+    if [ "$NATIVE" = "native" ]; then
+        CURRENT_DEPS=$DEPS_NATIVE
+        if [ ! -z "$TOOLCHAIN_HOST" ]; then
+            PROCESS_SELF="process_self"
+        fi
+    fi
+    
     for DEP in $CURRENT_DEPS; do
-        if [ ! -z "$DEP" ]; then
-        	local DEP_LOCAL=$DEP 
-        	if [ "$RECURSIVE" = "recursive" ]; then
-        		if ! foreach_deps "$DEP_LOCAL" "$FUNC" "$RECURSIVE"; then
-                	return 1
-        		fi
-        	fi
+        if [ ! -z "$DEP" ] && [ "$DEP" != "$NAME" -o "$PROCESS_SELF" = "process_self" ]; then
+            local DEP_LOCAL=$DEP 
+            if [ "$RECURSIVE" = "recursive" ]; then
+                if ! foreach_deps "$DEP_LOCAL" "$FUNC" "$RECURSIVE"; then
+                    return 1
+                fi
+            fi
             if ! "$FUNC" "$DEP_LOCAL" "$NAME"; then
                 return 1
             fi
         fi
-	done
+    done
+
+    if [ "$RECURSIVE" = "recursive" ]; then
+        for DEP in $CURRENT_DEPS_NATIVE; do
+            if [ ! -z "$DEP" ] && [ "$DEP" != "$NAME" -o ! -z "$TOOLCHAIN_HOST" ]; then
+                local DEP_LOCAL=$DEP 
+                if ! native foreach_deps "$DEP_LOCAL" "$FUNC" "$RECURSIVE"; then
+                    return 1
+                fi
+                if ! native "$FUNC" "$DEP_LOCAL" "$NAME"; then
+                    return 1
+                fi
+            fi
+        done
+    fi
+}
+
+set_toolchain() {
+    if [ "$1" = "native" ]; then
+        IS_NATIVE=1
+        if [ ! "$2" = "silent" ]; then
+            echo " --- set toolchain $NATIVE_PLATFORM-$NATIVE_ARCH (native)"
+        fi
+        source $NATIVE_TOOLCHAIN_SCRIPT
+    else
+        IS_NATIVE=
+        if [ ! "$2" = "silent" ]; then
+            echo " --- set toolchain $PLATFORM-$ARCH (target)"
+        fi
+        source $NATIVE_TOOLCHAIN_SCRIPT
+        source $TOOLCHAIN_SCRIPT
+    fi
 }
 
 is_complete() {
-	local NAME=$1
-	local FUNC=$2
-	local SUBFUNCS_VAR_NAME=FUNC_DEPS_$FUNC
-    local SUBFUNCS=${!SUBFUNCS_VAR_NAME}
-    local COMPLETION_KEY="$NAME:$FUNC"
-	if [ ! -z ${COMPLETION_STATUS[$COMPLETION_KEY]} ]; then
-		if [ "${COMPLETION_STATUS[$COMPLETION_KEY]}" = "complete" ]; then
-			return 0
-		else
-			return 1
-		fi
-	fi
-	
-	COMPLETION_STATUS[$COMPLETION_KEY]=incomplete
-	
-	if ! check_packet_function $1 $2; then
-		return 1
-	fi
-	if [ ! -z "$NO_CHECK_DEPS" ]; then
-		COMPLETION_STATUS[$COMPLETION_KEY]=complete
-		return 0
-	fi
+    local NAME=$1
+    local FUNC=$2
 
-	source $INCLUDE_SCRIPT_DIR/inc-pkall-none.sh
+    local WAS_NATIVE=$IS_NATIVE
+    local WAS_PLATFORM=$PLATFORM
+    local WAS_ARCH=$ARCH
+    local WAS_PACKET_DIR=$PACKET_DIR
+    local PROCESS_SELF=""
+    if [ ! -z "$TOOLCHAIN_HOST" ]; then
+        PROCESS_SELF="process_self"
+    fi
+
+    local SUBFUNCS_VAR_NAME=FUNC_DEPS_$FUNC
+    local SUBFUNCS=${!SUBFUNCS_VAR_NAME}
+    local COMPLETION_KEY="$PLATFORM:$ARCH:$NAME:$FUNC"
+    if [ ! -z ${COMPLETION_STATUS[$COMPLETION_KEY]} ]; then
+        if [ "${COMPLETION_STATUS[$COMPLETION_KEY]}" = "complete" ]; then
+            return 0
+        else
+            return 1
+        fi
+    fi
+
+    COMPLETION_STATUS[$COMPLETION_KEY]=incomplete
+
+    if ! check_packet_function $1 $2; then
+        return 1
+    fi
+    if [ ! -z "$NO_CHECK_DEPS" ]; then
+        COMPLETION_STATUS[$COMPLETION_KEY]=complete
+        return 0
+    fi
+
+    source $INCLUDE_SCRIPT_DIR/inc-pkall-none.sh
     [ ! $? -eq 0 ] && return 1
     source "$PACKET_SCRIPT_DIR/$NAME.sh"
     [ ! $? -eq 0 ] && return 1
+    if [ ! -z "$WAS_NATIVE" ]; then
+        DEPS="$DEPS $DEPS_NATIVE"
+        DEPS_NATIVE=
+    fi
 
-	local CURRENT_DEPS=$DEPS
-	for SUBFUNC in $SUBFUNCS; do
-		local SUBFUNC_LOCAL=$SUBFUNC
-		if [ "${SUBFUNC_LOCAL:0:1}" = "-" ]; then
-			SUBFUNC_LOCAL=${SUBFUNC_LOCAL:1}
-		    for DEP in $CURRENT_DEPS; do
-		        if [ ! -z "$DEP" ]; then
-		        	local DEP_LOCAL=$DEP
-					if ! is_complete $DEP_LOCAL $SUBFUNC_LOCAL; then
-						return 1
-					fi
-		    	    if [ "$PACKET_DIR/$NAME/$FUNC.done" -ot "$PACKET_DIR/$DEP_LOCAL/$SUBFUNC_LOCAL.done" ]; then
-		        		return 1
-		    	    fi
-		        fi
-		    done 
-		else
-			if ! is_complete $NAME $SUBFUNC_LOCAL; then
-				return 1
-			fi
-    	    if [ "$PACKET_DIR/$NAME/$FUNC.done" -ot "$PACKET_DIR/$NAME/$SUBFUNC_LOCAL.done" ]; then
-        		return 1
-    	    fi
-		fi
-	done
+    local FAIL=
+    local CURRENT_DEPS="$DEPS"
+    local CURRENT_DEPS_NATIVE="$DEPS_NATIVE"
+    for SUBFUNC in $SUBFUNCS; do
+        local SUBFUNC_LOCAL=$SUBFUNC
+        if [ "${SUBFUNC_LOCAL:0:2}" = "--" ]; then
+            if [ ! -z "$CURRENT_DEPS_NATIVE" ]; then
+                SUBFUNC_LOCAL=${SUBFUNC_LOCAL:2}
+                if [ -z "$WAS_NATIVE" ]; then
+                    set_toolchain "native" "silent"
+                    PLATFORM=$NATIVE_PLATFORM
+                    ARCH=$NATIVE_ARCH
+                    PACKET_DIR=$NATIVE_PACKET_DIR
+                fi
+                for DEP in $CURRENT_DEPS_NATIVE; do
+                    if [ ! -z "$DEP" ] && [ "$DEP" != "$NAME" -o "$PROCESS_SELF" = "process_self" ]; then
+                        local DEP_LOCAL=$DEP
+                        if ! is_complete $DEP_LOCAL $SUBFUNC_LOCAL; then
+                            FAIL=1
+                            break
+                        fi
+                        if [ "$WAS_PACKET_DIR/$NAME/$FUNC.done" -ot "$PACKET_DIR/$DEP_LOCAL/$SUBFUNC_LOCAL.done" ]; then
+                            FAIL=1
+                            break
+                        fi
+                    fi
+                done
+                if [ -z "$WAS_NATIVE" ]; then
+                    PLATFORM=$WAS_PLATFORM
+                    ARCH=$WAS_ARCH
+                    PACKET_DIR=$WAS_PACKET_DIR
+                    set_toolchain "" "silent"
+                fi
+                if [ ! -z "$FAIL" ]; then
+                    return 1
+                fi
+            fi
+        elif [ "${SUBFUNC_LOCAL:0:1}" = "-" ]; then
+            SUBFUNC_LOCAL=${SUBFUNC_LOCAL:1}
+            for DEP in $CURRENT_DEPS; do
+                if [ ! -z "$DEP" ] && [ "$DEP" != "$NAME" ]; then
+                    local DEP_LOCAL=$DEP
+                    if ! is_complete $DEP_LOCAL $SUBFUNC_LOCAL; then
+                        return 1
+                    fi
+                  if [ "$PACKET_DIR/$NAME/$FUNC.done" -ot "$PACKET_DIR/$DEP_LOCAL/$SUBFUNC_LOCAL.done" ]; then
+                      return 1
+                  fi
+                fi
+            done 
+        else
+            if ! is_complete $NAME $SUBFUNC_LOCAL; then
+                return 1
+            fi
+            if [ "$PACKET_DIR/$NAME/$FUNC.done" -ot "$PACKET_DIR/$NAME/$SUBFUNC_LOCAL.done" ]; then
+                return 1
+            fi
+       fi
+    done
 
-	COMPLETION_STATUS[$COMPLETION_KEY]=complete
+    COMPLETION_STATUS[$COMPLETION_KEY]=complete
 }
 
 prepare() {
-	local NAME=$1
-	local FUNC=$2
-	local SUBFUNCS_VAR_NAME=FUNC_DEPS_$FUNC
+    local NAME=$1
+    local FUNC=$2
+	
+    local WAS_NATIVE=$IS_NATIVE
+    local WAS_PLATFORM=$PLATFORM
+    local WAS_ARCH=$ARCH
+    local WAS_PACKET_DIR=$PACKET_DIR
+    local PROCESS_SELF=""
+    if [ ! -z "$TOOLCHAIN_HOST" ]; then
+        PROCESS_SELF="process_self"
+    fi
+
+    local SUBFUNCS_VAR_NAME=FUNC_DEPS_$FUNC
     local SUBFUNCS=${!SUBFUNCS_VAR_NAME}
 	
-	source $INCLUDE_SCRIPT_DIR/inc-pkall-none.sh
+    source $INCLUDE_SCRIPT_DIR/inc-pkall-none.sh
     [ ! $? -eq 0 ] && return 1
     source "$PACKET_SCRIPT_DIR/$NAME.sh"
     [ ! $? -eq 0 ] && return 1
-
-	local CURRENT_DEPS=$DEPS
-	local DODEPS=
-	for SUBFUNC in $SUBFUNCS; do
-		local SUBFUNC_LOCAL=$SUBFUNC
-		if [ "${SUBFUNC_LOCAL:0:1}" = "-" ]; then
-			SUBFUNC_LOCAL=${SUBFUNC_LOCAL:1}
-		    for DEP in $CURRENT_DEPS; do
-		        if [ ! -z "$DEP" ]; then
-					if ! $SUBFUNC_LOCAL $DEP; then
-						return 1
-					fi
-		        fi
-		    done 
-		elif ! $SUBFUNC_LOCAL $NAME; then
-			return 1
-		fi
-	done
-	
-	if [ ! -z "$CLEAN_BEFORE_DO" ]; then
-		if ! clean_packet_directory $NAME $FUNC; then
-			return 1
-		fi
-	fi
+    if [ ! -z "$WAS_NATIVE" ]; then
+        DEPS="$DEPS $DEPS_NATIVE"
+        DEPS_NATIVE=
+    fi
+    local FAIL=
+    local CURRENT_DEPS="$DEPS"
+    local CURRENT_DEPS_NATIVE="$DEPS_NATIVE"
+    for SUBFUNC in $SUBFUNCS; do
+        local SUBFUNC_LOCAL=$SUBFUNC
+        if [ "${SUBFUNC_LOCAL:0:2}" = "--" ]; then
+            if [ ! -z "$CURRENT_DEPS_NATIVE" ]; then
+                SUBFUNC_LOCAL=${SUBFUNC_LOCAL:2}
+                if [ -z "$WAS_NATIVE" ]; then
+                    set_toolchain "native"
+                    PLATFORM=$NATIVE_PLATFORM
+                    ARCH=$NATIVE_ARCH
+                    PACKET_DIR=$NATIVE_PACKET_DIR
+                fi
+                for DEP in $CURRENT_DEPS_NATIVE; do
+                    if [ ! -z "$DEP" ] && [ "$DEP" != "$NAME" -o "$PROCESS_SELF" = "process_self" ]; then
+                        if ! $SUBFUNC_LOCAL $DEP; then
+                            FAIL=1
+                            break
+                        fi
+                    fi
+                done
+                if [ -z "$WAS_NATIVE" ]; then
+                    PLATFORM=$WAS_PLATFORM
+                    ARCH=$WAS_ARCH
+                    PACKET_DIR="$WAS_PACKET_DIR"
+                    set_toolchain
+                fi
+                if [ ! -z "$FAIL" ]; then
+                    return 1
+                fi
+            fi
+        elif [ "${SUBFUNC_LOCAL:0:1}" = "-" ]; then
+            SUBFUNC_LOCAL=${SUBFUNC_LOCAL:1}
+            for DEP in $CURRENT_DEPS; do
+                if [ ! -z "$DEP" ] && [ "$DEP" != "$NAME" ]; then
+                    if ! $SUBFUNC_LOCAL $DEP; then
+                        return 1
+                    fi
+                fi
+            done 
+        elif ! $SUBFUNC_LOCAL $NAME; then
+            return 1
+        fi
+    done
+    
+    if [ ! -z "$CLEAN_BEFORE_DO" ]; then
+        if ! clean_packet_directory $NAME $FUNC; then
+            return 1
+        fi
+    fi
 }
 
 add_envdeps() {
@@ -455,11 +696,25 @@ add_envdeps() {
 	fi
 }
 
+add_envdeps_native() {
+    if ! copy "$PACKET_DIR/$1/env_native" "$PACKET_DIR/$2/envdeps_native"; then
+        return 1
+    fi
+}
+
+add_envdeps_native_cross() {
+    if ! copy "$NATIVE_PACKET_DIR/$1/env" "$PACKET_DIR/$2/envdeps_native"; then
+        return 1
+    fi
+}
+
 add_envdeps_release() {
 	if ! copy "$PACKET_DIR/$1/env_release" "$PACKET_DIR/$2/envdeps_release"; then
 	    return 1
 	fi
 }
+
+# functions
 
 update() {
     local NAME=$1
@@ -497,6 +752,25 @@ envdeps() {
 	set_done $NAME envdeps
 }
 
+envdeps_native() {
+    local NAME=$1
+    is_complete $NAME envdeps_native && return 0 
+    prepare     $NAME envdeps_native || return 1
+
+    message "$NAME envdeps_native"
+    try_do_nothing $NAME envdeps_native && return 0
+
+    clean_packet_directory_silent $NAME envdeps_native
+    mkdir -p "$PACKET_DIR/$NAME/envdeps_native"
+    if ! foreach_deps $NAME add_envdeps_native; then
+        return 1
+    fi
+    if ! foreach_deps $NAME add_envdeps_native_cross "" "native"; then
+        return 1
+    fi
+    set_done $NAME envdeps_native
+}
+
 build() {
     local NAME=$1
     is_complete $NAME build && return 0
@@ -526,6 +800,22 @@ env() {
 	    return 1
 	fi
 	set_done $NAME env
+}
+
+env_native() {
+    local NAME=$1
+    is_complete $NAME env_native && return 0
+    prepare     $NAME env_native || return 1
+
+    message "$NAME env_native"
+    try_do_nothing $NAME env_native && return 0
+            
+    clean_packet_directory_silent $NAME env_native
+    mkdir -p "$PACKET_DIR/$NAME/env_native"
+    if ! copy "$PACKET_DIR/$NAME/envdeps_native" "$PACKET_DIR/$NAME/env_native"; then
+        return 1
+    fi
+    set_done $NAME env_native
 }
 
 envdeps_release() {
@@ -583,6 +873,10 @@ clean_envdeps() {
     clean_packet_directory $1 envdeps
 }
 
+clean_envdeps_native() {
+    clean_packet_directory $1 envdeps_native
+}
+
 clean_build() {
     clean_packet_directory $1 build
 }
@@ -593,6 +887,10 @@ clean_install() {
 
 clean_env() {
     clean_packet_directory $1 env
+}
+
+clean_env_native() {
+    clean_packet_directory $1 env_native
 }
 
 clean_install_release() {
@@ -611,7 +909,9 @@ clean_all_env() {
     clean_install $1
     clean_install_release $1
     clean_envdeps $1
+    clean_envdeps_native $1
     clean_env $1
+    clean_env_native $1
     clean_envdeps_release $1
     clean_env_release $1
 }
@@ -627,8 +927,8 @@ clean_all_unpack() {
 }
 
 clean() {
-	message "$1 clean all"
-	try_do_nothing $NAME clean_all && return 0
+    message "$1 clean all"
+    try_do_nothing $NAME clean_all && return 0
     rm -rf "$PACKET_DIR/$1"
 }
 
@@ -646,6 +946,10 @@ set_undone_envdeps() {
     set_undone $1 envdeps
 }
 
+set_undone_envdeps_native() {
+    set_undone $1 envdeps_native
+}
+
 set_undone_build() {
     set_undone $1 build
 }
@@ -656,6 +960,10 @@ set_undone_install() {
 
 set_undone_env() {
     set_undone $1 env
+}
+
+set_undone_env_native() {
+    set_undone $1 env_native
 }
 
 set_undone_install_release() {
@@ -674,7 +982,9 @@ set_undone_all_env() {
     set_undone_install $1
     set_undone_install_release $1
     set_undone_envdeps $1
+    set_undone_envdeps_native $1
     set_undone_env $1
+    set_undone_env_native $1
     set_undone_envdeps_release $1
     set_undone_env_release $1
 }
@@ -700,6 +1010,9 @@ with_deps() {
 	if ! foreach_deps "$2" "$1" "recursive"; then
 		return 1
 	fi
+    if ! foreach_deps "$2" "$1" "recursive" "native"; then
+        return 1
+    fi
     if ! "$1" "$2"; then
         return 1
     fi
@@ -736,5 +1049,35 @@ clean_before_do() {
     "$@"
 }
 
+native() {
+    local ARGS="$@"
+    if [ ! -z "$IS_NATIVE" ]; then
+        $ARGS
+    else
+        local WAS_PLATFORM=$PLATFORM
+        local WAS_ARCH=$ARCH
+        local WAS_PACKET_DIR=$PACKET_DIR
+
+        set_toolchain "native"
+        PLATFORM=$NATIVE_PLATFORM
+        ARCH=$NATIVE_ARCH
+        PACKET_DIR=$NATIVE_PACKET_DIR
+        if [ ! -z "$NAME" ]; then
+            set_environment_vars $NAME
+        fi
+
+        $ARGS
+
+        PLATFORM=$WAS_PLATFORM
+        ARCH=$WAS_ARCH
+        PACKET_DIR=$WAS_PACKET_DIR
+        set_toolchain
+        if [ ! -z "$NAME" ]; then
+            set_environment_vars $NAME
+        fi
+    fi
+}
+
+set_toolchain
 "$@"
 

@@ -13,26 +13,28 @@ if [ -f $CONFIG_FILE ]; then
 fi
 mkdir -p $PACKET_BUILD_DIR
 
-docker stop "builder" || true
-docker rm "builder" || true
-
-if [ -z "$ARCH" ];then
-    export ARCH=64
+export NATIVE_PLATFORM=fedora
+if [ -z "$PLATFORM" ]; then
+    export PLATFORM=win
 fi
-
-if [ -z "$PLATFORM" ];then
-    export PLATFORM=win-$ARCH
+if [ -z "$TASK" ]; then
+    export TASK=builder-$NATIVE_PLATFORM
 fi
+export INSTANCE=$TASK-$PLATFORM$ARCH
 
-
+docker stop "$INSTANCE" || true
+docker rm "$INSTANCE" || true
 docker run -it \
-    --name "builder" \
+    --name "$INSTANCE" \
     --privileged=true \
     $DOCKER_RUN_OPTIONS \
     -v "$PACKET_BUILD_DIR:/build/packet" \
     -v "$SCRIPT_BUILD_DIR:/build/script" \
-    -e ARCH="$ARCH" \
+    -e NATIVE_PLATFORM="$NATIVE_PLATFORM" \
+    -e NATIVE_ARCH="$NATIVE_ARCH" \
     -e PLATFORM="$PLATFORM" \
+    -e ARCH="$ARCH" \
+    -e THREADS="$THREADS" \
     morevna/build-fedora-cross-win \
     /build/script/common/manager.sh "$@"
 

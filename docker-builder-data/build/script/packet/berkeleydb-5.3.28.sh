@@ -1,20 +1,16 @@
+DEPS=""
 
-# PK_DIRNAME
-# PK_CONFIGURE_OPTIONS
-# PK_CONFIGURE_OPTIONS_DEFAULT
-# PK_CFLAGS
-# PK_CPPFLAGS
+PK_DIRNAME="db-5.3.28/build_unix"
+PK_ARCHIVE="db-5.3.28.tar.gz"
+PK_URL="http://download.oracle.com/berkeley-db/$PK_ARCHIVE"
+
+source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh
 
 pkbuild() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME" || return 1
-    
-    if ! pkhook_prebuild; then
-        return 1
-    fi
-
     if ! check_packet_function $NAME build.cunfigure; then
         CFLAGS="$PK_CFLAGS $CFLAGS" CPPFLAGS="$PK_CPPFLAGS $CPPFLAGS" \
-        ./configure \
+        ../dist/configure \
          $PK_CONFIGURE_OPTIONS_DEFAULT \
          $PK_CONFIGURE_OPTIONS \
          || return 1
