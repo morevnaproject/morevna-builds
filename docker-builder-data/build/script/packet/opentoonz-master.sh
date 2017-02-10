@@ -8,57 +8,44 @@ source $INCLUDE_SCRIPT_DIR/inc-pkallunpack-git.sh
 source $INCLUDE_SCRIPT_DIR/inc-pkinstall_release-default.sh
 
 pkbuild() {
-    if ! (cp --remove-destination "$FILES_PACKET_DIR/Makefile.in" "$PK_DIRNAME/thirdparty/tiff-4.0.3/libtiff/" \
-     && cp --remove-destination "$FILES_PACKET_DIR/FindTIFF.cmake" "$PK_DIRNAME/toonz/cmake/"); then
+    if ! check_packet_function $NAME build.libtiff; then
+        cd "$BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/tiff-4.0.3"
+        if ! check_packet_function $NAME build.libtiff.configure; then
+            CFLAGS="$CFLAGS -fPIC" ./configure || return 1
+            set_done $NAME build.libtiff.configure
+        fi
+        make -j${THREADS} || return 1
+        set_done $NAME build.libtiff
+    fi
+
+    mkdir -p "$BUILD_PACKET_DIR/$PK_DIRNAME/toonz/build"
+    cd "$BUILD_PACKET_DIR/$PK_DIRNAME/toonz/build"
+    if ! check_packet_function $NAME build.configure; then
+        if ! cmake \
+              -DCMAKE_INSTALL_PREFIX="$INSTALL_PACKET_DIR" \
+              -DPNG_PNG_INCLUDE_DIR="$ENVDEPS_PACKET_DIR/include" \
+              -DPNG_LIBRARY="$ENVDEPS_PACKET_DIR/lib/libpng.so" \
+              -DSUPERLU_INCLUDE_DIR="$ENVDEPS_PACKET_DIR/include/superlu-5.2.1/" \
+              -DSUPERLU_LIBRARY="$ENVDEPS_PACKET_DIR/lib/libsuperlu_5.2.1.a" \
+              -DLZO_INCLUDE_DIR="/usr/include/lzo" \
+              ../sources; \
+        then
+            return 1
+        fi
+        set_done $NAME build.configure
+    fi
+
+    # making in single thread is too slow, but life is too short...
+    if ! (make -j${THREADS} || make -j${THREADS} || make); then
         return 1
     fi
-	
-	if ! check_packet_function $NAME build.libtiff; then
-		cd "$BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/tiff-4.0.3"
-		if ! check_packet_function $NAME build.libtiff.configure; then
-			if ! ./configure; then
-	    		return 1
-	    	fi
-			set_done $NAME build.libtiff.configure
-	    fi
-		
-		if ! make -j${THREADS}; then
-    		return 1
-    	fi
-		set_done $NAME build.libtiff
-    fi
-
-	cp --remove-destination "$ENVDEPS_PACKET_DIR/lib/libsuperlu_5.2.1.a" "$BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/superlu/libsuperlu_4.1.a" || return 1
-	rm -rf $BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/superlu/SuperLU_4.1/include/*
-	cp --remove-destination $ENVDEPS_PACKET_DIR/include/superlu-5.2.1/* "$BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/superlu/SuperLU_4.1/include/" || return 1
-
-	mkdir -p "$BUILD_PACKET_DIR/$PK_DIRNAME/toonz/build"
-	cd "$BUILD_PACKET_DIR/$PK_DIRNAME/toonz/build"
-	if ! check_packet_function $NAME build.configure; then
-		if ! cmake -DPNG_PNG_INCLUDE_DIR=$ENVDEPS_PACKET_DIR/include -DPNG_LIBRARY=$ENVDEPS_PACKET_DIR/lib/libpng.so -DCMAKE_INSTALL_PREFIX:PATH=$INSTALL_PACKET_DIR ../sources; then
-    		return 1
-    	fi
-		set_done $NAME build.configure
-    fi
-	
-    # making in single thread is too slow, but life is too short...
-	if ! (make -j${THREADS} || make -j${THREADS} || make); then
-		return 1
-	fi
 }
 
 pkinstall() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME/toonz/build"
-    if ! make install; then
-        return 1
-    fi
-    if ! cp --remove-destination "$FILES_PACKET_DIR/launch-opentoonz.sh" "$INSTALL_PACKET_DIR/bin"; then
-        return 1
-    fi
-    if ! cp --remove-destination $BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/tiff-4.0.3/libtiff/.libs/libtiff.so* "$INSTALL_PACKET_DIR/lib"; then
-        return 1
-    fi
-    if ! cp --remove-destination $BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/tiff-4.0.3/libtiff/.libs/libtiffxx.so* "$INSTALL_PACKET_DIR/lib"; then
-        return 1
-    fi
+    make install || return 1
+    cp --remove-destination bin/lzo* "$INSTALL_PACKET_DIR/bin" || return 1
+    cp --remove-destination "$FILES_PACKET_DIR/launch-opentoonz.sh" "$INSTALL_PACKET_DIR/bin" || return 1
+    cp --remove-destination $BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/tiff-4.0.3/libtiff/.libs/libtiff.so* "$INSTALL_PACKET_DIR/lib" || return 1
+    cp --remove-destination $BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/tiff-4.0.3/libtiff/.libs/libtiffxx.so* "$INSTALL_PACKET_DIR/lib" || return 1
 }
