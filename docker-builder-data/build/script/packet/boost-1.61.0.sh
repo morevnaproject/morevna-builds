@@ -17,21 +17,19 @@ pkbuild() {
     
     local LOCAL_OPTIONS=
     if [ "$PLATFORM" = "win" ]; then
-        LOCAL_OPTIONS="toolset=gcc-win binary-format=pe abi=ms target-os=windows --user-config=$BUILD_PACKET_DIR/$PK_DIRNAME/user-config.jam"
+        LOCAL_OPTIONS="variant=release runtime-link=shared toolset=gcc-win binary-format=pe abi=ms target-os=windows --user-config=$BUILD_PACKET_DIR/$PK_DIRNAME/user-config.jam"
         echo "using gcc : win : $CXX : cflags=$CFLAGS cxxflags=$CXXFLAGS linkflags=$LDFLAGS ;" > user-config.jam
     fi
-    ./b2 -j${THREADS} variant=release runtime-link=shared $LOCAL_OPTIONS || return 1
+    ./b2 -j${THREADS} $LOCAL_OPTIONS || return 1
 }
 
 pkinstall() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME"
     local LOCAL_OPTIONS=
     if [ "$PLATFORM" = "win" ]; then
-        LOCAL_OPTIONS="toolset=gcc-win binary-format=pe abi=ms target-os=windows --user-config=$BUILD_PACKET_DIR/$PK_DIRNAME/user-config.jam"
+        LOCAL_OPTIONS="variant=release runtime-link=shared toolset=gcc-win binary-format=pe abi=ms target-os=windows --user-config=$BUILD_PACKET_DIR/$PK_DIRNAME/user-config.jam"
     fi
-    if ! ./b2 variant=release runtime-link=shared $LOCAL_OPTIONS install; then
-        return 1
-    fi
+    ./b2 $LOCAL_OPTIONS install || return 1
     rm -rf "$INSTALL_RELEASE_PACKET_DIR/include"
     remove_recursive "$INSTALL_RELEASE_PACKET_DIR/lib" *.a
 }
