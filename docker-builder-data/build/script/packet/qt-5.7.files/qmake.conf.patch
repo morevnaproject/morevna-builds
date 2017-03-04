@@ -1,0 +1,4 @@
+33c33
+< QMAKE_CFLAGS_RELEASE    = -O2
+---
+> QMAKE_CFLAGS_RELEASE    = -O2 -Wa,-mbig-obj

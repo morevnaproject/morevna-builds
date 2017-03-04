@@ -9,14 +9,26 @@ source $INCLUDE_SCRIPT_DIR/inc-pkinstall_release-default.sh
 
 pkbuild() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME"
-	if ! make; then
-		return 1
-	fi
+
+rm -f make.inc
+cat > make.inc << EOF
+SHELL     = /bin/sh
+FORTRAN   = ${FORTRAN:-gfortran}
+OPTS      = -O3
+DRVOPTS   = \$(OPTS)
+NOOPT     =
+LOADER    = \$(FORTRAN)
+LOADOPTS  =
+ARCH      = ${AR:-ar}
+ARCHFLAGS = cr
+RANLIB    = ${RANLIB:-ranlib}
+BLASLIB   = libblas.a
+EOF
+		
+	make || return 1
 }
 
 pkinstall() {
 	mkdir -p "$INSTALL_PACKET_DIR/lib"
-	if ! cp --remove-destination -r "$BUILD_PACKET_DIR/$PK_DIRNAME/blas_LINUX.a" "$INSTALL_PACKET_DIR/lib/libblas.a"; then
-		return 1
-	fi
+	cp --remove-destination -r "$BUILD_PACKET_DIR/$PK_DIRNAME/libblas.a" "$INSTALL_PACKET_DIR/lib/" || return 1
 }

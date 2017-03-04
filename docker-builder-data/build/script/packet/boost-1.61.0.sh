@@ -11,7 +11,7 @@ pkbuild() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME"
     if ! check_packet_function $NAME build.configure; then
         local LOCAL_PREFIX=$INSTALL_PACKET_DIR
-        native ./bootstrap.sh --prefix=$LOCAL_PREFIX --without-libraries=python || return 1
+        native_at_place ./bootstrap.sh --prefix=$LOCAL_PREFIX --without-libraries=python || return 1
         set_done $NAME build.configure
     fi
     

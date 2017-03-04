@@ -48,3 +48,7 @@ pkinstall_release() {
 pkhook_prebuild() {
     return 0
 }
+
+pkhook_postinstall_release() {
+    return 0
+}

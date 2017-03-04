@@ -14,8 +14,12 @@ fi
 mkdir -p $PACKET_BUILD_DIR
 
 export NATIVE_PLATFORM=debian
+export NATIVE_ARCH=32
 if [ -z "$PLATFORM" ]; then
     export PLATFORM=linux
+fi
+if [ -z "$ARCH" ]; then
+    export ARCH=$NATIVE_ARCH
 fi
 if [ -z "$TASK" ]; then
     export TASK=builder-$NATIVE_PLATFORM
@@ -36,5 +40,5 @@ docker run -it \
     -e ARCH="$ARCH" \
     -e THREADS="$THREADS" \
     morevna/build-debian-7-32 \
-    /build/script/common/manager.sh "$@"
+    setarch i686 /build/script/common/manager.sh "$@"
 

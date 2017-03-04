@@ -52,6 +52,10 @@ RUN dnf -y install dbus-devel
 RUN dnf -y install libXtst-devel
 RUN dnf -y install bzip2-devel
 
+# additional mingw build tools
+RUN dnf -y install mingw64-gcc-gfortran
+RUN dnf -y install mingw32-gcc-gfortran
+
 # great!
 RUN rm /usr/local/bin/synfig
 

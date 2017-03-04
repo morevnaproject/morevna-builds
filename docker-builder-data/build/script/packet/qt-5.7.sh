@@ -1,4 +1,4 @@
-DEPS="png-1.6.26 xcbfull-1.12 glib-2.50.0"
+DEPS="png-1.6.26 glib-2.50.0"
 
 PK_DIRNAME="qt-everywhere-opensource-src-5.7.0"
 PK_ARCHIVE="$PK_DIRNAME.tar.gz"
@@ -7,27 +7,48 @@ PK_URL="http://download.qt.io/official_releases/qt/5.7/5.7.0/single/$PK_ARCHIVE"
 source $INCLUDE_SCRIPT_DIR/inc-pkallunpack-default.sh
 source $INCLUDE_SCRIPT_DIR/inc-pkinstall_release-default.sh
 
+if [ "$PLATFORM" = "linux" ]; then
+    DEPS="$DEPS xcbfull-1.12"
+fi
+
+
 pkbuild() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME"
     
-	if ! check_packet_function $NAME build.cunfigure; then
-    	if ! ./configure -prefix "$INSTALL_PACKET_DIR" -opensource -confirm-license -no-compile-examples -nomake examples; then
-    		return 1
-    	fi
-		set_done $NAME build.cunfigure
+    if ! check_packet_function $NAME build.configure; then
+        local LOCAL_OPTIONS=
+        if [ "$PLATFORM" = "win" ]; then
+            rm -f "qtbase/mkspecs/win32-g++/qmake.conf"
+            patch "$UNPACK_PACKET_DIR/$PK_DIRNAME/qtbase/mkspecs/win32-g++/qmake.conf" \
+             -i "$FILES_PACKET_DIR/qmake.conf.patch" -o - \
+             > "qtbase/mkspecs/win32-g++/qmake.conf"
+
+            rm -f "qtactiveqt/src/tools/idc/idc.pro"
+            patch "$UNPACK_PACKET_DIR/$PK_DIRNAME/qtactiveqt/src/tools/idc/idc.pro" \
+             -i "$FILES_PACKET_DIR/idc.pro.patch" -o - \
+             > "qtactiveqt/src/tools/idc/idc.pro"
+
+            LOCAL_OPTIONS="-xplatform win32-g++ -device-option CROSS_COMPILE=$HOST-"
+        fi
+                                                                
+        native_at_place \
+           ./configure \
+           -prefix "$INSTALL_PACKET_DIR" \
+           $LOCAL_OPTIONS \
+           -release \
+           -opensource -confirm-license \
+           -nomake examples \
+         || return 1
+
+        set_done $NAME build.configure
     fi
     
-    # making in single thread is too slow, but life is too short...
-	if ! (make -j${THREADS} || make -j${THREADS} || make); then
-        return 1
-    fi
+    native_at_place make -j${THREADS} || return 1
 }
 
 pkinstall() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME"
-    if ! make install; then
-        return 1
-    fi
+    make install || return 1
     
 cat << EOF > "$INSTALL_PACKET_DIR/bin/qt.conf"
 [Paths]
@@ -36,5 +57,5 @@ EOF
 
     if [ ! $? -eq 0 ]; then
         return 1
-	fi
+    fi
 }

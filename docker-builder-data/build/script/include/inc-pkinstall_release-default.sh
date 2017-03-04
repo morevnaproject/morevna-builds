@@ -12,4 +12,8 @@ pkinstall_release() {
 	rm -rf "$INSTALL_RELEASE_PACKET_DIR/share/doc"
 	rm -rf "$INSTALL_RELEASE_PACKET_DIR/share/gtk-doc"
 	rm -rf "$INSTALL_RELEASE_PACKET_DIR/share/man"
+	
+	if ! pkhook_postinstall_release; then
+	    return 1
+	fi
 }

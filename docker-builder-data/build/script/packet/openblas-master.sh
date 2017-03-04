@@ -8,11 +8,30 @@ source $INCLUDE_SCRIPT_DIR/inc-pkinstall_release-default.sh
 
 pkbuild() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME"
-    local PK_MAKE_ARG=""
-    if [ "$PLATFORM" = "linux-i386" ]; then
-    	PK_MAKE_ARG="BINARY=32"
+    
+    local LOCAL_BINARY_OPTION=
+    if [ "$ARCH" = "32" ]; then
+        LOCAL_BINARY_OPTION="BINARY=$ARCH"
     fi
-	if ! PREFIX=${INSTALL_PACKET_DIR} make $PK_MAKE_ARG -j${THREADS}; then
+
+rm -f Makefile.rule
+cat > Makefile.rule << EOF
+PREFIX                     = ${INSTALL_PACKET_DIR}
+VERSION                    = 0.2.20.dev
+CC                         = ${CC:-gcc}
+FC                         = ${FORTRAN:-gfortran}
+TARGET                     = generic
+${LOCAL_BINARY_OPTION}
+HOSTCC                     = PATH=${INITIAL_PATH} /usr/bin/gcc
+USE_THREAD                 = 1
+NUM_THREADS                = 24
+BUILD_LAPACK_DEPRECATED    = 1
+NO_WARMUP                  = 1
+NO_AFFINITY                = 1
+COMMON_PROF                = -pg
+EOF
+
+    if ! make -j${THREADS}; then
         return 1
     fi
 }

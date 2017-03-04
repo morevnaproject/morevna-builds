@@ -81,13 +81,20 @@ INITIAL_PATH=$PATH
 INITIAL_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
 INITIAL_CC=$CC
 INITIAL_CXX=$CXX
+INITIAL_FORTRAN=$FORTRAN
+INITIAL_LD=$LD
+INITIAL_AR=$AR
+INITIAL_RANLIB=$RANLIB
 INITIAL_LDFLAGS=$LDFLAGS
 INITIAL_CFLAGS=$CFLAGS
 INITIAL_CPPFLAGS=$CPPFLAGS
 INITIAL_CXXFLAGS=$CXXFLAGS
 INITIAL_PKG_CONFIG_PATH=$PKG_CONFIG_PATH
+INITIAL_PKG_CONFIG_LIBDIR=$PKG_CONFIG_LIBDIR
 INITIAL_XDG_DATA_DIRS=$XDG_DATA_DIRS
 INITIAL_ACLOCAL_PATH=$ACLOCAL_PATH
+INITIAL_CMAKE_INCLUDE_PATH=$CMAKE_INCLUDE_PATH
+INITIAL_CMAKE_LIBRARY_PATH=$CMAKE_LIBRARY_PATH
 
 if [ ! -z "$INITIAL_ACLOCAL_PATH" ]; then
     INITIAL_ACLOCAL_PATH = "$INITIAL_ACLOCAL_PATH:"
@@ -362,6 +369,10 @@ $TOOLCHAIN_LD_LIBRARY_PATH"
 
     export CC=$TOOLCHAIN_CC
     export CXX=$TOOLCHAIN_CXX
+    export FORTRAN=$TOOLCHAIN_FORTRAN
+    export LD=$TOOLCHAIN_LD
+    export AR=$TOOLCHAIN_AR
+    export RANLIB=$TOOLCHAIN_RANLIB
 
     if [ -z "$CC" ]; then
         export -n CC
@@ -369,14 +380,31 @@ $TOOLCHAIN_LD_LIBRARY_PATH"
     if [ -z "$CXX" ]; then
         export -n CXX
     fi
+    if [ -z "$FORTRAN" ]; then
+        export -n FORTRAN
+    fi
+    if [ -z "$LD" ]; then
+        export -n LD
+    fi
+    if [ -z "$AR" ]; then
+        export -n AR
+    fi
+    if [ -z "$RANLIB" ]; then
+        export -n RANLIB
+    fi
+
 
     export LDFLAGS="-L$ENVDEPS_PACKET_DIR/lib -L$ENVDEPS_PACKET_DIR/lib64 $TOOLCHAIN_LDFLAGS"
     export CFLAGS="-I$ENVDEPS_PACKET_DIR/include $TOOLCHAIN_CFLAGS"
     export CPPFLAGS="-I$ENVDEPS_PACKET_DIR/include $TOOLCHAIN_CPPFLAGS"
     export CXXFLAGS="-I$ENVDEPS_PACKET_DIR/include $TOOLCHAIN_CXXFLAGS"
-    export PKG_CONFIG_PATH="$ENVDEPS_PACKET_DIR/lib/pkgconfig:$TOOLCHAIN_PKG_CONFIG_PATH"
+    export PKG_CONFIG_PATH="$ENVDEPS_PACKET_DIR/lib/pkgconfig:$ENVDEPS_PACKET_DIR/share/pkgconfig:$TOOLCHAIN_PKG_CONFIG_PATH"
+    export PKG_CONFIG_LIBDIR="$ENVDEPS_PACKET_DIR/lib:$TOOLCHAIN_PKG_CONFIG_LIBDIR"
+    export PKG_CONFIG_SYSROOT_DIR="/"
     export XDG_DATA_DIRS="$ENVDEPS_PACKET_DIR/share:$TOOLCHAIN_XDG_DATA_DIRS"
-    export ACLOCAL_PATH="$ENVDEPS_PACKET_DIR/share/aclocal:$TOOLCHAIN_ACLOCAL_PATH" 
+    export ACLOCAL_PATH="$ENVDEPS_PACKET_DIR/share/aclocal:$TOOLCHAIN_ACLOCAL_PATH"
+    export CMAKE_INCLUDE_PATH="$ENVDEPS_PACKET_DIR/include:$TOOLCHAIN_CMAKE_INCLUDE_PATH"  
+    export CMAKE_LIBRARY_PATH="$ENVDEPS_PACKET_DIR/lib:$ENVDEPS_PACKET_DIR/lib64:$TOOLCHAIN_CMAKE_LIBRARY_PATH"  
 }
 
 call_packet_function() {
@@ -401,7 +429,7 @@ call_packet_function() {
 			PREV_HASH=`md5 "$FUNC_CURRENT_PACKET_DIR"` 
 			[ ! $? -eq 0 ] && return 1
 		fi
-	else
+    else
    		set_undone_silent $NAME $FUNC
 	fi
 
@@ -872,7 +900,7 @@ clean_download() {
 }
 
 clean_unpack() {
-    clean_packet_directory $1 download
+    clean_packet_directory $1 unpack
 }
 
 clean_envdeps() {
@@ -1057,6 +1085,7 @@ clean_before_do() {
 
 native() {
     local ARGS="$@"
+    local LOCAL_ERROR=0
     if [ ! -z "$IS_NATIVE" ]; then
         $ARGS
     else
@@ -1073,6 +1102,7 @@ native() {
         fi
 
         $ARGS
+        LOCAL_ERROR=$?
 
         PLATFORM=$WAS_PLATFORM
         ARCH=$WAS_ARCH
@@ -1082,6 +1112,36 @@ native() {
             set_environment_vars $NAME
         fi
     fi
+    return $LOCAL_ERROR
+}
+
+native_at_place() {
+    local ARGS="$@"
+    local LOCAL_ERROR=0
+    if [ ! -z "$IS_NATIVE" ]; then
+        $ARGS
+    else
+        local WAS_PLATFORM=$PLATFORM
+        local WAS_ARCH=$ARCH
+
+        set_toolchain "native"
+        PLATFORM=$NATIVE_PLATFORM
+        ARCH=$NATIVE_ARCH
+        if [ ! -z "$NAME" ]; then
+            set_environment_vars $NAME
+        fi
+
+        $ARGS
+        LOCAL_ERROR=$?
+
+        PLATFORM=$WAS_PLATFORM
+        ARCH=$WAS_ARCH
+        set_toolchain
+        if [ ! -z "$NAME" ]; then
+            set_environment_vars $NAME
+        fi
+    fi
+    return $LOCAL_ERROR
 }
 
 set_toolchain
