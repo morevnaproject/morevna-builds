@@ -77,6 +77,10 @@ pkhook_postinstall_release() {
         cp $LOCAL_DIR/libstdc*.dll       "$INSTALL_RELEASE_PACKET_DIR/bin/" || return 1
         cp $LOCAL_DIR/libwinpthread*.dll "$INSTALL_RELEASE_PACKET_DIR/bin/" || return 1
         cp $LOCAL_DIR/zlib*.dll          "$INSTALL_RELEASE_PACKET_DIR/bin/" || return 1
+        cp $LOCAL_DIR/libgettextlib*.dll "$INSTALL_RELEASE_PACKET_DIR/bin/" || return 1
+        cp $LOCAL_DIR/libintl*.dll       "$INSTALL_RELEASE_PACKET_DIR/bin/" || return 1
+        cp $LOCAL_DIR/iconv*.dll         "$INSTALL_RELEASE_PACKET_DIR/bin/" || return 1
+        cp $LOCAL_DIR/libtermcap*.dll    "$INSTALL_RELEASE_PACKET_DIR/bin/" || return 1
     else
         copy_system_lib libudev     "$INSTALL_RELEASE_PACKET_DIR/lib/" || return 1
         copy_system_lib libgfortran "$INSTALL_RELEASE_PACKET_DIR/lib/" || return 1

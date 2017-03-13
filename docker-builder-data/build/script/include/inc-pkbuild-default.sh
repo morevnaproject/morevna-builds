@@ -4,6 +4,7 @@
 # PK_CONFIGURE_OPTIONS_DEFAULT
 # PK_CFLAGS
 # PK_CPPFLAGS
+# PK_LDFLAGS
 
 pkbuild() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME" || return 1
@@ -13,7 +14,7 @@ pkbuild() {
     fi
 
     if ! check_packet_function $NAME build.cunfigure; then
-        CFLAGS="$PK_CFLAGS $CFLAGS" CPPFLAGS="$PK_CPPFLAGS $CPPFLAGS" \
+        CFLAGS="$PK_CFLAGS $CFLAGS" CPPFLAGS="$PK_CPPFLAGS $CPPFLAGS" LDFLAGS="$PK_LDFLAGS $LDFLAGS" \
         ./configure \
          $PK_CONFIGURE_OPTIONS_DEFAULT \
          $PK_CONFIGURE_OPTIONS \
@@ -21,7 +22,7 @@ pkbuild() {
         set_done $NAME build.cunfigure
     fi
     
-    if ! CFLAGS="$PK_CFLAGS $CFLAGS" CPPFLAGS="$PK_CPPFLAGS $CPPFLAGS" \
+    if ! CFLAGS="$PK_CFLAGS $CFLAGS" CPPFLAGS="$PK_CPPFLAGS $CPPFLAGS" LDFLAGS="$PK_LDFLAGS $LDFLAGS" \
      make -j${THREADS}; then
         return 1
     fi

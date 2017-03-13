@@ -10,7 +10,7 @@ pkfunc_register_file() {
     elif [ "${FILE:0:24}" = "./share/opentoonz/stuff/" ]; then
         if [ -d "$FILE" ]; then
             echo "CreateDirectory \"\$STUFFDIR\\${WIN_FILE:24}\""   >> "files-stuff-install.nsh"
-            foreachfile $FILE pkfunc_register_file
+            foreachfile "$FILE" pkfunc_register_file
             echo "RMDir \"\$STUFFDIR\\${WIN_FILE:24}\""             >> "files-stuff-uninstall.nsh"
         else
             echo "File \"/oname=${WIN_FILE:24}\" \"${WIN_FILE:2}\"" >> "files-stuff-install.nsh"
@@ -19,7 +19,7 @@ pkfunc_register_file() {
     elif [ "${FILE:0:2}" = "./" ]; then
         if [ -d "$FILE" ]; then
             echo "CreateDirectory \"\$INSTDIR\\${WIN_FILE:2}\""     >> "files-install.nsh"
-            foreachfile $FILE pkfunc_register_file
+            foreachfile "$FILE" pkfunc_register_file
             echo "RMDir \"\$INSTDIR\\${WIN_FILE:2}\""               >> "files-uninstall.nsh" 
         else
             echo "File \"/oname=${WIN_FILE:2}\" \"${WIN_FILE:2}\""  >> "files-install.nsh"
@@ -40,7 +40,7 @@ pkinstall_release() {
     copy "$ENVDEPS_RELEASE_PACKET_DIR" "./" || return 1
     
     # get version
-    local LOCAL_VERSION=$(cat "$ENVDEPS_RELEASE_PACKET_DIR/version-opentoonz-master")
+    local LOCAL_VERSION=$(cat $ENVDEPS_RELEASE_PACKET_DIR/version-opentoonz-*)
 
     # create file lists
     echo "create file lists"

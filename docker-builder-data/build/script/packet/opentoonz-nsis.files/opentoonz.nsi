@@ -45,6 +45,7 @@ RequestExecutionLevel highest
 !define SHCNF_IDLIST 0
 
 !define PRODUCT_REG_KEY "Software\${PK_NAME}"
+!define PRODUCT_STUFF_KEY "${PRODUCT_REG_KEY}\${PK_NAME}\${PK_VERSION}"
 !define PRODUCT_UNINSTALL_KEY  "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PK_NAME}"
 !define PRODUCT_UNINSTALL_KEY2 "Software\Microsoft\Windows\CurrentVersion\Uninstall\{D9A9B1A3-9370-4BE9-9C8F-7B52EEECB973}_is1"
 !define PRODUCT_UNINSTALL_EXE  "uninstall-${PK_NAME}.exe"
@@ -88,7 +89,16 @@ Section "${PK_NAME_FULL} (required)"
 
   WriteRegStr HKLM "${PRODUCT_REG_KEY}" "Path" "$INSTDIR"
   WriteRegStr HKLM "${PRODUCT_REG_KEY}" "Version" "${PK_VERSION_FULL}"
-  WriteRegStr HKLM "${PRODUCT_REG_KEY}\${PK_NAME}\${PK_VERSION}" "TOONZROOT" "$STUFFDIR"
+
+  WriteRegStr HKLM "${PRODUCT_STUFF_KEY}" "TOONZROOT"          "$STUFFDIR"
+  WriteRegStr HKLM "${PRODUCT_STUFF_KEY}" "TOONZPROJECTS"      "$STUFFDIR\projects"
+  WriteRegStr HKLM "${PRODUCT_STUFF_KEY}" "TOONZCACHEROOT"     "$STUFFDIR\cache"
+  WriteRegStr HKLM "${PRODUCT_STUFF_KEY}" "TOONZCONFIG"        "$STUFFDIR\config"
+  WriteRegStr HKLM "${PRODUCT_STUFF_KEY}" "TOONZPROFILES"      "$STUFFDIR\profiles"
+  WriteRegStr HKLM "${PRODUCT_STUFF_KEY}" "TOONZFXPRESETS"     "$STUFFDIR\fxs"
+  WriteRegStr HKLM "${PRODUCT_STUFF_KEY}" "TOONZLIBRARY"       "$STUFFDIR\library"
+  WriteRegStr HKLM "${PRODUCT_STUFF_KEY}" "TOONZSTUDIOPALETTE" "$STUFFDIR\studiopalette"
+  WriteRegStr HKLM "${PRODUCT_STUFF_KEY}" "FARMROOT"           ""
 
   ; Write the uninstall keys for Windows
   WriteRegStr HKLM "${PRODUCT_UNINSTALL_KEY}" "DisplayName" "${PK_NAME_FULL}"
@@ -122,6 +132,7 @@ SectionEnd
 Section "Uninstall"
   SetRegView ${PK_ARCH}
 
+  ReadRegStr $INSTDIR HKLM "${PRODUCT_REG_KEY}" "Path"
   ReadRegStr $STUFFDIR HKLM "${PRODUCT_REG_KEY}\${PK_NAME}\${PK_VERSION}" "TOONZROOT"
 
   ; Remove registry keys
