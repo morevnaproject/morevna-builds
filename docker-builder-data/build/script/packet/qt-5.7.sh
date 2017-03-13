@@ -59,3 +59,10 @@ EOF
         return 1
     fi
 }
+
+pkhook_postinstall_release() {
+    cd "$INSTALL_RELEASE_PACKET_DIR" || return 1
+    rm -rf "examples" || return 1
+    rm -rf "mkspecs" || return 1
+    rm -rf "doc" || return 1
+}

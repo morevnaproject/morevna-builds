@@ -195,6 +195,21 @@ copy() {
 	fi
 }
 
+foreachfile() {
+    local FILE=$1
+    local COMMAND=$2
+    if [ ! -x "$FILE" ]; then
+        return 1
+    fi
+    if [ -d "$FILE" ]; then    
+        ls -1 "$FILE" | while read SUBFILE; do
+            if ! $COMMAND "$FILE/$SUBFILE" ${@:3}; then
+                return 1
+            fi
+        done
+    fi
+}
+
 readdir() {
     local FILE=$1
     if [ -d "$FILE" ]; then
