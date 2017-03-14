@@ -3,9 +3,9 @@ DEPS=""
 PK_DIRNAME="boost_1_61_0"
 PK_ARCHIVE="$PK_DIRNAME.tar.bz2"
 PK_URL="https://sourceforge.net/projects/boost/files/boost/1.61.0/$PK_ARCHIVE/download"
+PK_LICENSE_FILES="LICENSE_1_0.txt"
 
-source $INCLUDE_SCRIPT_DIR/inc-pkallunpack-default.sh
-source $INCLUDE_SCRIPT_DIR/inc-pkinstall_release-default.sh
+source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh
 
 pkbuild() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME"

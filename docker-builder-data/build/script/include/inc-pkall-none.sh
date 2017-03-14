@@ -10,6 +10,7 @@ PK_CFLAGS=
 PK_CPPFLAGS=
 PK_LDFLAGS=
 PK_GIT_OPTIONS=
+PK_LICENSE_FILES=
 
 PK_CONFIGURE_OPTIONS_DEFAULT=
 
@@ -27,26 +28,34 @@ PK_CONFIGURE_OPTIONS_DEFAULT=" \
 
 
 pkdownload() {
-	return 0
+    return 0
 }
 
 pkunpack() {
-	return 0
+    return 0
 }
 
 pkbuild() {
-	return 0
+    return 0
+}
+
+pklicense() {
+    return 0
 }
 
 pkinstall() {
-	return 0
+    return 0
 }
 
 pkinstall_release() {
-	return 0
+    return 0
 }
 
 pkhook_prebuild() {
+    return 0
+}
+
+pkhook_postlicense() {
     return 0
 }
 

@@ -3,10 +3,9 @@ DEPS="croco-0.6.11 gdkpixbuf-2.36.0 cairo-1.15.4 pango-1.40.3"
 PK_DIRNAME="librsvg-2.40.16"
 PK_ARCHIVE="$PK_DIRNAME.tar.xz"
 PK_URL="https://download.gnome.org/sources/librsvg/2.40/$PK_ARCHIVE"
+PK_LICENSE_FILES="AUTHORS COPYING COPYING.LIB"
 
-source $INCLUDE_SCRIPT_DIR/inc-pkallunpack-default.sh
-source $INCLUDE_SCRIPT_DIR/inc-pkbuild-default.sh
-source $INCLUDE_SCRIPT_DIR/inc-pkinstall_release-default.sh
+source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh
 
 PK_CONFIGURE_OPTIONS="--enable-introspection=no"
 

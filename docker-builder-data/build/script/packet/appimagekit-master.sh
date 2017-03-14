@@ -5,7 +5,7 @@ PK_DIRNAME="AppImageKit"
 PK_URL="https://github.com/probonopd/$PK_DIRNAME.git"
 PK_GIT_OPTIONS="--branch master"
 
-source $INCLUDE_SCRIPT_DIR/inc-pkallunpack-git.sh
+source $INCLUDE_SCRIPT_DIR/inc-pkall-git.sh
 
 pkbuild() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME"

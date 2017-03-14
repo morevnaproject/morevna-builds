@@ -4,8 +4,7 @@ PK_DIRNAME="BLAS-3.7.0"
 PK_ARCHIVE="blas-3.7.0.tgz"
 PK_URL="http://www.netlib.org/blas/$PK_ARCHIVE"
 
-source $INCLUDE_SCRIPT_DIR/inc-pkallunpack-default.sh
-source $INCLUDE_SCRIPT_DIR/inc-pkinstall_release-default.sh
+source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh
 
 pkbuild() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME"

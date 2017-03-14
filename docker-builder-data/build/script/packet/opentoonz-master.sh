@@ -4,11 +4,11 @@ DEPS_NATIVE="cmake-3.6.2"
 PK_VERSION="1.1.2"
 PK_DIRNAME="opentoonz"
 PK_URL="https://github.com/opentoonz/$PK_DIRNAME.git"
+PK_LICENSE_FILES="README.md LICENSE.txt thirdparty/tiff-4.0.3/COPYRIGHT"
 
 PK_CONFIGURE_OPTIONS=
 
-source $INCLUDE_SCRIPT_DIR/inc-pkallunpack-git.sh
-source $INCLUDE_SCRIPT_DIR/inc-pkinstall_release-default.sh
+source $INCLUDE_SCRIPT_DIR/inc-pkall-git.sh
 
 if [ "$PLATFORM" = "linux" ]; then
     DEPS="$DEPS usb-1.0.20 sdl-2.0.5"
@@ -66,24 +66,38 @@ pkinstall() {
         cp --remove-destination $BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/tiff-4.0.3/libtiff/.libs/libtiff.so* "$INSTALL_PACKET_DIR/lib" || return 1
         cp --remove-destination $BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/tiff-4.0.3/libtiff/.libs/libtiffxx.so* "$INSTALL_PACKET_DIR/lib" || return 1
     fi
+
+    if [ "$PLATFORM" = "win" ]; then
+        local TARGET="$INSTALL_PACKET_DIR/bin/"
+        local LOCAL_DIR="/usr/$HOST/sys-root/mingw/bin/"
+        cp $LOCAL_DIR/libgcc*.dll        "$TARGET" || return 1
+        cp $LOCAL_DIR/libgfortran*.dll   "$TARGET" || return 1
+        cp $LOCAL_DIR/libquadmath*.dll   "$TARGET" || return 1
+        cp $LOCAL_DIR/libstdc*.dll       "$TARGET" || return 1
+        cp $LOCAL_DIR/libwinpthread*.dll "$TARGET" || return 1
+        cp $LOCAL_DIR/zlib*.dll          "$TARGET" || return 1
+        cp $LOCAL_DIR/libgettextlib*.dll "$TARGET" || return 1
+        cp $LOCAL_DIR/libintl*.dll       "$TARGET" || return 1
+        cp $LOCAL_DIR/iconv*.dll         "$TARGET" || return 1
+        cp $LOCAL_DIR/libtermcap*.dll    "$TARGET" || return 1
+    else
+        local TARGET="$INSTALL_PACKET_DIR/lib/"
+        copy_system_lib libudev          "$TARGET" || return 1
+        copy_system_lib libgfortran      "$TARGET" || return 1
+    fi
 }
 
-pkhook_postinstall_release() {
+pkhook_postlicense() {
+    local TARGET="$LICENSE_PACKET_DIR"
     if [ "$PLATFORM" = "win" ]; then
         local LOCAL_DIR="/usr/$HOST/sys-root/mingw/bin/"
-        cp $LOCAL_DIR/libgcc*.dll        "$INSTALL_RELEASE_PACKET_DIR/bin/" || return 1
-        cp $LOCAL_DIR/libgfortran*.dll   "$INSTALL_RELEASE_PACKET_DIR/bin/" || return 1
-        cp $LOCAL_DIR/libquadmath*.dll   "$INSTALL_RELEASE_PACKET_DIR/bin/" || return 1
-        cp $LOCAL_DIR/libstdc*.dll       "$INSTALL_RELEASE_PACKET_DIR/bin/" || return 1
-        cp $LOCAL_DIR/libwinpthread*.dll "$INSTALL_RELEASE_PACKET_DIR/bin/" || return 1
-        cp $LOCAL_DIR/zlib*.dll          "$INSTALL_RELEASE_PACKET_DIR/bin/" || return 1
-        cp $LOCAL_DIR/libgettextlib*.dll "$INSTALL_RELEASE_PACKET_DIR/bin/" || return 1
-        cp $LOCAL_DIR/libintl*.dll       "$INSTALL_RELEASE_PACKET_DIR/bin/" || return 1
-        cp $LOCAL_DIR/iconv*.dll         "$INSTALL_RELEASE_PACKET_DIR/bin/" || return 1
-        cp $LOCAL_DIR/libtermcap*.dll    "$INSTALL_RELEASE_PACKET_DIR/bin/" || return 1
+        copy_system_license "mingw$ARCH-gcc gcc"   "$TARGET" || return 1
+        copy_system_license mingw$ARCH-winpthreads "$TARGET" || return 1
+        copy_system_license mingw$ARCH-gettext     "$TARGET" || return 1
+        copy_system_license mingw$ARCH-win-iconv   "$TARGET" || return 1
+        copy_system_license mingw$ARCH-termcap     "$TARGET" || return 1
     else
-        copy_system_lib libudev     "$INSTALL_RELEASE_PACKET_DIR/lib/" || return 1
-        copy_system_lib libgfortran "$INSTALL_RELEASE_PACKET_DIR/lib/" || return 1
-        copy_system_lib libpng12    "$INSTALL_RELEASE_PACKET_DIR/lib/" || return 1
+        copy_system_license libudev                "$TARGET" || return 1
+        copy_system_license libgfortran            "$TARGET" || return 1
     fi
 }

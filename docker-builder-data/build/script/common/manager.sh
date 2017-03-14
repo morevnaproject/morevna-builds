@@ -134,26 +134,29 @@ declare -A COMPLETION_STATUS
 # 4.   envdeps_native | | | |
 #       |         | | | | | |
 # 5.    |         | build | |
-#       |         |  |    | |
-# 6.    |         --install |
+#       |         | | |   | |
+#       |         | | |   | |
+# 6.    |         | | lic | | (license)
+#       |         | | |   | |
+# 7.    |         --install |
 #       |            |    | |
-# 7.    |            |    env
+# 8.    |            |    env
 #       |            |    | |
 #       |            |    | envdeps*
 #       |            |    |
 #       |            |   envdeps_native**
 #       |            |
-# 8.   env_native    |
+# 9.   env_native    |
 #       |            |
 #    envdeps_native* |
 #                    |
 #                    | env_release^
 #                    |  | 
-# 9.                 | envdeps_release
+# 10.                | envdeps_release
 #                    |  |           | 
-# 10.               install_release |
+# 11.               install_release |
 #                           |       |
-# 11.                      env_release
+# 12.                      env_release
 #                           |
 #                          envdeps_release*
 #
@@ -164,7 +167,8 @@ FUNC_DEPS_unpack="download"
 FUNC_DEPS_envdeps="-env"
 FUNC_DEPS_envdeps_native="--env -env_native"
 FUNC_DEPS_build="envdeps envdeps_native unpack"
-FUNC_DEPS_install="envdeps envdeps_native build"
+FUNC_DEPS_license="build"
+FUNC_DEPS_install="envdeps envdeps_native build license"
 FUNC_DEPS_env="envdeps install"
 FUNC_DEPS_env_native="envdeps_native"
 FUNC_DEPS_envdeps_release="-env_release"
@@ -259,6 +263,51 @@ copy_system_lib() {
      || (echo "$SRC_NAME not found in system libraries" && return 1)
 }
 
+copy_system_license() {
+    local SRC_NAMES=$1
+    local DST_PATH=$2
+    local SRC_NAME=
+    for SRC_NAME in $SRC_NAMES; do
+        rm -f "$DST_PATH/license-$SRC_NAME"
+    done
+    for SRC_NAME in $SRC_NAMES; do
+        local TARGET="$DST_PATH/license-$SRC_NAME"
+        local FILE=
+        if   [ -f "/usr/share/doc/$SRC_NAME/copyright" ]; then
+             FILE="/usr/share/doc/$SRC_NAME/copyright"
+        elif [ -d "/usr/share/licenses/$SRC_NAME" ]; then
+             FILE="/usr/share/licenses/$SRC_NAME"
+        elif [ -d "/usr/share/doc/$SRC_NAME" ]; then
+             FILE="/usr/share/doc/$SRC_NAME"
+        fi
+
+        if [ -f "$FILE" ]; then
+            echo ""                                      >> "$TARGET"
+            echo "-------------------------------------" >> "$TARGET"
+            echo "  File: $FILE"                         >> "$TARGET"
+            echo "-------------------------------------" >> "$TARGET"
+            echo ""                                      >> "$TARGET"
+            cat "$FILE"                                  >> "$TARGET"
+        elif [ -d "$FILE" ]; then
+            ls -1 "$FILE" | while read SUBFILE; do
+                echo ""                                      >> "$TARGET"
+                echo "-------------------------------------" >> "$TARGET"
+                echo "  File: $SUBFILE"                      >> "$TARGET"
+                echo "-------------------------------------" >> "$TARGET"
+                echo ""                                      >> "$TARGET"
+                cat "$SUBFILE"                               >> "$TARGET"
+            done
+        fi
+        
+        if [ -f "$TARGET" ]; then
+            return 0
+        fi
+    done
+
+    echo "Cannot found any license for one of system packages: $SRC_NAMES"
+    return 1
+}
+
 # internal functions
 
 message() {
@@ -333,10 +382,16 @@ prepare_build() {
     fi
 }
 
+prepare_license() {
+    return 0
+}
+
 prepare_install() {
     if ls $BUILD_PACKET_DIR/version-* 1> /dev/null 2>&1; then
         cp --remove-destination $BUILD_PACKET_DIR/version-* "$INSTALL_PACKET_DIR/" || true
     fi
+    mkdir -p "$INSTALL_PACKET_DIR/license" || return 1
+    copy "$LICENSE_PACKET_DIR" "$INSTALL_PACKET_DIR/license" || return 1
 }
 
 prepare_install_release() {
@@ -348,19 +403,20 @@ prepare_install_release() {
 set_environment_vars() {
     export NAME=$1
 
-    export CURRENT_PACKET_DIR=$PACKET_DIR/$NAME
-	export FILES_PACKET_DIR=$PACKET_SCRIPT_DIR/$NAME.files
-    export DOWNLOAD_PACKET_DIR=$CURRENT_PACKET_DIR/download
-    export UNPACK_PACKET_DIR=$CURRENT_PACKET_DIR/unpack
-    export ENVDEPS_PACKET_DIR=$CURRENT_PACKET_DIR/envdeps
-    export ENVDEPS_NATIVE_PACKET_DIR=$CURRENT_PACKET_DIR/envdeps_native
-    export BUILD_PACKET_DIR=$CURRENT_PACKET_DIR/build
-    export INSTALL_PACKET_DIR=$CURRENT_PACKET_DIR/install
-    export INSTALL_RELEASE_PACKET_DIR=$CURRENT_PACKET_DIR/install_release
-    export ENV_PACKET_DIR=$CURRENT_PACKET_DIR/env
-    export ENV_NATIVE_PACKET_DIR=$CURRENT_PACKET_DIR/env_native
-    export ENVDEPS_RELEASE_PACKET_DIR=$CURRENT_PACKET_DIR/envdeps_release
-    export ENV_RELEASE_PACKET_DIR=$CURRENT_PACKET_DIR/env_release
+    export CURRENT_PACKET_DIR="$PACKET_DIR/$NAME"
+	export FILES_PACKET_DIR="$PACKET_SCRIPT_DIR/$NAME.files"
+    export DOWNLOAD_PACKET_DIR="$CURRENT_PACKET_DIR/download"
+    export UNPACK_PACKET_DIR="$CURRENT_PACKET_DIR/unpack"
+    export ENVDEPS_PACKET_DIR="$CURRENT_PACKET_DIR/envdeps"
+    export ENVDEPS_NATIVE_PACKET_DIR="$CURRENT_PACKET_DIR/envdeps_native"
+    export BUILD_PACKET_DIR="$CURRENT_PACKET_DIR/build"
+    export LICENSE_PACKET_DIR="$CURRENT_PACKET_DIR/license"
+    export INSTALL_PACKET_DIR="$CURRENT_PACKET_DIR/install"
+    export INSTALL_RELEASE_PACKET_DIR="$CURRENT_PACKET_DIR/install_release"
+    export ENV_PACKET_DIR="$CURRENT_PACKET_DIR/env"
+    export ENV_NATIVE_PACKET_DIR="$CURRENT_PACKET_DIR/env_native"
+    export ENVDEPS_RELEASE_PACKET_DIR="$CURRENT_PACKET_DIR/envdeps_release"
+    export ENV_RELEASE_PACKET_DIR="$CURRENT_PACKET_DIR/env_release"
 
     export HOST=$TOOLCHAIN_HOST
 
@@ -758,9 +814,9 @@ add_envdeps_native_cross() {
 }
 
 add_envdeps_release() {
-	if ! copy "$PACKET_DIR/$1/env_release" "$PACKET_DIR/$2/envdeps_release"; then
-	    return 1
-	fi
+    if ! copy "$PACKET_DIR/$1/env_release" "$PACKET_DIR/$2/envdeps_release"; then
+        return 1
+    fi
 }
 
 # functions
@@ -788,17 +844,17 @@ unpack() {
 envdeps() {
     local NAME=$1
     is_complete $NAME envdeps && return 0 
-	prepare     $NAME envdeps || return 1
+    prepare     $NAME envdeps || return 1
 
     message "$NAME envdeps"
     try_do_nothing $NAME envdeps && return 0
 
     clean_packet_directory_silent $NAME envdeps
     mkdir -p "$PACKET_DIR/$NAME/envdeps"
-	if ! foreach_deps $NAME add_envdeps; then
-		return 1
-	fi
-	set_done $NAME envdeps
+    if ! foreach_deps $NAME add_envdeps; then
+        return 1
+    fi
+    set_done $NAME envdeps
 }
 
 envdeps_native() {
@@ -827,6 +883,13 @@ build() {
     call_packet_function $NAME build prepare_build || return 1
 }
 
+license() {
+    local NAME=$1
+    is_complete $NAME license && return 0
+    prepare     $NAME license || return 1
+    call_packet_function $NAME license prepare_license || return 1
+}
+
 install() {
     local NAME=$1
     is_complete $NAME install && return 0
@@ -841,14 +904,13 @@ env() {
 
     message "$NAME env"
     try_do_nothing $NAME env && return 0
-            
+
     clean_packet_directory_silent $NAME env
     mkdir -p "$PACKET_DIR/$NAME/env"
-	if ! (copy "$PACKET_DIR/$NAME/envdeps" "$PACKET_DIR/$NAME/env" \
-	&& copy "$PACKET_DIR/$NAME/install" "$PACKET_DIR/$NAME/env"); then
-	    return 1
-	fi
-	set_done $NAME env
+    copy "$PACKET_DIR/$NAME/envdeps" "$PACKET_DIR/$NAME/env" || return 1
+    copy "$PACKET_DIR/$NAME/install" "$PACKET_DIR/$NAME/env" || return 1
+
+    set_done $NAME env
 }
 
 env_native() {
@@ -870,17 +932,17 @@ env_native() {
 envdeps_release() {
     local NAME=$1
     is_complete $NAME envdeps_release && return 0
-	prepare     $NAME envdeps_release || return 1
+    prepare     $NAME envdeps_release || return 1
 
-	message "$NAME envdeps_release"
+    message "$NAME envdeps_release"
     try_do_nothing $NAME envdeps_release && return 0
 
     clean_packet_directory_silent $NAME envdeps_release
     mkdir -p "$PACKET_DIR/$NAME/envdeps_release"
-	if ! foreach_deps $NAME add_envdeps_release; then
-		return 1
-	fi
-	set_done $NAME envdeps_release
+    if ! foreach_deps $NAME add_envdeps_release; then
+        return 1
+    fi
+    set_done $NAME envdeps_release
 }
 
 install_release() {
@@ -895,16 +957,15 @@ env_release() {
     is_complete $NAME env_release && return 0
     prepare     $NAME env_release || return 1
 
-	message "$NAME env_release"
+    message "$NAME env_release"
     try_do_nothing $NAME env_release && return 0
-            
+
     clean_packet_directory_silent $NAME env_release
     mkdir -p "$PACKET_DIR/$NAME/env_release"
-	if ! (copy "$PACKET_DIR/$NAME/envdeps_release" "$PACKET_DIR/$NAME/env_release" \
-	&& copy "$PACKET_DIR/$NAME/install_release" "$PACKET_DIR/$NAME/env_release"); then
-	    return 1
-	fi
-	set_done $NAME env_release
+    copy "$PACKET_DIR/$NAME/envdeps_release" "$PACKET_DIR/$NAME/env_release" || return 1
+    copy "$PACKET_DIR/$NAME/install_release" "$PACKET_DIR/$NAME/env_release" || return 1
+
+    set_done $NAME env_release
 }
 
 
@@ -928,6 +989,10 @@ clean_envdeps_native() {
 
 clean_build() {
     clean_packet_directory $1 build
+}
+
+clean_license() {
+    clean_packet_directory $1 license
 }
 
 clean_install() {
@@ -955,6 +1020,7 @@ clean_env_release() {
 }
 
 clean_all_env() {
+    clean_license $1
     clean_install $1
     clean_install_release $1
     clean_envdeps $1
@@ -1007,6 +1073,10 @@ set_undone_install() {
     set_undone $1 install
 }
 
+set_undone_license() {
+    set_undone $1 license
+}
+
 set_undone_env() {
     set_undone $1 env
 }
@@ -1028,6 +1098,7 @@ set_undone_env_release() {
 }
 
 set_undone_all_env() {
+    set_undone_license $1
     set_undone_install $1
     set_undone_install_release $1
     set_undone_envdeps $1
@@ -1158,6 +1229,17 @@ native_at_place() {
     fi
     return $LOCAL_ERROR
 }
+
+foreach_packet() {
+    local COMMAND=$1
+    local FILE=
+    ls -1 "$PACKET_SCRIPT_DIR" | grep -e \\.sh$ | while read FILE; do
+        if ! $COMMAND "${FILE:0:-3}" ${@:2}; then
+            return 1
+        fi
+    done
+}
+
 
 set_toolchain
 "$@"

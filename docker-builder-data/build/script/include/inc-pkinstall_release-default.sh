@@ -1,8 +1,6 @@
 
 pkinstall_release() {
-    if ! copy "$INSTALL_PACKET_DIR" "$INSTALL_RELEASE_PACKET_DIR"; then
-        return 1
-    fi
+    copy "$INSTALL_PACKET_DIR" "$INSTALL_RELEASE_PACKET_DIR" || return 1
 
     rm -rf "$INSTALL_RELEASE_PACKET_DIR/include"
     remove_recursive "$INSTALL_RELEASE_PACKET_DIR/lib" *.a

@@ -4,8 +4,9 @@ PK_DIRNAME="papagayo-ng"
 PK_URL="https://github.com/morevnaproject/$PK_DIRNAME.git"
 #PK_GIT_OPTIONS="--branch testing"
 
-source $INCLUDE_SCRIPT_DIR/inc-pkallunpack-git.sh
-source $INCLUDE_SCRIPT_DIR/inc-pkinstall_release-default.sh
+PK_LICENSE_FILES="readme.txt gpl.txt"
+
+source $INCLUDE_SCRIPT_DIR/inc-pkall-git.sh
 
 pkbuild() {
 	return 0

@@ -3,9 +3,7 @@ DEPS=""
 PK_DIRNAME="libepoxy"
 PK_URL="https://github.com/anholt/$PK_DIRNAME.git"
 
-source $INCLUDE_SCRIPT_DIR/inc-pkallunpack-git.sh
-source $INCLUDE_SCRIPT_DIR/inc-pkinstall-default.sh
-source $INCLUDE_SCRIPT_DIR/inc-pkinstall_release-default.sh
+source $INCLUDE_SCRIPT_DIR/inc-pkall-git.sh
 
 pkbuild() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME" || return 1

@@ -2,9 +2,13 @@ DEPS="python-3.6.0 portaudio-19.6.0"
 
 PK_DIRNAME="pyaudio"
 PK_URL="https://people.csail.mit.edu/hubert/git/$PK_DIRNAME.git"
+PK_LICENSE_FILES="README"
 
-source $INCLUDE_SCRIPT_DIR/inc-pkallunpack-git.sh
-source $INCLUDE_SCRIPT_DIR/inc-pkinstall_release-default.sh
+source $INCLUDE_SCRIPT_DIR/inc-pkall-git.sh
+
+pkbuild() {
+    return 0
+}
 
 pkinstall() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME" || return 1

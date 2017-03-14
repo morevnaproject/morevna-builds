@@ -5,8 +5,16 @@ DEPS="python-3.6.0 doxygen-1.8.8 python3requests-master gstreamerpluginsbase-0.1
 PK_DIRNAME="Phoenix"
 PK_URL="https://github.com/wxWidgets/$PK_DIRNAME.git"
 
-source $INCLUDE_SCRIPT_DIR/inc-pkallunpack-git.sh
-source $INCLUDE_SCRIPT_DIR/inc-pkinstall_release-default.sh
+PK_LICENSE_FILES=" \
+    ext/wxWidgets/docs/readme.txt \
+    ext/wxWidgets/docs/preamble.txt \
+    ext/wxWidgets/docs/licence.txt \
+    ext/wxWidgets/docs/licendoc.txt \
+    ext/wxWidgets/docs/gpl.txt \
+    ext/wxWidgets/docs/lgpl.txt \
+    ext/wxWidgets/docs/xserver.txt "
+
+source $INCLUDE_SCRIPT_DIR/inc-pkall-git.sh
 
 pkbuild() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME" || return 1

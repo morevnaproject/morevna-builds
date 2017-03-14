@@ -4,8 +4,7 @@ PK_DIRNAME="SuperLU_5.2.1"
 PK_ARCHIVE="superlu_5.2.1.tar.gz"
 PK_URL="http://crd-legacy.lbl.gov/~xiaoye/SuperLU/$PK_ARCHIVE"
 
-source $INCLUDE_SCRIPT_DIR/inc-pkallunpack-default.sh
-source $INCLUDE_SCRIPT_DIR/inc-pkinstall_release-default.sh
+source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh
 
 pkbuild() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME"

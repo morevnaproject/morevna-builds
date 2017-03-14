@@ -13,4 +13,6 @@ PK_CONFIGURE_OPTIONS=" \
  --enable-libtheora \
  --enable-libvorbis"
 
+PK_LICENSE_FILES="CREDITS LICENSE.md COPYING.GPLv2 COPYING.GPLv3 COPYING.LGPLv2.1 COPYING.LGPLv3"
+
 source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh
