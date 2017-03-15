@@ -13,38 +13,45 @@ if [ -f $CONFIG_FILE ]; then
 	source $CONFIG_FILE
 fi
 
-run() {
-	local SCRIPT=$1
-	local PLATFORM=$2
-	local PLATFORM_SUFFIX=$3
+SCRIPT="$BASE_DIR/docker/run.sh"
 
-	echo ""
-	echo "Update opentoonz for $PLATFORM_SUFFIX"
-	echo ""
-	
-	sudo $SCRIPT update opentoonz-master
-	sudo $SCRIPT clean_before_do install_release opentoonz-appimage
-	local DIR="$PACKET_BUILD_DIR/$PLATFORM/opentoonz-appimage/install_release"
-	local VERSION_FILE="$PACKET_BUILD_DIR/$PLATFORM/opentoonz-appimage/envdeps_release/version-opentoonz-master"
-	local VERSION=`cat "$VERSION_FILE" | cut -d'-' -f 1`
-	local COMMIT=`cat "$VERSION_FILE" | cut -d'-' -f 2-`
-	COMMIT="${COMMIT:0:5}"
-	local DATE=`date -u +%Y.%m.%d`
-	if [ -z "$COMMIT" ]; then
-		echo "Cannot find version, pheraps appimage not ready. Cancel."
-		return 1
-	fi
-	if ! ls $PUBLISH_DIR/OpenToonz-$VERSION-*-$COMMIT-$PLATFORM_SUFFIX.appimage 1> /dev/null 2>&1; then
-		echo "Publish new version $VERSION-$COMMIT-$PLATFORM_SUFFIX"
-		rm -f $PUBLISH_DIR/OpenToonz-*-$PLATFORM_SUFFIX.appimage
-		cp $DIR/opentoonz.appimage $PUBLISH_DIR/OpenToonz-$VERSION-$DATE-$COMMIT-$PLATFORM_SUFFIX.appimage
-		if [ -f "$PUBLISH_DIR/publish-opentoonz.sh" ]; then
-			"$PUBLISH_DIR/publish-opentoonz.sh" "$PUBLISH_DIR/OpenToonz-$VERSION-$DATE-$COMMIT-$PLATFORM_SUFFIX.appimage"
-		fi
-	else
-		echo "Version $VERSION-$COMMIT-$PLATFORM_SUFFIX already published"
-	fi
+run_appimage() {
+    export PLATFORM="$1"
+    export ARCH="$2"
+
+    echo ""
+    echo "Update opentoonz for $PLATFORM-$ARCH"
+    echo ""
+    sudo $SCRIPT update opentoonz-master
+    sudo $SCRIPT clean_before_do install_release opentoonz-appimage
+
+    "$PUBLISH_DIR/publish.sh" \
+        "opentoonz" \
+        "OpenToonz-%VERSION%-%DATE%-%COMMIT%-$PLATFORM-${ARCH}bits.appimage" \
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-appimage/install_release" \
+        "*.appimage" \
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-appimage/envdeps_release/version-opentoonz-master"
 }
 
-run "$BASE_DIR/docker/debian-7-64bit/run.sh" "linux-x64" "64bits"
-run "$BASE_DIR/docker/debian-7-32bit/run.sh" "linux-i386" "32bits"
+run_nsis() {
+    export PLATFORM="$1"
+    export ARCH="$2"
+
+    echo ""
+    echo "Update opentoonz for $PLATFORM-$ARCH"
+    echo ""
+    sudo $SCRIPT update opentoonz-master
+    sudo $SCRIPT clean_before_do install_release opentoonz-nsis
+
+    "$PUBLISH_DIR/publish.sh" \
+        "opentoonz" \
+        "OpenToonz-%VERSION%-%DATE%-%COMMIT%-$PLATFORM-${ARCH}bits.exe" \
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-nsis/install_release" \
+        "*.exe" \
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-nsis/envdeps_release/version-opentoonz-master"
+}
+
+run_appimage linux 64
+run_appimage linux 32
+run_nsis win 64
+#run_nsis win 32
