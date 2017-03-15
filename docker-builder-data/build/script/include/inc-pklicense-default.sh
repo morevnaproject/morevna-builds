@@ -27,17 +27,9 @@ pklicense() {
     local FILE=
     for FILE in $FILES; do
         if [ -f "$FILE" ]; then
-            echo ""                                      >> "$TARGET"
-            echo "-------------------------------------" >> "$TARGET"
-            echo "  File: $FILE"                         >> "$TARGET"
-            echo "-------------------------------------" >> "$TARGET"
-            echo ""                                      >> "$TARGET"
-            cat "$FILE"                                  >> "$TARGET"
+            add_license "$FILE" "$FILE" "$TARGET" || (echo "Cannot copy license file: $FILE"; return 1)
         elif [ -f "$FILES_PACKET_DIR/$FILE" ]; then
-            echo ""                                      >> "$TARGET"
-            echo "-------------------------------------" >> "$TARGET"
-            echo ""                                      >> "$TARGET"
-            cat "$FILES_PACKET_DIR/$FILE"                >> "$TARGET"
+            add_license "$FILES_PACKET_DIR/$FILE" "" "$TARGET" || (echo "Cannot copy license file: $FILE"; return 1)
         elif [ ! -z "$PK_LICENSE_FILES" ]; then
             echo "Cannot copy license file: $FILE"
             return 1

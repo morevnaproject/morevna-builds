@@ -134,29 +134,28 @@ declare -A COMPLETION_STATUS
 # 4.   envdeps_native | | | |
 #       |         | | | | | |
 # 5.    |         | build | |
-#       |         | | |   | |
-#       |         | | |   | |
-# 6.    |         | | lic | | (license)
-#       |         | | |   | |
-# 7.    |         --install |
-#       |            |    | |
-# 8.    |            |    env
-#       |            |    | |
-#       |            |    | envdeps*
-#       |            |    |
-#       |            |   envdeps_native**
-#       |            |
-# 9.   env_native    |
-#       |            |
-#    envdeps_native* |
-#                    |
-#                    | env_release^
-#                    |  | 
-# 10.                | envdeps_release
-#                    |  |           | 
-# 11.               install_release |
+#       |         |  |  | | |
+# 7.    |         --install |    (you see the direct connection 'build' with 'license', trust me)
+#       |            | || | |
+# 8.    |            | || env
+#       |            | || | |
+#       |            | || | envdeps*
+#       |            | || |
+#       |            | || envdeps_native**
+#       |            | ||
+# 9.   env_native    | ||
+#       |            | ||
+#    envdeps_native* | ||
+#                    | ||
+# 10.                | license
+#                    | |
+#                    | |   env_release^
+#                    | |    | 
+# 11.                | |   envdeps_release
+#                    | |    |       | 
+# 12.               install_release |
 #                           |       |
-# 12.                      env_release
+# 13.                      env_release
 #                           |
 #                          envdeps_release*
 #
@@ -167,146 +166,19 @@ FUNC_DEPS_unpack="download"
 FUNC_DEPS_envdeps="-env"
 FUNC_DEPS_envdeps_native="--env -env_native"
 FUNC_DEPS_build="envdeps envdeps_native unpack"
-FUNC_DEPS_license="build"
-FUNC_DEPS_install="envdeps envdeps_native build license"
+FUNC_DEPS_install="envdeps envdeps_native build"
 FUNC_DEPS_env="envdeps install"
 FUNC_DEPS_env_native="envdeps_native"
+FUNC_DEPS_license="build install"
 FUNC_DEPS_envdeps_release="-env_release"
-FUNC_DEPS_install_release="envdeps_release install"
+FUNC_DEPS_install_release="envdeps_release install license"
 FUNC_DEPS_env_release="envdeps_release install_release"
 
 
 # helpers
 
-copy() {
-    local SRC=$1
-    local DEST=$2
-	if [ -d "$SRC" ]; then
-		if ! mkdir -p $DEST; then
-			return 1
-		fi
-		if [ "$(ls -A $1)" ]; then
-			if ! cp --remove-destination -rlP $SRC/* "$DEST/"; then
-				return 1
-			fi
-		fi
-	elif [ -f "$SRC" ]; then
-		if ! (mkdir -p `dirname $DEST` && cp --remove-destination -l "$SRC" "$DEST"); then
-			return 1
-		fi
-	else
-		return 1
-	fi
-}
+source "$COMMON_SCRIPT_DIR/helpers.sh"
 
-foreachfile() {
-    local FILE=$1
-    local COMMAND=$2
-    if [ ! -x "$FILE" ]; then
-        return 1
-    fi
-    if [ -d "$FILE" ]; then    
-        ls -1 "$FILE" | while read SUBFILE; do
-            if ! $COMMAND "$FILE/$SUBFILE" ${@:3}; then
-                return 1
-            fi
-        done
-    fi
-}
-
-readdir() {
-    local FILE=$1
-    if [ -d "$FILE" ]; then
-        echo "directory begin"
-        ls -1 "$1" | while read SUBFILE; do
-            if [ "$SUBFILE" = ".git" ]; then
-                continue
-            fi
-            if [[ "$SUBFILE" == *.po ]]; then
-                continue
-            fi
-            local STAT=`stat -c%F:%a:%s "$FILE/$SUBFILE"`
-            echo "$STAT:$SUBFILE"
-            readdir "$FILE/$SUBFILE"
-        done
-        echo "directory end"
-    else
-        local MD5=`md5sum -b "$FILE"`
-        echo "file:${MD5:0:32}"
-    fi
-}
-
-md5() {
-    local FILE=$1
-    local MD5=`readdir "$FILE" | md5sum -b`
-    echo "${MD5:0:32}"
-}
-
-remove_recursive() {
-    local CURRENT_PATH="$1"
-    local NEEDLE="$2"
-    rm -f "$CURRENT_PATH/"$NEEDLE
-    for FILE in $CURRENT_PATH; do
-        if [ -d "$CURRENT_PATH/$FILE" ]; then
-            remove_recursive "$CURRENT_PATH/$FILE" "$NEEDLE"
-        fi
-    done
-}
-
-copy_system_lib() {
-    local SRC_NAME=$1
-    local DST_PATH=$2
-    cp --remove-destination /lib/x86_64-linux-gnu/$SRC_NAME* "$DST_PATH" &> /dev/null \
-     || cp --remove-destination /lib/i386-linux-gnu/$SRC_NAME* "$DST_PATH" &> /dev/null \
-     || cp --remove-destination /usr/lib/x86_64-linux-gnu/$SRC_NAME* "$DST_PATH" &> /dev/null \
-     || cp --remove-destination /usr/lib/i386-linux-gnu/$SRC_NAME* "$DST_PATH" &> /dev/null \
-     || (echo "$SRC_NAME not found in system libraries" && return 1)
-}
-
-copy_system_license() {
-    local SRC_NAMES=$1
-    local DST_PATH=$2
-    local SRC_NAME=
-    for SRC_NAME in $SRC_NAMES; do
-        rm -f "$DST_PATH/license-$SRC_NAME"
-    done
-    for SRC_NAME in $SRC_NAMES; do
-        local TARGET="$DST_PATH/license-$SRC_NAME"
-        local FILE=
-        if   [ -f "/usr/share/doc/$SRC_NAME/copyright" ]; then
-             FILE="/usr/share/doc/$SRC_NAME/copyright"
-        elif [ -d "/usr/share/licenses/$SRC_NAME" ]; then
-             FILE="/usr/share/licenses/$SRC_NAME"
-        elif [ -d "/usr/share/doc/$SRC_NAME" ]; then
-             FILE="/usr/share/doc/$SRC_NAME"
-        fi
-
-        if [ -f "$FILE" ]; then
-            echo ""                                      >> "$TARGET"
-            echo "-------------------------------------" >> "$TARGET"
-            echo "  File: $FILE"                         >> "$TARGET"
-            echo "-------------------------------------" >> "$TARGET"
-            echo ""                                      >> "$TARGET"
-            cat "$FILE"                                  >> "$TARGET"
-        elif [ -d "$FILE" ]; then
-            ls -1 "$FILE" | while read SUBFILE; do
-                echo ""                                      >> "$TARGET"
-                echo "-------------------------------------" >> "$TARGET"
-                echo "  File: $SUBFILE"                      >> "$TARGET"
-                echo "-------------------------------------" >> "$TARGET"
-                echo ""                                      >> "$TARGET"
-                cat "$SUBFILE"                               >> "$TARGET"
-            done
-        fi
-        
-        if [ -f "$TARGET" ]; then
-            return 0
-        fi
-    done
-
-    echo "Cannot found any license for one of system packages: $SRC_NAMES"
-    return 1
-}
 
 # internal functions
 
@@ -382,22 +254,22 @@ prepare_build() {
     fi
 }
 
-prepare_license() {
-    return 0
-}
-
 prepare_install() {
     if ls $BUILD_PACKET_DIR/version-* 1> /dev/null 2>&1; then
         cp --remove-destination $BUILD_PACKET_DIR/version-* "$INSTALL_PACKET_DIR/" || true
     fi
-    mkdir -p "$INSTALL_PACKET_DIR/license" || return 1
-    copy "$LICENSE_PACKET_DIR" "$INSTALL_PACKET_DIR/license" || return 1
+}
+
+prepare_license() {
+    rm -f "$LICENSE_PACKET_DIR/"*
 }
 
 prepare_install_release() {
     if ls $INSTALL_PACKET_DIR/version-* 1> /dev/null 2>&1; then
         cp --remove-destination $INSTALL_PACKET_DIR/version-* "$INSTALL_RELEASE_PACKET_DIR/" || true
     fi
+    mkdir -p "$INSTALL_RELEASE_PACKET_DIR/license" || return 1
+    copy "$LICENSE_PACKET_DIR" "$INSTALL_RELEASE_PACKET_DIR/license" || return 1
 }
 
 set_environment_vars() {
@@ -883,13 +755,6 @@ build() {
     call_packet_function $NAME build prepare_build || return 1
 }
 
-license() {
-    local NAME=$1
-    is_complete $NAME license && return 0
-    prepare     $NAME license || return 1
-    call_packet_function $NAME license prepare_license || return 1
-}
-
 install() {
     local NAME=$1
     is_complete $NAME install && return 0
@@ -927,6 +792,13 @@ env_native() {
         return 1
     fi
     set_done $NAME env_native
+}
+
+license() {
+    local NAME=$1
+    is_complete $NAME license && return 0
+    prepare     $NAME license || return 1
+    call_packet_function $NAME license prepare_license || return 1
 }
 
 envdeps_release() {
@@ -991,10 +863,6 @@ clean_build() {
     clean_packet_directory $1 build
 }
 
-clean_license() {
-    clean_packet_directory $1 license
-}
-
 clean_install() {
     clean_packet_directory $1 install
 }
@@ -1007,12 +875,16 @@ clean_env_native() {
     clean_packet_directory $1 env_native
 }
 
-clean_install_release() {
-    clean_packet_directory $1 install_release
+clean_license() {
+    clean_packet_directory $1 license
 }
 
 clean_envdeps_release() {
     clean_packet_directory $1 envdeps_release
+}
+
+clean_install_release() {
+    clean_packet_directory $1 install_release
 }
 
 clean_env_release() {
@@ -1020,14 +892,14 @@ clean_env_release() {
 }
 
 clean_all_env() {
-    clean_license $1
-    clean_install $1
-    clean_install_release $1
     clean_envdeps $1
     clean_envdeps_native $1
+    clean_install $1
     clean_env $1
     clean_env_native $1
+    clean_license $1
     clean_envdeps_release $1
+    clean_install_release $1
     clean_env_release $1
 }
 
@@ -1073,10 +945,6 @@ set_undone_install() {
     set_undone $1 install
 }
 
-set_undone_license() {
-    set_undone $1 license
-}
-
 set_undone_env() {
     set_undone $1 env
 }
@@ -1085,12 +953,16 @@ set_undone_env_native() {
     set_undone $1 env_native
 }
 
-set_undone_install_release() {
-    set_undone $1 install_release
+set_undone_license() {
+    set_undone $1 license
 }
 
 set_undone_envdeps_release() {
     set_undone $1 envdeps_release
+}
+
+set_undone_install_release() {
+    set_undone $1 install_release
 }
 
 set_undone_env_release() {
@@ -1098,14 +970,14 @@ set_undone_env_release() {
 }
 
 set_undone_all_env() {
-    set_undone_license $1
-    set_undone_install $1
-    set_undone_install_release $1
     set_undone_envdeps $1
     set_undone_envdeps_native $1
+    set_undone_install $1
     set_undone_env $1
     set_undone_env_native $1
+    set_undone_license $1
     set_undone_envdeps_release $1
+    set_undone_install_release $1
     set_undone_env_release $1
 }
 
