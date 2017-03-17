@@ -24,7 +24,7 @@ copy() {
 foreachfile() {
     local FILE=$1
     local COMMAND=$2
-    if [ ! -x "$FILE" ]; then
+    if [ ! -e "$FILE" ]; then
         return 1
     fi
     if [ -d "$FILE" ]; then    
