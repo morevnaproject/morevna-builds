@@ -1,4 +1,4 @@
-DEPS="jpeg-9b png-1.6.26 lz4-master glew-2.0.0 usb-1.0.20 sdl-2.0.5 superlu-5.2.1 cmake-3.6.2 freeglut-3.0.0 openblas-master boost-1.61.0 qt-5.7"
+DEPS="jpeg-9b png-1.6.26 lz4-master glew-2.0.0 usb-1.0.20 sdl-2.0.5 superlu-4.3 cmake-3.6.2 freeglut-3.0.0 openblas-master boost-1.61.0 qt-5.7"
 
 PK_VERSION="1.1.2"
 PK_DIRNAME="opentoonz"
@@ -28,14 +28,14 @@ pkbuild() {
 		set_done $NAME build.libtiff
     fi
 
-	cp --remove-destination "$ENVDEPS_PACKET_DIR/lib/libsuperlu_5.2.1.a" "$BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/superlu/libsuperlu_4.1.a" || return 1
-	rm -rf $BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/superlu/SuperLU_4.1/include/*
-	cp --remove-destination $ENVDEPS_PACKET_DIR/include/superlu-5.2.1/* "$BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/superlu/SuperLU_4.1/include/" || return 1
+	if ! cp --remove-destination "$ENVDEPS_PACKET_DIR/lib/libsuperlu_4.3.a" "$BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/superlu/libsuperlu_4.1.a"; then
+		return 1
+	fi
 
 	mkdir -p "$BUILD_PACKET_DIR/$PK_DIRNAME/toonz/build"
 	cd "$BUILD_PACKET_DIR/$PK_DIRNAME/toonz/build"
 	if ! check_packet_function $NAME build.configure; then
-		if ! cmake -DPNG_PNG_INCLUDE_DIR=$ENVDEPS_PACKET_DIR/include -DPNG_LIBRARY=$ENVDEPS_PACKET_DIR/lib/libpng.so -DCMAKE_INSTALL_PREFIX:PATH=$INSTALL_PACKET_DIR ../sources; then
+		if ! cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX:PATH=$INSTALL_PACKET_DIR ../sources; then
     		return 1
     	fi
 		set_done $NAME build.configure
@@ -49,16 +49,13 @@ pkbuild() {
 
 pkinstall() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME/toonz/build"
-    if ! make install; then
-        return 1
-    fi
-    if ! cp --remove-destination "$FILES_PACKET_DIR/launch-opentoonz.sh" "$INSTALL_PACKET_DIR/bin"; then
-        return 1
-    fi
-    if ! cp --remove-destination $BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/tiff-4.0.3/libtiff/.libs/libtiff.so* "$INSTALL_PACKET_DIR/lib"; then
-        return 1
-    fi
-    if ! cp --remove-destination $BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/tiff-4.0.3/libtiff/.libs/libtiffxx.so* "$INSTALL_PACKET_DIR/lib"; then
-        return 1
-    fi
+    make install || return 1
+
+    cp --remove-destination "$FILES_PACKET_DIR/launch-opentoonz.sh" "$INSTALL_PACKET_DIR/bin" || return 1
+    cp --remove-destination $BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/tiff-4.0.3/libtiff/.libs/libtiff.so* "$INSTALL_PACKET_DIR/lib" || return 1
+    cp --remove-destination $BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/tiff-4.0.3/libtiff/.libs/libtiffxx.so* "$INSTALL_PACKET_DIR/lib" || return  1
+
+    copy_system_lib libudev     "$INSTALL_PACKET_DIR/lib/" || return 1
+    copy_system_lib libgfortran "$INSTALL_PACKET_DIR/lib/" || return 1
+    copy_system_lib libpng12    "$INSTALL_PACKET_DIR/lib/" || return 1
 }
