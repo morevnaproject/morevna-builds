@@ -4,14 +4,14 @@ set -e
 
 PUBLISH_DIR=$(cd `dirname "$0"`; pwd)
 
-publish_file() {
+publish() {
     local NAME="$1"
     local TEMPLATE="$2" # Xxxxx-%VERSION%-%DATE%-%COMMIT%-xxxxx.xxx"
-    local PATH="$3"
+    local FILEPATH="$3"
     local MASK="$4"
     local VERSION_FILE="$5"
 
-    local FILE=`ls "$PATH/"$MASK`
+    local FILE=`ls "$FILEPATH/"$MASK`
 
     local VERSION=`cat "$VERSION_FILE" | cut -d'-' -f 1`
     local COMMIT=`cat "$VERSION_FILE" | cut -d'-' -f 2-`
