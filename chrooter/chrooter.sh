@@ -11,14 +11,15 @@ INSTANCE_NAME="chrooter-$INSTANCE_NAME"
 PRIVILEGED=
 IMAGE_MOUNT_DIR=
 COMMAND_ERROR=
+PREFIX="/tmp"
 
 image_mount_add() {
 	echo "Mount: $1 -> $2"
 	sudo mkdir -p "$IMAGE_MOUNT_DIR$2"
 	sudo mount --bind "$1" "$IMAGE_MOUNT_DIR$2"
-	echo "umount -f \"$IMAGE_MOUNT_DIR$2\" \\" >> "/tmp/$INSTANCE_NAME.umount.sh"
-	echo "|| (echo \"next try after 10 seconds\" && sleep 10 && umount -f \"$IMAGE_MOUNT_DIR$2\") \\" >> "/tmp/$INSTANCE_NAME.umount.sh"
-	echo "|| (echo \"final try after 10 seconds\" && sleep 10 && umount -f \"$IMAGE_MOUNT_DIR$2\")" >> "/tmp/$INSTANCE_NAME.umount.sh"
+	echo "umount -f \"$IMAGE_MOUNT_DIR$2\" \\" >> "/$PREFIX/$INSTANCE_NAME.umount.sh"
+	echo "|| (echo \"next try after 10 seconds\" && sleep 10 && umount -f \"$IMAGE_MOUNT_DIR$2\") \\" >> "/$PREFIX/$INSTANCE_NAME.umount.sh"
+	echo "|| (echo \"final try after 10 seconds\" && sleep 10 && umount -f \"$IMAGE_MOUNT_DIR$2\")" >> "/$PREFIX/$INSTANCE_NAME.umount.sh"
 }
 
 image_mount() {
@@ -37,22 +38,22 @@ image_mount() {
 	local IMAGE_FILE="$BASE_DIR/image/$IMAGE_NAME.tgz"
 	
 	echo "Unpack image: $1"
-	IMAGE_MOUNT_DIR="/tmp/$INSTANCE_NAME"
+	IMAGE_MOUNT_DIR="/$PREFIX/$INSTANCE_NAME"
 	mkdir -p "$IMAGE_MOUNT_DIR"
 	cd "$IMAGE_MOUNT_DIR"
 	sudo tar -xzf $IMAGE_FILE
 	cd "$OLDDIR"
 	
 	echo "Add -.chroot.sh file"
-	sudo mv "/tmp/$INSTANCE_NAME.chroot.sh" "$IMAGE_MOUNT_DIR"
+	sudo mv "/$PREFIX/$INSTANCE_NAME.chroot.sh" "$IMAGE_MOUNT_DIR"
 	sudo chmod a+x "$IMAGE_MOUNT_DIR/$INSTANCE_NAME.chroot.sh"
 	
     set -- "${@:2}"
 	echo "Mount subs: $@"
-	echo "#!/bin/sh" > "/tmp/$INSTANCE_NAME.umount.sh"
-	echo "" >> "/tmp/$INSTANCE_NAME.umount.sh"
-	echo "set -e" >> "/tmp/$INSTANCE_NAME.umount.sh"
-	chmod a+x "/tmp/$INSTANCE_NAME.umount.sh"
+	echo "#!/bin/sh" > "/$PREFIX/$INSTANCE_NAME.umount.sh"
+	echo "" >> "/$PREFIX/$INSTANCE_NAME.umount.sh"
+	echo "set -e" >> "/$PREFIX/$INSTANCE_NAME.umount.sh"
+	chmod a+x "/$PREFIX/$INSTANCE_NAME.umount.sh"
 	if [ ! -z "$PRIVILEGED" ]; then
 		echo "Mount /proc and /dev for priveleged feature"
 		image_mount_add /proc /proc
@@ -77,8 +78,8 @@ image_unmount() {
 	fi
 
 	echo "Unmount subs"
-	sudo "/tmp/$INSTANCE_NAME.umount.sh"
-	sudo rm -f "/tmp/$INSTANCE_NAME.umount.sh"
+	sudo "/$PREFIX/$INSTANCE_NAME.umount.sh"
+	sudo rm -f "/$PREFIX/$INSTANCE_NAME.umount.sh"
 
 	echo "Remove -.chroot.sh file"
 	sudo rm -f "$IMAGE_MOUNT_DIR/$INSTANCE_NAME.chroot.sh"
@@ -125,17 +126,17 @@ image_copy() {
 }
 
 chroot_file_begin() {
-	echo "#!/bin/sh" > "/tmp/$INSTANCE_NAME.chroot.sh"
-	echo "" >> "/tmp/$INSTANCE_NAME.chroot.sh"
+	echo "#!/bin/sh" > "/$PREFIX/$INSTANCE_NAME.chroot.sh"
+	echo "" >> "/$PREFIX/$INSTANCE_NAME.chroot.sh"
 }
 
 chroot_file_env() {
     echo "Set env: $1=\"$2\""
-	echo "export $1=\"$2\"" >> "/tmp/$INSTANCE_NAME.chroot.sh"
+	echo "export $1=\"$2\"" >> "/$PREFIX/$INSTANCE_NAME.chroot.sh"
 }
 
 chroot_file_end() {
-	echo "\$@" >> "/tmp/$INSTANCE_NAME.chroot.sh"
+	echo "\$@" >> "/$PREFIX/$INSTANCE_NAME.chroot.sh"
 }
 
 import() {
