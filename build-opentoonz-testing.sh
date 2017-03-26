@@ -27,7 +27,7 @@ run_appimage() {
 
     "$PUBLISH_DIR/publish.sh" \
         "opentoonz-testing" \
-        "OpenToonz-%VERSION%-%DATE%-%COMMIT%-$PLATFORM-${ARCH}bits.appimage" \
+        "OpenToonz-%VERSION%-testing-%DATE%-%COMMIT%-$PLATFORM-${ARCH}bits.appimage" \
         "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-testingappimage/install_release" \
         "*.appimage" \
         "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-testingappimage/envdeps_release/version-opentoonz-testing"
@@ -45,7 +45,7 @@ run_nsis() {
 
     "$PUBLISH_DIR/publish.sh" \
         "opentoonz-testing" \
-        "OpenToonz-%VERSION%-%DATE%-%COMMIT%-$PLATFORM-${ARCH}bits.exe" \
+        "OpenToonz-%VERSION%-testing-%DATE%-%COMMIT%-$PLATFORM-${ARCH}bits.exe" \
         "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-testingnsis/install_release" \
         "*.exe" \
         "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-testingnsis/envdeps_release/version-opentoonz-testing"
