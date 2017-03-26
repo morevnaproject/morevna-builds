@@ -22,15 +22,15 @@ run_appimage() {
     echo ""
     echo "Update opentoonz for $PLATFORM-$ARCH"
     echo ""
-    $SCRIPT update opentoonz-master
-    $SCRIPT clean_before_do install_release opentoonz-appimage
+    $SCRIPT update opentoonz-testing
+    $SCRIPT clean_before_do install_release opentoonz-testingappimage
 
     "$PUBLISH_DIR/publish.sh" \
-        "opentoonz" \
+        "opentoonz-testing" \
         "OpenToonz-%VERSION%-%DATE%-%COMMIT%-$PLATFORM-${ARCH}bits.appimage" \
-        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-appimage/install_release" \
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-testingappimage/install_release" \
         "*.appimage" \
-        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-appimage/envdeps_release/version-opentoonz-master"
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-testingappimage/envdeps_release/version-opentoonz-testing"
 }
 
 run_nsis() {
@@ -40,15 +40,15 @@ run_nsis() {
     echo ""
     echo "Update opentoonz for $PLATFORM-$ARCH"
     echo ""
-    $SCRIPT update opentoonz-master
-    $SCRIPT clean_before_do install_release opentoonz-nsis
+    $SCRIPT update opentoonz-testing
+    $SCRIPT clean_before_do install_release opentoonz-testingnsis
 
     "$PUBLISH_DIR/publish.sh" \
-        "opentoonz" \
+        "opentoonz-testing" \
         "OpenToonz-%VERSION%-%DATE%-%COMMIT%-$PLATFORM-${ARCH}bits.exe" \
-        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-nsis/install_release" \
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-testingnsis/install_release" \
         "*.exe" \
-        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-nsis/envdeps_release/version-opentoonz-master"
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-testingnsis/envdeps_release/version-opentoonz-testing"
 }
 
 run_appimage linux 64
