@@ -11,7 +11,10 @@ INSTANCE_NAME="chrooter-$INSTANCE_NAME"
 PRIVILEGED=
 IMAGE_MOUNT_DIR=
 COMMAND_ERROR=
-PREFIX="/tmp"
+PREFIX="$CHROOTER_PREFIX"
+if [ -z "$PREFIX" ]; then
+    PREFIX="/tmp"
+fi
 
 image_mount_add() {
 	echo "Mount: $1 -> $2"
