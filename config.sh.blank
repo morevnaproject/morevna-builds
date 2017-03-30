@@ -4,5 +4,9 @@
 # DOCKER_RUN_OPTIONS="-e http_proxy=$PROXY -e https_proxy=$PROXY"
 
 # docker() {
+# 	export CHROOTER_PREFIX="/mnt"
 # 	$BASE_DIR/chrooter/chrooter.sh $@
 # }
+
+# OPENTOONZ_TESTING_TAG="test"
+
