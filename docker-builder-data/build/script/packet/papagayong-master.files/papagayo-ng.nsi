@@ -55,9 +55,8 @@ Section "Uninstall"
   StrCmp $testkey '"$INSTDIR\papagayo-ng.bat" "%1"' 0 +2
   DeleteRegKey HKCR "Papagayo.Document\shell\open\command"
 
-  Delete "$INSTDIR\*.*"
-  RMDir /r "$INSTDIR"
-  Delete "$SMPROGRAMS\$(^Name)\*.*"
-  RMDir "$SMPROGRAMS\$(^Name)"
+  !include "files-uninstall.nsh"
+  Delete "$INSTDIR\uninstall.exe"
+  RMDir "$INSTDIR"
 SectionEnd
 

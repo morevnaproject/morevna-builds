@@ -40,8 +40,8 @@ run_nsis() {
     echo ""
     echo "Update papagayong for $PLATFORM-$ARCH"
     echo ""
-    #$SCRIPT update papagayong-master
-    #$SCRIPT clean_before_do unpack papagayong-master
+    $SCRIPT update papagayong-master
+    $SCRIPT clean_before_do unpack papagayong-master
 
     # QUICK HACK:
     $SCRIPT shell papagayong-master "/build/script/packet/papagayong-master.files/build-win.sh"
@@ -54,6 +54,6 @@ run_nsis() {
         "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/papagayong-master/unpack/version-papagayong-master"
 }
 
-#run_appimage linux 64
-#run_appimage linux 32
+run_appimage linux 64
+run_appimage linux 32
 run_nsis win 32

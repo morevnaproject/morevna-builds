@@ -13,6 +13,37 @@ PREBUILT_DIR="papagayo-ng-1.4.0-win"
 VERSION=$(grep "export VERSION=" "$UNPACK_PACKET_DIR/$PK_DIRNAME/util/package-linux.sh" | cut -d\' -f 2)
 TARGET_DIR="papagayo-ng-$VERSION-win"
 
+foreachfile() {
+    local FILE=$1
+    local COMMAND=$2
+    if [ ! -e "$FILE" ]; then
+        return 1
+    fi
+    if [ -d "$FILE" ]; then    
+        ls -A1 "$FILE" | while read SUBFILE; do
+            if ! $COMMAND "$FILE/$SUBFILE" ${@:3}; then
+                return 1
+            fi
+        done
+    fi
+}
+
+nsis_register_file() {
+    local FILE=$1
+    local WIN_FILE=$(echo "$FILE" | sed "s|\/|\\\\|g")
+
+    if [ "${FILE:0:2}" = "./" ]; then
+        if [ -d "$FILE" ]; then
+            foreachfile "$FILE" nsis_register_file
+            echo "RMDir \"\$INSTDIR\\${WIN_FILE:2}\""               >> "files-uninstall.nsh" 
+        else
+            echo "Delete \"\$INSTDIR\\${WIN_FILE:2}\""              >> "files-uninstall.nsh" 
+        fi
+    else
+        foreachfile $FILE nsis_register_file
+    fi
+}
+
 if [ ! -f "$BUILD_PACKET_DIR/papagayo-ng-$VERSION-win-installer.exe" ] \
 || [ "$BUILD_PACKET_DIR/papagayo-ng-$VERSION-win-installer.exe" -ot "$CURRENT_PACKET_DIR/unpack.done" ]; then
 	mkdir -p "$BUILD_PACKET_DIR/prebuilt"
@@ -32,6 +63,8 @@ if [ ! -f "$BUILD_PACKET_DIR/papagayo-ng-$VERSION-win-installer.exe" ] \
 	ln -s "$UNPACK_PACKET_DIR/$PK_DIRNAME" papagayo-ng
 	cp "$FILES_PACKET_DIR/papagayo-ng.nsi" .
 	cp "$FILES_PACKET_DIR/papagayo-ng.bat" .
+	touch "files-uninstall.nsh"
+	nsis_register_file .
 	makensis papagayo-ng.nsi
 	
 	cd "$BUILD_PACKET_DIR"
