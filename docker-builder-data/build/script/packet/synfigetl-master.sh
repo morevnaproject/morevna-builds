@@ -1,4 +1,5 @@
 DEPS=""
+DEPS_NATIVE="libtool-2.4.6"
 
 PK_DIRNAME="synfig"
 PK_URL="https://github.com/synfig/$PK_DIRNAME.git"

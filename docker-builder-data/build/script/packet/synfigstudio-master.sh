@@ -18,7 +18,7 @@
 #   gnomethemes                   | gtk, rsvg
 
 DEPS="synfigcore-master gtkmm-3.22.0 adwaitaicontheme-3.22.0 gnomethemesstandard-3.22.2"
-DEPS_NATIVE="synfigcore-master"
+DEPS_NATIVE="libtool-2.4.6 synfigcore-master"
 
 PK_DIRNAME="synfig"
 PK_URL="https://github.com/synfig/$PK_DIRNAME.git"

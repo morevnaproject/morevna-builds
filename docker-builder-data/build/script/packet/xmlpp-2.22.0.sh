@@ -9,6 +9,8 @@ source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh
 pkbuild() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME" || return 1
     if ! check_packet_function $NAME build.cunfigure; then
+        cp --remove-destination "$UNPACK_PACKET_DIR/$PK_DIRNAME/configure" .
+        patch configure "$FILES_PACKET_DIR/configure.patch"
         CFLAGS="$PK_CFLAGS $CFLAGS" CPPFLAGS="$PK_CPPFLAGS $CPPFLAGS" \
         ./configure \
          $PK_CONFIGURE_OPTIONS_DEFAULT \

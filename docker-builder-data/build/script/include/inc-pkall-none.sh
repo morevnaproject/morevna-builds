@@ -59,6 +59,10 @@ pkhook_postlicense() {
     return 0
 }
 
+pkhook_postinstall() {
+    return 0
+}
+
 pkhook_postinstall_release() {
     return 0
 }
