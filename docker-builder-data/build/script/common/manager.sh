@@ -369,7 +369,7 @@ call_packet_function() {
 	local PREV_HASH=
 	if [ "$COMPARE_RESULTS" = "compare_results" ]; then
 		if check_packet_function $NAME $FUNC; then
-			PREV_HASH=`md5 "$FUNC_CURRENT_PACKET_DIR"` 
+			PREV_HASH=`sha512dir "$FUNC_CURRENT_PACKET_DIR"` 
 			[ ! $? -eq 0 ] && return 1
 		fi
     else
@@ -401,7 +401,7 @@ call_packet_function() {
     fi
 
 	if [ ! -z "$PREV_HASH" ]; then
-		local HASH=`md5 "$FUNC_CURRENT_PACKET_DIR"` 
+		local HASH=`sha512dir "$FUNC_CURRENT_PACKET_DIR"` 
 		[ ! $? -eq 0 ] && return 1
 		if [ "$HASH" = "$PREV_HASH" ]; then
 			message "$NAME $FUNC - not changed"

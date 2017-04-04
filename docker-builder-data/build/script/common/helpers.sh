@@ -22,6 +22,43 @@ copy() {
 }
 
 foreachfile() {
+    local DIR="$1"
+    local COMMAND="$2"
+    if [ -z "$DIR" ] || [ ! -e "$DIR" ]; then
+        return 1
+    fi
+        
+    if [ -d "$DIR" ]; then
+        for FILE in "$DIR/".*; do
+            if [ "$FILE" != "$DIR/." ] && [ "$FILE" != "$DIR/.." ]; then
+                if ! "$COMMAND" "$FILE" ${@:3}; then
+                    return 1
+                fi
+            fi
+        done
+        for FILE in "$DIR/"*; do
+            if [ "$FILE" != "$DIR" ] && [ "$FILE" != "$DIR/" ]; then
+                if ! "$COMMAND" "$FILE" ${@:3}; then
+                    return 1
+                fi
+            fi
+        done
+    fi
+}
+
+remove_recursive() {
+    local DIR="$1"
+    local NEEDLE="$2"
+
+    if [ -d "$DIR" ]; then
+        rm -f "$DIR/"$NEEDLE
+        if ! foreachfile "$DIR" "${FUNCNAME[0]}" "$NEEDLE"; then
+            return 1
+        fi
+    fi
+}
+
+foreachfile() {
     local FILE=$1
     local COMMAND=$2
     if [ ! -e "$FILE" ]; then
@@ -36,43 +73,23 @@ foreachfile() {
     fi
 }
 
-readdir() {
-    local FILE=$1
-    if [ -d "$FILE" ]; then
-        echo "directory begin"
-        ls -1 "$1" | while read SUBFILE; do
-            if [ "$SUBFILE" = ".git" ]; then
-                continue
-            fi
-            if [[ "$SUBFILE" == *.po ]]; then
-                continue
-            fi
-            local STAT=`stat -c%F:%a:%s "$FILE/$SUBFILE"`
-            echo "$STAT:$SUBFILE"
-            readdir "$FILE/$SUBFILE"
-        done
-        echo "directory end"
-    else
-        local MD5=`md5sum -b "$FILE"`
-        echo "file:${MD5:0:32}"
+sha512dir() {
+    local DIR="$1"
+    local INFO="$2"
+
+    [ "$DIR" = ".git" ] || return 0
+    [ "$DIR" = *.po   ] || return 0
+
+    if [ "$INFO" = "info" ]; then
+        basename "$DIR" || return 1
+        stat -c%F:%a:%s "$DIR" || return 1
     fi
-}
-
-md5() {
-    local FILE=$1
-    local MD5=`readdir "$FILE" | md5sum -b`
-    echo "${MD5:0:32}"
-}
-
-remove_recursive() {
-    local CURRENT_PATH="$1"
-    local NEEDLE="$2"
-    rm -f "$CURRENT_PATH/"$NEEDLE
-    for FILE in $CURRENT_PATH; do
-        if [ -d "$CURRENT_PATH/$FILE" ]; then
-            remove_recursive "$CURRENT_PATH/$FILE" "$NEEDLE"
-        fi
-    done
+        
+    if [ -d "$DIR" ]; then
+        (foreachfile "$DIR" "${FUNCNAME[0]}" info | sha512sum -b | cut -c1-128) || return 1
+    else
+        (sha512sum -b "$DIR" | cut -c1-128) || return 1
+    fi
 }
 
 copy_system_lib() {

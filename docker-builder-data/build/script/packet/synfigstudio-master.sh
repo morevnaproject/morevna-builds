@@ -29,17 +29,17 @@ PK_LICENSE_FILES="synfig-studio/AUTHORS synfig-studio/README"
 source $INCLUDE_SCRIPT_DIR/inc-pkall-git.sh
 
 pkbuild() {
-	cd "$BUILD_PACKET_DIR/$PK_DIRNAME/synfig-studio" || return 1
-	if ! check_packet_function $NAME build.configure; then
-		./bootstrap.sh || return 1
-		./configure \
-		 --host=$HOST \
-		 --prefix=$INSTALL_PACKET_DIR \
-		 --sysconfdir=$INSTALL_PACKET_DIR/etc \
-		 || return 1
-		set_done $NAME build.configure
-	fi
-	make -j${THREADS} || return 1
+    cd "$BUILD_PACKET_DIR/$PK_DIRNAME/synfig-studio" || return 1
+    if ! check_packet_function $NAME build.configure; then
+        ./bootstrap.sh || return 1
+        ./configure \
+         --host=$HOST \
+         --prefix=$INSTALL_PACKET_DIR \
+         --sysconfdir=$INSTALL_PACKET_DIR/etc \
+        || return 1
+        set_done $NAME build.configure
+    fi
+    make -j${THREADS} || return 1
 }
 
 pkinstall() {
@@ -47,4 +47,6 @@ pkinstall() {
     if ! make install; then
         return 1
     fi
+    cd "$INSTALL_PACKET_DIR"
+    mv "share/pixmaps/synfigstudio/"* "share/pixmaps/"
 }
