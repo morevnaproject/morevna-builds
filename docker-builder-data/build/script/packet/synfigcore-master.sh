@@ -62,7 +62,7 @@ DEPS=" \
  synfigetl-master \
  jpeg-9b tiff-4.0.6 fftw-3.3.5 imagemagick-6.8.7 \
  ffmpeg-3.1.5 mlt-6.2.0 \
- boost-1.61.0 cairo-1.15.4 pango-1.40.3 glibmm-2.41.4 xmlpp-2.22.0"
+ boost-1.61.0 cairo-1.15.4 pango-1.40.3 glibmm-2.50.0 xmlpp-2.40.1"
 DEPS_NATIVE="libtool-2.4.6"
 
 if [ "$PLATFORM" = "linux" ]; then
@@ -86,7 +86,8 @@ pkbuild() {
             --prefix=$INSTALL_PACKET_DIR \
             --sysconfdir=$INSTALL_PACKET_DIR/etc \
             --with-boost-libdir=$ENVDEPS_PACKET_DIR/lib \
-            --without-opengl || return 1
+            --without-opengl \
+           || return 1
         set_done $NAME build.configure
     fi
     make -j${THREADS} || return 1
