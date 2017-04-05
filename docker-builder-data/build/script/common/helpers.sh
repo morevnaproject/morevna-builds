@@ -1,5 +1,59 @@
 # helpers
 
+allvars() {
+    for LOCAL_ALLVARS_VAR_PREFIX in _ {a..z} {A..Z}; do
+        eval echo -n $\{\!$LOCAL_ALLVARS_VAR_PREFIX*} | sed "s|LOCAL_ALLVARS_VAR_PREFIX||g"
+        echo -n " "
+    done
+}
+
+vars_clear() {
+    # local PREFIX=$1
+    [ ! -z "$1" ] || return 1
+    for VAR in $(allvars); do
+        if [[ "$VAR" = $1* ]]; then
+            unset $VAR
+        fi
+    done
+}
+
+vars_copy() {
+    # local PREFIX_FROM=$1
+    # local PREFIX_TO=$2
+    # local EXPORT=$3
+    [ "$1" == "$2" ] && return 0
+    for VAR in $(allvars); do
+        if [[ "$VAR" = $1* ]]; then
+            if [ "$3" = "export" ]; then
+                eval export ${2}${VAR#$1}='${!VAR}'
+            else
+                eval ${2}${VAR#$1}='${!VAR}'
+            if
+        fi
+    done
+}
+
+vars_rename() {
+    # local PREFIX_FROM=$1
+    # local PREFIX_TO=$2
+    [ ! -z "$1" ] || return 1
+    vars_copy "$1" "$2"
+    vars_clear "$1"
+}
+    
+vars_backup() {
+    # local PREFIX=$1
+    [ ! -z "$1" ] || return 1
+    vars_copy "" "$1"
+}
+
+vars_restore() {
+    # local PREFIX=$1
+    # local EXPORT=$2
+    [ ! -z "$1" ] || return 1
+    vars_copy "$1" "" "$2"
+}
+
 copy() {
     local SRC=$1
     local DEST=$2
@@ -77,8 +131,8 @@ sha512dir() {
     local DIR="$1"
     local INFO="$2"
 
-    [ "$DIR" = ".git" ] || return 0
-    [ "$DIR" = *.po   ] || return 0
+    [[ "$DIR" = ".git" ]] || return 0
+    [[ "$DIR" = *.po   ]] || return 0
 
     if [ "$INFO" = "info" ]; then
         basename "$DIR" || return 1

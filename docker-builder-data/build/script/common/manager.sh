@@ -74,34 +74,6 @@ if [ ! -f "$TOOLCHAIN_SCRIPT" ]; then
     TOOLCHAIN_SCRIPT=$NATIVE_TOOLCHAIN_SCRIPT
 fi
 
-# initial system vars
-
-INITIAL_HOST=$HOST
-INITIAL_PATH=$PATH
-INITIAL_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
-INITIAL_CC=$CC
-INITIAL_CXX=$CXX
-INITIAL_FORTRAN=$FORTRAN
-INITIAL_LD=$LD
-INITIAL_AR=$AR
-INITIAL_RANLIB=$RANLIB
-INITIAL_LDFLAGS=$LDFLAGS
-INITIAL_CFLAGS=$CFLAGS
-INITIAL_CPPFLAGS=$CPPFLAGS
-INITIAL_CXXFLAGS=$CXXFLAGS
-INITIAL_PKG_CONFIG_PATH=$PKG_CONFIG_PATH
-INITIAL_PKG_CONFIG_LIBDIR=$PKG_CONFIG_LIBDIR
-INITIAL_XDG_DATA_DIRS=$XDG_DATA_DIRS
-INITIAL_ACLOCAL_PATH=$ACLOCAL_PATH
-INITIAL_CMAKE_INCLUDE_PATH=$CMAKE_INCLUDE_PATH
-INITIAL_CMAKE_LIBRARY_PATH=$CMAKE_LIBRARY_PATH
-
-if [ ! -z "$INITIAL_ACLOCAL_PATH" ]; then
-    INITIAL_ACLOCAL_PATH = "$INITIAL_ACLOCAL_PATH:"
-fi
-INITIAL_ACLOCAL_PATH="$INITIAL_ACLOCAL_PATH/usr/share/aclocal"
-
-
 # work vars
 
 IS_NATIVE=
@@ -179,6 +151,12 @@ FUNC_DEPS_env_release="envdeps_release install_release"
 
 source "$COMMON_SCRIPT_DIR/helpers.sh"
 
+# initial system vars
+
+unset VARS_TO_RESTORE
+vars_clear "TC_"
+vars_clear "INITIAL_"
+vars_backup "INITIAL_"
 
 # internal functions
 
@@ -273,6 +251,26 @@ prepare_install_release() {
 }
 
 set_environment_vars() {
+    # restore env
+    for VAR in $VARS_TO_RESTORE; do
+        VAR_FROM="INITIAL_$VAR"
+        if [ -z ${!VAR_FROM+x} ]; then
+            unset $VAR
+        else
+            eval $VAR='${!VAR_FROM}'
+        fi
+    done
+
+    # set toolchain env
+    VARS_TO_RESTORE=
+    for VAR in $(allvars); do
+        if [[ "$VAR" = TC_* ]]; then
+            VARS_TO_RESTORE="$VARS_TO_RESTORE ${2}${VAR#$1}"
+        fi
+    done
+    vars_restore "TC_" "export"
+
+    # set env
     export NAME=$1
 
     export CURRENT_PACKET_DIR="$PACKET_DIR/$NAME"
@@ -290,14 +288,12 @@ set_environment_vars() {
     export ENVDEPS_RELEASE_PACKET_DIR="$CURRENT_PACKET_DIR/envdeps_release"
     export ENV_RELEASE_PACKET_DIR="$CURRENT_PACKET_DIR/env_release"
 
-    export HOST=$TOOLCHAIN_HOST
-
     export PATH="\
 $ENVDEPS_NATIVE_PACKET_DIR/bin:\
 $ENV_NATIVE_PACKET_DIR/bin:\
 $ENVDEPS_PACKET_DIR/bin:\
 $ENV_PACKET_DIR/bin:\
-$TOOLCHAIN_PATH"
+$TC_PATH"
 
     export LD_LIBRARY_PATH="\
 $ENVDEPS_NATIVE_PACKET_DIR/lib:\
@@ -308,46 +304,19 @@ $ENVDEPS_PACKET_DIR/lib:\
 $ENVDEPS_PACKET_DIR/lib64:\
 $ENV_PACKET_DIR/lib:\
 $ENV_PACKET_DIR/lib64:\
-$TOOLCHAIN_LD_LIBRARY_PATH"
+$TC_LD_LIBRARY_PATH"
 
-    export CC=$TOOLCHAIN_CC
-    export CXX=$TOOLCHAIN_CXX
-    export FORTRAN=$TOOLCHAIN_FORTRAN
-    export LD=$TOOLCHAIN_LD
-    export AR=$TOOLCHAIN_AR
-    export RANLIB=$TOOLCHAIN_RANLIB
-
-    if [ -z "$CC" ]; then
-        export -n CC
-    fi
-    if [ -z "$CXX" ]; then
-        export -n CXX
-    fi
-    if [ -z "$FORTRAN" ]; then
-        export -n FORTRAN
-    fi
-    if [ -z "$LD" ]; then
-        export -n LD
-    fi
-    if [ -z "$AR" ]; then
-        export -n AR
-    fi
-    if [ -z "$RANLIB" ]; then
-        export -n RANLIB
-    fi
-
-
-    export LDFLAGS="-L$ENVDEPS_PACKET_DIR/lib -L$ENVDEPS_PACKET_DIR/lib64 $TOOLCHAIN_LDFLAGS"
-    export CFLAGS="-I$ENVDEPS_PACKET_DIR/include $TOOLCHAIN_CFLAGS"
-    export CPPFLAGS="-I$ENVDEPS_PACKET_DIR/include $TOOLCHAIN_CPPFLAGS"
-    export CXXFLAGS="-I$ENVDEPS_PACKET_DIR/include $TOOLCHAIN_CXXFLAGS"
-    export PKG_CONFIG_PATH="$ENVDEPS_PACKET_DIR/lib/pkgconfig:$ENVDEPS_PACKET_DIR/share/pkgconfig:$TOOLCHAIN_PKG_CONFIG_PATH"
-    export PKG_CONFIG_LIBDIR="$ENVDEPS_PACKET_DIR/lib:$TOOLCHAIN_PKG_CONFIG_LIBDIR"
+    export LDFLAGS="-L$ENVDEPS_PACKET_DIR/lib -L$ENVDEPS_PACKET_DIR/lib64 $TC_LDFLAGS"
+    export CFLAGS="-I$ENVDEPS_PACKET_DIR/include $TC_CFLAGS"
+    export CPPFLAGS="-I$ENVDEPS_PACKET_DIR/include $TC_CPPFLAGS"
+    export CXXFLAGS="-I$ENVDEPS_PACKET_DIR/include $TC_CXXFLAGS"
+    export PKG_CONFIG_PATH="$ENVDEPS_PACKET_DIR/lib/pkgconfig:$ENVDEPS_PACKET_DIR/share/pkgconfig:$TC_PKG_CONFIG_PATH"
+    export PKG_CONFIG_LIBDIR="$ENVDEPS_PACKET_DIR/lib:$TC_PKG_CONFIG_LIBDIR"
     export PKG_CONFIG_SYSROOT_DIR="/"
-    export XDG_DATA_DIRS="$ENVDEPS_PACKET_DIR/share:$TOOLCHAIN_XDG_DATA_DIRS"
-    export ACLOCAL_PATH="$ENVDEPS_PACKET_DIR/share/aclocal:$TOOLCHAIN_ACLOCAL_PATH"
-    export CMAKE_INCLUDE_PATH="$ENVDEPS_PACKET_DIR/include:$TOOLCHAIN_CMAKE_INCLUDE_PATH"  
-    export CMAKE_LIBRARY_PATH="$ENVDEPS_PACKET_DIR/lib:$ENVDEPS_PACKET_DIR/lib64:$TOOLCHAIN_CMAKE_LIBRARY_PATH"  
+    export XDG_DATA_DIRS="$ENVDEPS_PACKET_DIR/share:$TC_XDG_DATA_DIRS"
+    export ACLOCAL_PATH="$ENVDEPS_PACKET_DIR/share/aclocal:$TC_ACLOCAL_PATH"
+    export CMAKE_INCLUDE_PATH="$ENVDEPS_PACKET_DIR/include:$TC_CMAKE_INCLUDE_PATH"  
+    export CMAKE_LIBRARY_PATH="$ENVDEPS_PACKET_DIR/lib:$ENVDEPS_PACKET_DIR/lib64:$TC_CMAKE_LIBRARY_PATH"  
 }
 
 call_packet_function() {
