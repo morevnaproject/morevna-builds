@@ -57,5 +57,5 @@ run_nsis() {
 
 run_appimage linux 64
 run_appimage linux 32
-#run_nsis win 64
-#run_nsis win 32
+run_nsis win 64
+run_nsis win 32

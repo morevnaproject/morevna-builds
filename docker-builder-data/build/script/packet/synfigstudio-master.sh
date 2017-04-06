@@ -30,7 +30,7 @@ PK_DIRNAME="synfig"
 PK_URL="https://github.com/synfig/$PK_DIRNAME.git"
 PK_GIT_OPTIONS="--branch testing"
 PK_CPPFLAGS="-std=c++11"
-PK_LICENSE_FILES="synfig-studio/AUTHORS synfig-studio/README"
+PK_LICENSE_FILES="synfig-studio/AUTHORS synfig-studio/README synfig-studio/COPYING"
 
 source $INCLUDE_SCRIPT_DIR/inc-pkall-git.sh
 
@@ -63,7 +63,15 @@ pkinstall() {
     fi
 
     cd "$INSTALL_PACKET_DIR"
-    mv "share/pixmaps/synfigstudio/"* "share/pixmaps/"
+
+    # configuration
+    if [ "$PLATFORM" = "win" ]; then
+        mv "share/pixmaps/synfigstudio/"* "share/pixmaps/"
+        mkdir -p "share/gtk-3.0"
+        cp "$FILES_PACKET_DIR/settings.ini" "share/gtk-3.0/" || return 1
+        mkdir -p "lib/gdk-pixbuf-2.0/2.10.0"
+        cp "$FILES_PACKET_DIR/loaders.cache" "lib/gdk-pixbuf-2.0/2.10.0/"  || return 1
+    fi
 
     # copy system libraries
     if [ "$PLATFORM" = "win" ]; then
