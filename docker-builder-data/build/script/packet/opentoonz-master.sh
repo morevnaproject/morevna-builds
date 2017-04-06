@@ -97,7 +97,7 @@ pkhook_postlicense() {
         copy_system_license mingw$ARCH-win-iconv   "$TARGET" || return 1
         copy_system_license mingw$ARCH-termcap     "$TARGET" || return 1
     else
-        copy_system_license "libudev libudev0 libudev1" "$TARGET" || return 1
+        copy_system_license libudev                "$TARGET" || return 1
         copy_system_license gfortran               "$TARGET" || return 1
     fi
 }
