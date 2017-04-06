@@ -47,10 +47,10 @@ pkinstall() {
     if ! make install; then
         return 1
     fi
-    
+
     cd "$INSTALL_PACKET_DIR"
     mv "share/pixmaps/synfigstudio/"* "share/pixmaps/"
-    
+
     # copy system libraries
     if [ "$PLATFORM" = "win" ]; then
         local TARGET="$INSTALL_PACKET_DIR/bin/"
@@ -88,8 +88,18 @@ pkhook_postlicense() {
         copy_system_license mingw$ARCH-winpthreads "$TARGET" || return 1
         copy_system_license mingw$ARCH-gettext     "$TARGET" || return 1
         copy_system_license mingw$ARCH-win-iconv   "$TARGET" || return 1
+        copy_system_license mingw$ARCH-dlfcn       "$TARGET" || return 1
+        copy_system_license mingw$ARCH-libltdl     "$TARGET" || return 1
+        copy_system_license mingw$ARCH-expat       "$TARGET" || return 1
+        copy_system_license mingw$ARCH-bzip2       "$TARGET" || return 1
+        copy_system_license mingw$ARCH-freetype    "$TARGET" || return 1
     else
-        copy_system_license "libudev libudev0 libudev1" "$TARGET" || return 1
+        copy_system_license libudev                "$TARGET" || return 1
         copy_system_license gfortran               "$TARGET" || return 1
+        copy_system_license libdb                  "$TARGET" || return 1
+        copy_system_license libpcre                "$TARGET" || return 1
+        copy_system_license libdirectfb            "$TARGET" || return 1
+        copy_system_license libfusion              "$TARGET" || return 1
+        copy_system_license libbz2                 "$TARGET" || return 1
     fi
 }
