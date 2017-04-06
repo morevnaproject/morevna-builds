@@ -257,7 +257,7 @@ set_environment_vars() {
         if [ -z ${!VAR_FROM+x} ]; then
             unset $VAR
         else
-            eval $VAR='${!VAR_FROM}'
+            eval export $VAR='${!VAR_FROM}'
         fi
     done
 
@@ -265,7 +265,7 @@ set_environment_vars() {
     VARS_TO_RESTORE=
     for VAR in $(allvars); do
         if [[ "$VAR" = TC_* ]]; then
-            VARS_TO_RESTORE="$VARS_TO_RESTORE ${2}${VAR#$1}"
+            VARS_TO_RESTORE="$VARS_TO_RESTORE ${VAR#TC_}"
         fi
     done
     vars_restore "TC_" "export"
@@ -402,7 +402,7 @@ foreach_deps() {
     local PROCESS_SELF=""
     if [ "$NATIVE" = "native" ]; then
         CURRENT_DEPS=$DEPS_NATIVE
-        if [ ! -z "$TOOLCHAIN_HOST" ]; then
+        if [ ! -z "$TC_HOST" ]; then
             PROCESS_SELF="process_self"
         fi
     fi
@@ -423,7 +423,7 @@ foreach_deps() {
 
     if [ "$RECURSIVE" = "recursive" ]; then
         for DEP in $CURRENT_DEPS_NATIVE; do
-            if [ ! -z "$DEP" ] && [ "$DEP" != "$NAME" -o ! -z "$TOOLCHAIN_HOST" ]; then
+            if [ ! -z "$DEP" ] && [ "$DEP" != "$NAME" -o ! -z "$TC_HOST" ]; then
                 local DEP_LOCAL=$DEP 
                 if ! native foreach_deps "$DEP_LOCAL" "$FUNC" "$RECURSIVE"; then
                     return 1
@@ -462,7 +462,7 @@ is_complete() {
     local WAS_ARCH=$ARCH
     local WAS_PACKET_DIR=$PACKET_DIR
     local PROCESS_SELF=""
-    if [ ! -z "$TOOLCHAIN_HOST" ]; then
+    if [ ! -z "$TC_HOST" ]; then
         PROCESS_SELF="process_self"
     fi
 
@@ -568,7 +568,7 @@ prepare() {
     local WAS_ARCH=$ARCH
     local WAS_PACKET_DIR=$PACKET_DIR
     local PROCESS_SELF=""
-    if [ ! -z "$TOOLCHAIN_HOST" ]; then
+    if [ ! -z "$TC_HOST" ]; then
         PROCESS_SELF="process_self"
     fi
 

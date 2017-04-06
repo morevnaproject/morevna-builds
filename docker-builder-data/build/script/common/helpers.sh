@@ -28,7 +28,7 @@ vars_copy() {
                 eval export ${2}${VAR#$1}='${!VAR}'
             else
                 eval ${2}${VAR#$1}='${!VAR}'
-            if
+            fi
         fi
     done
 }

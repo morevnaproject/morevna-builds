@@ -4,6 +4,8 @@ vars_clear "TC_"
 
 # set vars which used explicitly in function manager.sh:set_environment_vars()
 
+export TC_HOST=""
+
 export TC_PATH="$INITIAL_PATH"
 export TC_LD_LIBRARY_PATH="$INITIAL_LD_LIBRARY_PATH"
 
