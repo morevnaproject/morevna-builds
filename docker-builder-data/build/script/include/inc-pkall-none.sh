@@ -51,6 +51,10 @@ pkinstall_release() {
     return 0
 }
 
+pkhook_version() {
+    echo "$NAME" | cut -d'-' -f 2-
+}
+
 pkhook_prebuild() {
     return 0
 }

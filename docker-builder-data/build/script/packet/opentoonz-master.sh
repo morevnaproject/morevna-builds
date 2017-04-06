@@ -1,7 +1,6 @@
 DEPS="jpeg-9b png-1.6.26 lz4-master lzo-2.10 lzma-5.2.3 glew-2.0.0 freeglut-3.0.0 superlu-5.2.1 openblas-master boost-1.61.0 qt-5.7"
 DEPS_NATIVE="cmake-3.6.2"
 
-PK_VERSION="1.1.2"
 PK_DIRNAME="opentoonz"
 PK_URL="https://github.com/opentoonz/$PK_DIRNAME.git"
 PK_LICENSE_FILES="README.md LICENSE.txt thirdparty/tiff-4.0.3/COPYRIGHT"
@@ -13,6 +12,14 @@ source $INCLUDE_SCRIPT_DIR/inc-pkall-git.sh
 if [ "$PLATFORM" = "linux" ]; then
     DEPS="$DEPS usb-1.0.20 sdl-2.0.5"
 fi
+
+pkhook_version() {
+    cat "$PK_DIRNAME/toonz/sources/toonz/main.cpp" \
+    | grep "const.char.\*applicationFullName.=.\"OpenToonz." \
+    | cut -d \" -f 2 \
+    | cut -d " " -f 2 \
+    || return 1
+}
 
 pkbuild() {
     local LOCAL_OPTIONS=

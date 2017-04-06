@@ -34,6 +34,14 @@ PK_LICENSE_FILES="synfig-studio/AUTHORS synfig-studio/README"
 
 source $INCLUDE_SCRIPT_DIR/inc-pkall-git.sh
 
+pkhook_version() {
+    cat "$PK_DIRNAME/synfig-studio/configure.ac" \
+    | grep "AC_INIT" \
+    | cut -d [ -f 3 \
+    | cut -d ] -f 1 \
+    || return 1
+}
+
 pkbuild() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME/synfig-studio" || return 1
     if ! check_packet_function $NAME build.configure; then
