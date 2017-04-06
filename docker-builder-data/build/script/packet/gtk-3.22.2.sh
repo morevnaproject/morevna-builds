@@ -7,10 +7,12 @@ PK_URL="https://download.gnome.org/sources/gtk+/3.22/$PK_ARCHIVE"
 
 source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh
 
-PK_CONFIGURE_OPTIONS="--enable-introspection=no"
-
 if [ "$PLATFORM" = "linux" ] || [ ! -z "$IS_NATIVE" ]; then
     DEPS="$DEPS atspi2atk-2.22.0"
+fi
+
+if [ "$PLATFORM" = "win" ]; then
+    PK_CONFIGURE_OPTIONS="--enable-introspection=no"
 fi
 
 pkinstall() {

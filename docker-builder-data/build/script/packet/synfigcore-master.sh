@@ -62,8 +62,14 @@ DEPS=" \
  synfigetl-master \
  jpeg-9b tiff-4.0.6 fftw-3.3.5 imagemagick-6.8.7 \
  ffmpeg-3.1.5 mlt-6.2.0 \
- boost-1.61.0 cairo-1.15.4 pango-1.40.3 glibmm-2.50.0 xmlpp-2.40.1"
+ boost-1.61.0 cairo-1.15.4 pango-1.40.3 "
 DEPS_NATIVE="libtool-2.4.6"
+
+if [ "$PLATFORM" = "win" ]; then
+    DEPS="$DEPS glibmm-2.50.0 xmlpp-2.40.1"
+else
+    DEPS="$DEPS glibmm-2.41.4 xmlpp-2.22.0"
+fi
 
 if [ "$PLATFORM" = "linux" ]; then
     DEPS="$DEPS jack-0.125.0"

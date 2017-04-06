@@ -17,8 +17,14 @@
 #   adwaitaicons                  | gtk, rsvg
 #   gnomethemes                   | gtk, rsvg
 
-DEPS="synfigcore-master gtkmm-3.22.0 adwaitaicontheme-3.22.0 gnomethemesstandard-3.22.2"
+DEPS="synfigcore-master"
 DEPS_NATIVE="libtool-2.4.6 synfigcore-master"
+
+if [ "$PLATFORM" = "win" ]; then
+    DEPS="$DEPS gtkmm-3.22.0"
+else
+    DEPS="$DEPS gtkmm-3.14.0"
+fi
 
 PK_DIRNAME="synfig"
 PK_URL="https://github.com/synfig/$PK_DIRNAME.git"
@@ -99,7 +105,6 @@ pkhook_postlicense() {
         copy_system_license libdb                  "$TARGET" || return 1
         copy_system_license libpcre                "$TARGET" || return 1
         copy_system_license libdirectfb            "$TARGET" || return 1
-        copy_system_license libfusion              "$TARGET" || return 1
         copy_system_license libbz2                 "$TARGET" || return 1
     fi
 }

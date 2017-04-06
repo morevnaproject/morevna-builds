@@ -1,4 +1,5 @@
 DEPS="epoxy-master rsvg-2.40.16 atk-2.22.0 gdkpixbuf-2.36.0 cairo-1.15.4 pango-1.40.3"
+DEPS_NATIVE="gtk-3.14.14"
 
 PK_DIRNAME="gtk+-3.14.14"
 PK_ARCHIVE="$PK_DIRNAME.tar.xz"
