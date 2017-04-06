@@ -47,6 +47,49 @@ pkinstall() {
     if ! make install; then
         return 1
     fi
+    
     cd "$INSTALL_PACKET_DIR"
     mv "share/pixmaps/synfigstudio/"* "share/pixmaps/"
+    
+    # copy system libraries
+    if [ "$PLATFORM" = "win" ]; then
+        local TARGET="$INSTALL_PACKET_DIR/bin/"
+        local LOCAL_DIR="/usr/$HOST/sys-root/mingw/bin/"
+        cp $LOCAL_DIR/libgcc*.dll        "$TARGET" || return 1
+        cp $LOCAL_DIR/libstdc*.dll       "$TARGET" || return 1
+        cp $LOCAL_DIR/libwinpthread*.dll "$TARGET" || return 1
+        cp $LOCAL_DIR/libquadmath*.dll   "$TARGET" || return 1
+        cp $LOCAL_DIR/libgfortran*.dll   "$TARGET" || return 1
+        cp $LOCAL_DIR/iconv*.dll         "$TARGET" || return 1
+        cp $LOCAL_DIR/libintl*.dll       "$TARGET" || return 1
+        cp $LOCAL_DIR/libdl*.dll         "$TARGET" || return 1
+        cp $LOCAL_DIR/libltdl*.dll       "$TARGET" || return 1
+        cp $LOCAL_DIR/libexpat*.dll      "$TARGET" || return 1
+        cp $LOCAL_DIR/zlib*.dll          "$TARGET" || return 1
+        cp $LOCAL_DIR/libbz2*.dll        "$TARGET" || return 1
+        cp $LOCAL_DIR/libfreetype*.dll   "$TARGET" || return 1
+    else
+        local TARGET="$INSTALL_PACKET_DIR/lib/"
+        copy_system_lib libudev          "$TARGET" || return 1
+        copy_system_lib libgfortran      "$TARGET" || return 1
+        copy_system_lib libdb            "$TARGET" || return 1
+        copy_system_lib libpcre          "$TARGET" || return 1
+        copy_system_lib libdirect        "$TARGET" || return 1
+        copy_system_lib libfusion        "$TARGET" || return 1
+        copy_system_lib libbz2           "$TARGET" || return 1
+    fi
+}
+
+pkhook_postlicense() {
+    local TARGET="$LICENSE_PACKET_DIR"
+    if [ "$PLATFORM" = "win" ]; then
+        local LOCAL_DIR="/usr/$HOST/sys-root/mingw/bin/"
+        copy_system_license "mingw$ARCH-gcc gcc"   "$TARGET" || return 1
+        copy_system_license mingw$ARCH-winpthreads "$TARGET" || return 1
+        copy_system_license mingw$ARCH-gettext     "$TARGET" || return 1
+        copy_system_license mingw$ARCH-win-iconv   "$TARGET" || return 1
+    else
+        copy_system_license "libudev libudev0 libudev1" "$TARGET" || return 1
+        copy_system_license gfortran               "$TARGET" || return 1
+    fi
 }
