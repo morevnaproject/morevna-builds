@@ -41,6 +41,9 @@ pkinstall_release() {
     
     # get version
     local LOCAL_VERSION=$(cat $ENVDEPS_RELEASE_PACKET_DIR/version-opentoonz-*)
+    local LOCAL_VERSION=$(echo "$LOCAL_VERSION_FULL" | cut -d - -f 1)
+    local LOCAL_VERSION2=$(echo "$LOCAL_VERSION" | cut -d . -f -2)
+    local LOCAL_COMMIT=$(echo "$LOCAL_VERSION_FULL" | cut -d - -f 2)
 
     # create file lists
     echo "create file lists"
@@ -55,9 +58,9 @@ pkinstall_release() {
 !define PK_NAME         "OpenToonz" 
 !define PK_NAME_FULL    "OpenToonz"
 !define PK_ARCH         "$ARCH"
-!define PK_VERSION      "${LOCAL_VERSION:0:3}"
-!define PK_VERSION_FULL "${LOCAL_VERSION:0:11}" 
-!define PK_EXECUTABLE   "bin\\\${PK_NAME}_\${PK_VERSION}.exe" 
+!define PK_VERSION      "${LOCAL_VERSION2}"
+!define PK_VERSION_FULL "${LOCAL_VERSION}-${LOCAL_COMMIT:0:5}" 
+!define PK_EXECUTABLE   "bin\\\${PK_NAME}_\${LOCAL_VERSION2}.exe" 
 EOF
 
     # let's go
