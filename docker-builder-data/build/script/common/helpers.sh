@@ -156,6 +156,20 @@ copy_system_lib() {
      || (echo "$SRC_NAME not found in system libraries" && return 1)
 }
 
+add_common_licenses() {
+    local FILE="$1"
+    local TARGET="$2"
+
+    local LIC_PATH="/usr/share/common-licenses"
+    [ -d "$LIC_PATH" ] || return 0
+    [[ ! "$FILE" = "$LIC_PATH/"* ]] || return 0
+    ls -d1 "$LIC_PATH/"* | while read SUB_FILE; do
+        if grep -q "$SUB_FILE" "$FILE"; then
+            add_license "$SUB_FILE" "$SUB_FILE" "$TARGET"
+        fi
+    done
+}
+
 add_license() {
     local FILE="$1"
     local FILE_IN_TITLE="$2"
@@ -172,34 +186,50 @@ add_license() {
         echo ""                                      >> "$TARGET" || return 1
     fi
     cat "$FILE"                                      >> "$TARGET" || return 1
+    add_common_licenses "$FILE" "$TARGET" || return 1
 }
 
 copy_system_license() {
     local SRC_NAMES=$1
     local DST_PATH=$2
     local SRC_NAME=
+
     for SRC_NAME in $SRC_NAMES; do
         rm -f "$DST_PATH/license-$SRC_NAME"
     done
     for SRC_NAME in $SRC_NAMES; do
         local TARGET="$DST_PATH/license-$SRC_NAME"
-        local FILE=
-        if   [ -f "/usr/share/doc/$SRC_NAME/copyright" ]; then
-             FILE="/usr/share/doc/$SRC_NAME/copyright"
-        elif [ -d "/usr/share/licenses/$SRC_NAME" ]; then
-             FILE="/usr/share/licenses/$SRC_NAME"
-        elif [ -d "/usr/share/doc/$SRC_NAME" ]; then
-             FILE="/usr/share/doc/$SRC_NAME"
-        fi
+        for SUFFIX in "" {0..9} "-"; do
+            local SUB_NAME="$SRC_NAME$SUFFIX"
+            if [ ! -z "$SUFFIX" ]; then
+                SUB_NAME="$SUB_NAME*"
+            fi
 
-        if [ -f "$FILE" ]; then
-            add_license "$FILE" "$FILE" "$TARGET" || (echo "Cannot add license file: $FILE -> $TARGET"; return 1)
-        elif [ -d "$FILE" ]; then
-            ls -1 "$FILE" | while read SUBFILE; do
-                add_license "$FILE/$SUBFILE" "$FILE/$SUBFILE" "$TARGET" || (echo "Cannot add license file: $FILE/$SUBFILE -> $TARGET"; return 1)
+            for MASK in "/usr/share/doc/$SUB_NAME/copyright" \
+                        "/usr/share/licenses/$SUB_NAME" \
+                        "/usr/share/licenses/$SUB_NAME/*" \
+                        "/usr/share/doc/$SUB_NAME/*"
+            do
+                local FOUND=
+                ls -d1 $MASK 2>/dev/null | while read FILE; do
+                    if [ -f "$FILE" ] && [[ "$FILE" != *.bz2 ]]; then
+                        FOUND=1
+                        if ! add_license "$FILE" "$FILE" "$TARGET"; then
+                            echo "Cannot add license file: $FILE -> $TARGET";
+                            return 1
+                        fi
+                    fi
+                done
+                if [ ! -z "$FOUND" ]; then
+                    break
+                fi
             done
-        fi
-        
+
+            if [ -z "$SUFFIX" ] && [ -f "$TARGET" ]; then
+                return 0
+            fi
+        done
+
         if [ -f "$TARGET" ]; then
             return 0
         fi
