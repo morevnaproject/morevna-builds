@@ -4,8 +4,16 @@
 #
 # Optional c/c++ flags from Fedora MinGW:
 #   -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions --param=ssp-buffer-size=4
-
-TC_EXTRA_CPP_OPTIONS="-pipe"
+#
+#   -Wall -g            - don't need
+#   -02 -fexceptions    - should be defined in packet if need
+#   -pipe               - not compatible with windres (used in lzma packet)
+#
+#   -Wp,-D_FORTIFY_SOURCE=2 --param=ssp-buffer-size=4
+#                       - may be better, but work fine without it, will added when any problem raised
+#
+# So no extra options for now
+TC_EXTRA_CPP_OPTIONS=
 
 export TC_PATH="/usr/$TC_HOST/bin:/usr/$TC_HOST/sys-root/mingw/bin:$INITIAL_PATH"
 export TC_LD_LIBRARY_PATH="/usr/$TC_HOST/sys-root/mingw/lib:$INITIAL_LD_LIBRARY_PATH"
