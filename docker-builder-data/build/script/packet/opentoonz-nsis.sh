@@ -40,7 +40,7 @@ pkinstall_release() {
     copy "$ENVDEPS_RELEASE_PACKET_DIR" "./" || return 1
     
     # get version
-    local LOCAL_VERSION=$(cat $ENVDEPS_RELEASE_PACKET_DIR/version-opentoonz-*)
+    local LOCAL_VERSION_FULL=$(cat $ENVDEPS_RELEASE_PACKET_DIR/version-opentoonz-*)
     local LOCAL_VERSION=$(echo "$LOCAL_VERSION_FULL" | cut -d - -f 1)
     local LOCAL_VERSION2=$(echo "$LOCAL_VERSION" | cut -d . -f -2)
     local LOCAL_COMMIT=$(echo "$LOCAL_VERSION_FULL" | cut -d - -f 2)
