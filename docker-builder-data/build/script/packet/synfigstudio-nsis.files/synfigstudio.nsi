@@ -128,6 +128,7 @@ Section "Start Menu Shortcuts"
   CreateDirectory "$SMPROGRAMS\${PK_NAME_FULL}"
   CreateShortCut "$SMPROGRAMS\${PK_NAME_FULL}\Uninstall ${PK_NAME_FULL}.lnk" "$INSTDIR\uninstall-${PK_NAME}.exe" "" "$INSTDIR\uninstall-${PK_NAME}.exe" 0
   CreateShortCut "$SMPROGRAMS\${PK_NAME_FULL}\${PK_NAME_FULL}.lnk" "$INSTDIR\${PK_EXECUTABLE}" "" "$INSTDIR\${PK_ICON}" 0
+  CreateShortCut "$SMPROGRAMS\${PK_NAME_FULL}\${PK_NAME_FULL} (Debug Console).lnk" "$INSTDIR\${PK_EXECUTABLE}" "--console" "$INSTDIR\${PK_ICON}" 0
 SectionEnd
 
 ;--------------------------------
