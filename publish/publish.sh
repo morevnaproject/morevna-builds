@@ -27,7 +27,7 @@ publish() {
         | sed "s|%VERSION%|$VERSION|g" \
         | sed "s|%DATE%|*|g" \
         | sed "s|%COMMIT%|$COMMIT|g" `
-    local CHECK=`ls "$PUBLISH_DIR/"$CHECK_MASK`
+    local CHECK=`ls "$PUBLISH_DIR/"$CHECK_MASK 2>/dev/null`
     if [ -z "$CHECK" ]; then
         local TARGET_NAME=` \
             echo "$TEMPLATE" \

@@ -333,17 +333,18 @@ call_packet_function() {
 
     message "$NAME $FUNC"
     try_do_nothing $NAME $FUNC && return 0
-	echo "${DRY_RUN_DONE[@]}"
+    echo "${DRY_RUN_DONE[@]}"
 
-	local PREV_HASH=
-	if [ "$COMPARE_RESULTS" = "compare_results" ]; then
-		if check_packet_function $NAME $FUNC; then
-			PREV_HASH=`sha512dir "$FUNC_CURRENT_PACKET_DIR"` 
-			[ ! $? -eq 0 ] && return 1
-		fi
+    local PREV_HASH=
+    if [ "$COMPARE_RESULTS" = "compare_results" ]; then
+        if check_packet_function $NAME $FUNC; then
+            PREV_HASH=`sha512dir "$FUNC_CURRENT_PACKET_DIR"` 
+            [ ! $? -eq 0 ] && return 1
+            echo "sha512: $PREV_HASH"
+        fi
     else
-   		set_undone_silent $NAME $FUNC
-	fi
+        set_undone_silent $NAME $FUNC
+    fi
 
     mkdir -p $FUNC_CURRENT_PACKET_DIR
     cd $FUNC_CURRENT_PACKET_DIR
@@ -369,14 +370,17 @@ call_packet_function() {
         fi
     fi
 
-	if [ ! -z "$PREV_HASH" ]; then
-		local HASH=`sha512dir "$FUNC_CURRENT_PACKET_DIR"` 
-		[ ! $? -eq 0 ] && return 1
-		if [ "$HASH" = "$PREV_HASH" ]; then
-			message "$NAME $FUNC - not changed"
-			return 0
-		fi
-	fi
+    if [ ! -z "$PREV_HASH" ]; then
+        local HASH=`sha512dir "$FUNC_CURRENT_PACKET_DIR"` 
+        [ ! $? -eq 0 ] && return 1
+        echo "sha512: $HASH"
+        if [ "$HASH" = "$PREV_HASH" ]; then
+            message "$NAME $FUNC - not changed"
+            return 0
+        else
+            message "$NAME $FUNC - changed"
+        fi
+    fi
 
     set_done $NAME $FUNC
 }

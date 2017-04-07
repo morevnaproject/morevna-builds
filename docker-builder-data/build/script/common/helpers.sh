@@ -130,9 +130,11 @@ foreachfile() {
 sha512dir() {
     local DIR="$1"
     local INFO="$2"
+    
+    local BASE=$(basename "$DIR")
 
-    [[ "$DIR" = ".git" ]] || return 0
-    [[ "$DIR" = *.po   ]] || return 0
+    [[ "$BASE" != ".git" ]] || return 0
+    [[ "$BASE" != *.po   ]] || return 0
 
     if [ "$INFO" = "info" ]; then
         basename "$DIR" || return 1
@@ -141,6 +143,8 @@ sha512dir() {
         
     if [ -d "$DIR" ]; then
         (foreachfile "$DIR" "${FUNCNAME[0]}" info | sha512sum -b | cut -c1-128) || return 1
+    elif [ -L "$DIR" ]; then
+        (readlink "$DIR" | sha512sum -b | cut -c1-128) || return 1
     else
         (sha512sum -b "$DIR" | cut -c1-128) || return 1
     fi
