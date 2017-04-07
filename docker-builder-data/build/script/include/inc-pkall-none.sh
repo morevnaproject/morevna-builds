@@ -1,6 +1,8 @@
 DEPS=
 DEPS_NATIVE=
 
+vars_clear "PK_"
+
 PK_URL=
 PK_VERSION=
 PK_ARCHIVE=
