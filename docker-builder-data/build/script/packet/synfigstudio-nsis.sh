@@ -1,5 +1,10 @@
 DEPS="synfigstudio-master"
 
+PK_PYTHON_DIRNAME="python"
+PK_PYTHON_ARCHIVE="portable-python-3.2.5.1.zip"
+PK_PYTHON_URL="https://download.tuxfamily.org/synfig/packages/sources/$PK_PYTHON_ARCHIVE"
+
+
 pkfunc_register_file() {
     local FILE=$1
     local WIN_FILE=$(echo "$FILE" | sed "s|\/|\\\\|g")
@@ -29,6 +34,19 @@ pkfunc_register_file() {
     fi
 }
 
+# download portable python and pass downloaded files through all build phases
+pkdownload() {
+    wget -c --no-check-certificate "$PK_PYTHON_URL" -O "$PK_PYTHON_ARCHIVE" || return 1
+}
+
+pkunpack() {
+    unzip "$DOWNLOAD_PACKET_DIR/$PK_PYTHON_ARCHIVE" || return 1
+}
+
+pkinstall() {
+    copy "$BUILD_PACKET_DIR" "$INSTALL_PACKET_DIR" || return 1
+}
+
 pkinstall_release() {
     local LOCAL_INSTALLER_DIR="$INSTALL_RELEASE_PACKET_DIR/installer"
     local LOCAL_CACHE_DIR="$INSTALL_RELEASE_PACKET_DIR/cache"
@@ -42,17 +60,10 @@ pkinstall_release() {
     copy "$ENVDEPS_RELEASE_PACKET_DIR" "./" || return 1
 
     # move examples
-    mv "./share/synfig/examples" "./"
+    mv "./share/synfig/examples" "./" || return 1
 
-    # download portable python
-    mkdir -p "$LOCAL_CACHE_DIR"
-    cd "$LOCAL_CACHE_DIR" || return 1
-    wget -c --no-check-certificate \
-        "https://download.tuxfamily.org/synfig/packages/sources/portable-python-3.2.5.1.zip" \
-        -O "portable-python-3.2.5.1.zip" || return 1
-    rm -rf "python"
-    unzip "portable-python-3.2.5.1.zip" || return 1
-    mv "python" "$LOCAL_INSTALLER_DIR/" || return 1
+    # add portable python
+    copy "$INSTALL_PACKET_DIR/$PK_PYTHON_DIRNAME" "$LOCAL_INSTALLER_DIR/python" || return 1
     cd "$LOCAL_INSTALLER_DIR" || return 1
 
     # get version
@@ -75,12 +86,14 @@ pkinstall_release() {
 
     # create config.nsh (see opentoons.nsi)
     cat > config.nsh << EOF
-!define PK_NAME         "synfigstudio" 
-!define PK_NAME_FULL    "Synfig Studio"
-!define PK_ARCH         "$ARCH"
-!define PK_VERSION      "${LOCAL_VERSION2}"
-!define PK_VERSION_FULL "${LOCAL_VERSION}-${LOCAL_COMMIT:0:5}" 
-!define PK_EXECUTABLE   "bin\\synfigstudio.exe" 
+!define PK_NAME          "synfigstudio" 
+!define PK_NAME_FULL     "Synfig Studio"
+!define PK_ARCH          "$ARCH"
+!define PK_VERSION       "${LOCAL_VERSION2}"
+!define PK_VERSION_FULL  "${LOCAL_VERSION}-${LOCAL_COMMIT:0:5}"
+!define PK_EXECUTABLE    "bin\\synfigstudio.exe"
+!define PK_ICON          "share\\pixmaps\\synfig_icon.ico"
+!define PK_DOCUMENT_ICON "share\\pixmaps\\sif_icon.ico"
 EOF
 
     # let's go

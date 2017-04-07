@@ -7,12 +7,14 @@
 ;   files-stuff-uninstall.nsh
 
 ; Defines which will set by 'config.nsh':
-;   PK_NAME         - XxxxxXxxxx               - name without spaces 
-;   PK_NAME_FULL    - Xxxxx Xxxxxxxxxx         - full name, may be with spaces
-;   PK_ARCH         - XX                       - architecture, 32 or 64
-;   PK_VERSION      - X.X                      - first two numbers of version
-;   PK_VERSION_FULL - X.X.X-xxxxx-xxxxx        - full version, without spaces 
-;   PK_EXECUTABLE   - xxx\XxxxXxxx-xxx_xxx.exe - subpath to executable file 
+;   PK_NAME          - XxxxxXxxxx               - name without spaces 
+;   PK_NAME_FULL     - Xxxxx Xxxxxxxxxx         - full name, may be with spaces
+;   PK_ARCH          - XX                       - architecture, 32 or 64
+;   PK_VERSION       - X.X                      - first two numbers of version
+;   PK_VERSION_FULL  - X.X.X-xxxxx-xxxxx        - full version, without spaces 
+;   PK_EXECUTABLE    - xxx\XxxxXxxx-xxx_xxx.exe - subpath to executable file 
+;   PK_ICON          - xxx\XxxxXxxx-xxx_xxx.ico - subpath to icon file (may be *.exe)
+;   PK_DOCUMENT_ICON - xxx\XxxxXxxx-xxx_xxx.ico - subpath to icon file for associated documents
 
 !include "config.nsh"
 
@@ -94,9 +96,9 @@ Section "${PK_NAME_FULL} (required)"
   WriteRegStr HKCR ".sfg" "PerceivedType" "image"
 	
   WriteRegStr HKCR "Synfig.Composition" "" "Synfig Composition File"
-  WriteRegStr HKCR "Synfig.Composition\DefaultIcon" "" "$INSTDIR\share\pixmaps\sif_icon.ico"
+  WriteRegStr HKCR "Synfig.Composition\DefaultIcon" "" "$INSTDIR\${PK_DOCUMENT_ICON}"
   WriteRegStr HKCR "Synfig.Composition\shell" "" "open"
-  WriteRegStr HKCR "Synfig.Composition\shell\open\command" "" '$INSTDIR\bin\synfigstudio.exe "%1"'
+  WriteRegStr HKCR "Synfig.Composition\shell\open\command" "" '$INSTDIR\${PK_EXECUTABLE} "%1"'
 
   System::Call 'Shell32::SHChangeNotify(i ${SHCNE_ASSOCCHANGED}, i ${SHCNF_IDLIST}, i 0, i 0)'
 
@@ -125,7 +127,7 @@ Section "Start Menu Shortcuts"
   SetShellVarContext All
   CreateDirectory "$SMPROGRAMS\${PK_NAME_FULL}"
   CreateShortCut "$SMPROGRAMS\${PK_NAME_FULL}\Uninstall ${PK_NAME_FULL}.lnk" "$INSTDIR\uninstall-${PK_NAME}.exe" "" "$INSTDIR\uninstall-${PK_NAME}.exe" 0
-  CreateShortCut "$SMPROGRAMS\${PK_NAME_FULL}\${PK_NAME_FULL}.lnk" "$INSTDIR\${PK_EXECUTABLE}" "" "$INSTDIR\${PK_EXECUTABLE}" 0
+  CreateShortCut "$SMPROGRAMS\${PK_NAME_FULL}\${PK_NAME_FULL}.lnk" "$INSTDIR\${PK_EXECUTABLE}" "" "$INSTDIR\${PK_ICON}" 0
 SectionEnd
 
 ;--------------------------------
@@ -136,7 +138,6 @@ Section "Uninstall"
   SetRegView ${PK_ARCH}
 
   ReadRegStr $INSTDIR HKLM "${PRODUCT_REG_KEY}" "Path"
-  ReadRegStr $STUFFDIR HKLM "${PRODUCT_REG_KEY}\${PK_NAME}\${PK_VERSION}" "TOONZROOT"
 
   ; Remove registry keys
   DeleteRegKey HKCR "Synfig.Composition\shell\open\command" 

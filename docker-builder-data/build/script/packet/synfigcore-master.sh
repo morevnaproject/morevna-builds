@@ -104,7 +104,4 @@ pkinstall() {
     if ! make install; then
         return 1
     fi
-
-    # add examples
-    cp -r "$BUILD_PACKET_DIR/$PK_DIRNAME/synfig-core/examples" "$INSTALL_PACKET_DIR/share/synfig/" || return 1
 }

@@ -73,6 +73,9 @@ pkinstall() {
         cp "$FILES_PACKET_DIR/loaders.cache" "lib/gdk-pixbuf-2.0/2.10.0/"  || return 1
     fi
 
+    # add examples
+    cp -r "$BUILD_PACKET_DIR/$PK_DIRNAME/synfig-core/examples" "$INSTALL_PACKET_DIR/share/synfig/" || return 1
+
     # copy system libraries
     if [ "$PLATFORM" = "win" ]; then
         local TARGET="$INSTALL_PACKET_DIR/bin/"
