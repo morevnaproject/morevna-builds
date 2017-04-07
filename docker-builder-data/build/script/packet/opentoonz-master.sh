@@ -77,16 +77,19 @@ pkinstall() {
     if [ "$PLATFORM" = "win" ]; then
         local TARGET="$INSTALL_PACKET_DIR/bin/"
         local LOCAL_DIR="/usr/$HOST/sys-root/mingw/bin/"
-        cp $LOCAL_DIR/libgcc*.dll        "$TARGET" || return 1
-        cp $LOCAL_DIR/libgfortran*.dll   "$TARGET" || return 1
-        cp $LOCAL_DIR/libquadmath*.dll   "$TARGET" || return 1
-        cp $LOCAL_DIR/libstdc*.dll       "$TARGET" || return 1
-        cp $LOCAL_DIR/libwinpthread*.dll "$TARGET" || return 1
-        cp $LOCAL_DIR/zlib*.dll          "$TARGET" || return 1
-        cp $LOCAL_DIR/libgettextlib*.dll "$TARGET" || return 1
-        cp $LOCAL_DIR/libintl*.dll       "$TARGET" || return 1
-        cp $LOCAL_DIR/iconv*.dll         "$TARGET" || return 1
-        cp $LOCAL_DIR/libtermcap*.dll    "$TARGET" || return 1
+        cp "$LOCAL_DIR"/libgcc*.dll        "$TARGET" || return 1
+        cp "$LOCAL_DIR"/libgfortran*.dll   "$TARGET" || return 1
+        cp "$LOCAL_DIR"/libquadmath*.dll   "$TARGET" || return 1
+        cp "$LOCAL_DIR"/libstdc*.dll       "$TARGET" || return 1
+        cp "$LOCAL_DIR"/libwinpthread*.dll "$TARGET" || return 1
+        cp "$LOCAL_DIR"/zlib*.dll          "$TARGET" || return 1
+        cp "$LOCAL_DIR"/libgettextlib*.dll "$TARGET" || return 1
+        cp "$LOCAL_DIR"/libintl*.dll       "$TARGET" || return 1
+        cp "$LOCAL_DIR"/iconv*.dll         "$TARGET" || return 1
+        cp "$LOCAL_DIR"/libtermcap*.dll    "$TARGET" || return 1
+
+        # add icon
+        cp "$BUILD_PACKET_DIR/$PK_DIRNAME/toonz/sources/toonz/toonz.ico" "$TARGET" || return 1
     else
         local TARGET="$INSTALL_PACKET_DIR/lib/"
         copy_system_lib libudev          "$TARGET" || return 1

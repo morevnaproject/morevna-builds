@@ -13,6 +13,7 @@
 ;   PK_VERSION      - X.X                      - first two numbers of version
 ;   PK_VERSION_FULL - X.X.X-xxxxx-xxxxx        - full version, without spaces 
 ;   PK_EXECUTABLE   - xxx\XxxxXxxx-xxx_xxx.exe - subpath to executable file 
+;   PK_ICON         - xxx\XxxxXxxx-xxx_xxx.ico - subpath to icon file (may be *.exe)
 
 !include "config.nsh"
 
@@ -122,7 +123,7 @@ Section "Start Menu Shortcuts"
   SetShellVarContext All
   CreateDirectory "$SMPROGRAMS\${PK_NAME_FULL}"
   CreateShortCut "$SMPROGRAMS\${PK_NAME_FULL}\Uninstall ${PK_NAME_FULL}.lnk" "$INSTDIR\uninstall-${PK_NAME}.exe" "" "$INSTDIR\uninstall-${PK_NAME}.exe" 0
-  CreateShortCut "$SMPROGRAMS\${PK_NAME_FULL}\${PK_NAME_FULL}.lnk" "$INSTDIR\${PK_EXECUTABLE}" "" "$INSTDIR\${PK_EXECUTABLE}" 0
+  CreateShortCut "$SMPROGRAMS\${PK_NAME_FULL}\${PK_NAME_FULL}.lnk" "$INSTDIR\${PK_EXECUTABLE}" "" "$INSTDIR\${PK_ICON}" 0
 SectionEnd
 
 ;--------------------------------
