@@ -27,6 +27,11 @@ publish() {
         | sed "s|%VERSION%|$VERSION|g" \
         | sed "s|%DATE%|*|g" \
         | sed "s|%COMMIT%|$COMMIT|g" `
+    local RM_MASK=` \
+        echo "$TEMPLATE" \
+        | sed "s|%VERSION%|*|g" \
+        | sed "s|%DATE%|*|g" \
+        | sed "s|%COMMIT%|*|g" `
     local CHECK=`ls "$PUBLISH_DIR/"$CHECK_MASK 2>/dev/null`
     if [ -z "$CHECK" ]; then
         local TARGET_NAME=` \
@@ -37,7 +42,7 @@ publish() {
         local TARGET="$PUBLISH_DIR/$TARGET_NAME"
 
         echo "Publish new version $VERSION-$COMMIT ($TARGET_NAME)"
-        `rm -f "$PUBLISH_DIR/"$CHECK_MASK`
+        `rm -f "$PUBLISH_DIR/"$RM_MASK`
         cp "$FILE" "$TARGET"
         if [ -f "$PUBLISH_DIR/publish-$NAME.sh" ]; then
             echo "Call publish-$NAME.sh"
