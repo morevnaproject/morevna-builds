@@ -2,12 +2,13 @@
 ; Requires files:
 ;   config.nsh
 ;   files-install.nsh
+;   files-ffmpeg-install.nsh
+;   files-examples-install.nsh
 ;   files-uninstall.nsh
-;   files-stuff-install.nsh
-;   files-stuff-uninstall.nsh
 
 ; Defines which will set by 'config.nsh':
 ;   PK_NAME          - XxxxxXxxxx               - name without spaces 
+;   PK_DIR_NAME      - Xxxxx Xxxxx              - dir name, may be with spaces 
 ;   PK_NAME_FULL     - Xxxxx Xxxxxxxxxx         - full name, may be with spaces
 ;   PK_ARCH          - XX                       - architecture, 32 or 64
 ;   PK_VERSION       - X.X                      - first two numbers of version
@@ -15,6 +16,7 @@
 ;   PK_EXECUTABLE    - xxx\XxxxXxxx-xxx_xxx.exe - subpath to executable file 
 ;   PK_ICON          - xxx\XxxxXxxx-xxx_xxx.ico - subpath to icon file (may be *.exe)
 ;   PK_DOCUMENT_ICON - xxx\XxxxXxxx-xxx_xxx.ico - subpath to icon file for associated documents
+;   PK_LICENSE       - xxxxxxxx\xxxxxxx-xxx.txt - subpath to license file
 
 !include "config.nsh"
 
@@ -31,8 +33,7 @@ Name "${PK_NAME_FULL} ${PK_VERSION_FULL}"
 OutFile "${PK_NAME}-${PK_VERSION_FULL}.exe"
 
 ; The default installation directory and registry
-InstallDir "$PROGRAMFILES${PK_ARCH}\${PK_NAME}"
-Var STUFFDIR
+InstallDir "$PROGRAMFILES${PK_ARCH}\${PK_DIR_NAME}"
 
 ; Request application privileges for Windows Vista
 RequestExecutionLevel highest
@@ -45,7 +46,6 @@ RequestExecutionLevel highest
 !define SHCNF_IDLIST 0
 
 !define PRODUCT_REG_KEY "Software\${PK_NAME}"
-!define PRODUCT_STUFF_KEY "${PRODUCT_REG_KEY}\${PK_NAME}\${PK_VERSION}"
 !define PRODUCT_UNINSTALL_KEY  "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PK_NAME}"
 !define PRODUCT_UNINSTALL_EXE  "uninstall-${PK_NAME}.exe"
 
@@ -53,7 +53,7 @@ RequestExecutionLevel highest
 
 ; Pages
 
-!insertmacro MUI_PAGE_LICENSE ".\license\license-synfigstudio-master"
+!insertmacro MUI_PAGE_LICENSE ".\${PK_LICENSE}"
 !insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
@@ -125,10 +125,10 @@ Section "Start Menu Shortcuts"
   SetOutPath "$INSTDIR\bin"
 
   SetShellVarContext All
-  CreateDirectory "$SMPROGRAMS\${PK_NAME_FULL}"
-  CreateShortCut "$SMPROGRAMS\${PK_NAME_FULL}\Uninstall ${PK_NAME_FULL}.lnk" "$INSTDIR\uninstall-${PK_NAME}.exe" "" "$INSTDIR\uninstall-${PK_NAME}.exe" 0
-  CreateShortCut "$SMPROGRAMS\${PK_NAME_FULL}\${PK_NAME_FULL}.lnk" "$INSTDIR\${PK_EXECUTABLE}" "" "$INSTDIR\${PK_ICON}" 0
-  CreateShortCut "$SMPROGRAMS\${PK_NAME_FULL}\${PK_NAME_FULL} (Debug Console).lnk" "$INSTDIR\${PK_EXECUTABLE}" "--console" "$INSTDIR\${PK_ICON}" 0
+  CreateDirectory "$SMPROGRAMS\${PK_DIR_NAME}"
+  CreateShortCut "$SMPROGRAMS\${PK_DIR_NAME}\Uninstall ${PK_NAME_FULL}.lnk" "$INSTDIR\uninstall-${PK_NAME}.exe" "" "$INSTDIR\uninstall-${PK_NAME}.exe" 0
+  CreateShortCut "$SMPROGRAMS\${PK_DIR_NAME}\${PK_NAME_FULL}.lnk" "$INSTDIR\${PK_EXECUTABLE}" "" "$INSTDIR\${PK_ICON}" 0
+  CreateShortCut "$SMPROGRAMS\${PK_DIR_NAME}\${PK_NAME_FULL} (Debug Console).lnk" "$INSTDIR\${PK_EXECUTABLE}" "--console" "$INSTDIR\${PK_ICON}" 0
 SectionEnd
 
 ;--------------------------------
@@ -194,5 +194,5 @@ cancel:
 
 ignore:
   BringToFront
-  Abort
+  Return
 FunctionEnd

@@ -87,6 +87,7 @@ pkinstall_release() {
     # create config.nsh (see opentoons.nsi)
     cat > config.nsh << EOF
 !define PK_NAME          "synfigstudio" 
+!define PK_DIR_NAME      "Synfig" 
 !define PK_NAME_FULL     "Synfig Studio"
 !define PK_ARCH          "$ARCH"
 !define PK_VERSION       "${LOCAL_VERSION2}"
@@ -94,6 +95,7 @@ pkinstall_release() {
 !define PK_EXECUTABLE    "bin\\synfigstudio.exe"
 !define PK_ICON          "share\\pixmaps\\synfig_icon.ico"
 !define PK_DOCUMENT_ICON "share\\pixmaps\\sif_icon.ico"
+!define PK_LICENSE       ".\\license\\license-synfigstudio-master"
 EOF
 
     # let's go

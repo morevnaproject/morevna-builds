@@ -30,7 +30,9 @@ PK_DIRNAME="synfig"
 PK_URL="https://github.com/synfig/$PK_DIRNAME.git"
 PK_GIT_OPTIONS="--branch testing"
 PK_CPPFLAGS="-std=c++11"
-PK_LICENSE_FILES="synfig-studio/AUTHORS synfig-studio/README synfig-studio/COPYING"
+
+# put COPYING to front for license agreement page of NSIS installer
+PK_LICENSE_FILES="synfig-studio/COPYING synfig-studio/README synfig-studio/AUTHORS"
 
 source $INCLUDE_SCRIPT_DIR/inc-pkall-git.sh
 
