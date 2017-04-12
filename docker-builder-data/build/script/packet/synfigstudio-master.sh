@@ -104,6 +104,7 @@ pkinstall() {
         copy_system_lib libdirect        "$TARGET" || return 1
         copy_system_lib libfusion        "$TARGET" || return 1
         copy_system_lib libbz2           "$TARGET" || return 1
+        copy_system_lib libselinux       "$TARGET" || return 1
     fi
 }
 
@@ -127,5 +128,6 @@ pkhook_postlicense() {
         copy_system_license libpcre                "$TARGET" || return 1
         copy_system_license libdirectfb            "$TARGET" || return 1
         copy_system_license libbz2                 "$TARGET" || return 1
+        copy_system_license libselinux             "$TARGET" || return 1
     fi
 }
