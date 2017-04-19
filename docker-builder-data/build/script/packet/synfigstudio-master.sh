@@ -20,7 +20,7 @@
 DEPS="synfigcore-master"
 DEPS_NATIVE="libtool-2.4.6 synfigcore-master"
 
-if [ "$PLATFORM" = "win" ]; then
+if [ "$PLATFORM" = "win" ] || [ "$PLATFORM" = "fedora" ]; then
     DEPS="$DEPS gtkmm-3.22.0"
 else
     DEPS="$DEPS gtkmm-3.14.0"
@@ -52,7 +52,8 @@ pkbuild() {
          --host=$HOST \
          --prefix=$INSTALL_PACKET_DIR \
          --sysconfdir=$INSTALL_PACKET_DIR/etc \
-        || return 1
+         $PK_CONFIGURE_OPTIONS \
+         || return 1
         set_done $NAME build.configure
     fi
     make -j${THREADS} || return 1

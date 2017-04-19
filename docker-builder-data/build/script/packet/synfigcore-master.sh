@@ -65,7 +65,7 @@ DEPS=" \
  boost-1.61.0 cairo-1.15.4 pango-1.40.3 "
 DEPS_NATIVE="libtool-2.4.6"
 
-if [ "$PLATFORM" = "win" ]; then
+if [ "$PLATFORM" = "win" ] || [ "$PLATFORM" = "fedora" ]; then
     DEPS="$DEPS glibmm-2.50.0 xmlpp-2.40.1"
 else
     DEPS="$DEPS glibmm-2.41.4 xmlpp-2.22.0"
@@ -87,13 +87,15 @@ pkbuild() {
     if ! check_packet_function $NAME build.configure; then
         libtoolize --ltdl --copy --force || return 1
         autoreconf --install --force || return 1
-        ./configure \
-            --host=$HOST \
-            --prefix=$INSTALL_PACKET_DIR \
-            --sysconfdir=$INSTALL_PACKET_DIR/etc \
-            --with-boost-libdir=$ENVDEPS_PACKET_DIR/lib \
-            --without-opengl \
-           || return 1
+        CPPFLAGS="$PK_CPPFLAGS $CPPFLAGS" \
+         ./configure \
+         --host=$HOST \
+         --prefix=$INSTALL_PACKET_DIR \
+         --sysconfdir=$INSTALL_PACKET_DIR/etc \
+         --with-boost-libdir=$ENVDEPS_PACKET_DIR/lib \
+         --without-opengl \
+         $PK_CONFIGURE_OPTIONS \
+         || return 1
         set_done $NAME build.configure
     fi
     make -j${THREADS} || return 1
