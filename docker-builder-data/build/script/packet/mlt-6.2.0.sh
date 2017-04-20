@@ -39,10 +39,13 @@ source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh
 
 pkhook_postinstall() {
     if [ "$PLATFORM" = "win" ]; then
+        mkdir -p "bin"
         mkdir -p "bin/lib"
+        mkdir -p "bin/share"
         mv "libmlt++-3.dll" "bin/"
         mv "libmlt-6.dll"   "bin/"
         mv "melt"           "bin/melt.exe"
         mv "lib/mlt"        "bin/lib/"
+        mv "share/mlt"      "bin/share/"
     fi
 }
