@@ -8,7 +8,7 @@ if ( ! ldconfig -p | grep libjack.so >/dev/null ) || ( ! which jackd >/dev/null 
 	# No JACK, so disable this functionality.
 	# (The bundled libjack won't work correctly anyway).
 	export SYNFIG_DISABLE_JACK=1
-	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${BASE_DIR}/lib.extra
+	export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${BASE_DIR}/lib.extra"
 fi
 
 export USER_CONFIG_DIR=$HOME/.config/synfig
@@ -24,9 +24,11 @@ export SYNFIG_GTK_THEME="Adwaita"
 export SYNFIG_MODULE_LIST="${BASE_DIR}/etc/synfig_modules.cfg"
 export MLT_DATA="${BASE_DIR}/share/mlt/"
 export MLT_REPOSITORY="${BASE_DIR}/lib/mlt/"
-export MAGICK_CODER_FILTER_PATH="${BASE_DIR}/lib/ImageMagick-6.9.6/config-Q16/"
-export MAGICK_CODER_MODULE_PATH="${BASE_DIR}/lib/ImageMagick-6.9.6/modules-Q16/coders/"
-export MAGICK_CONFIGURE_PATH="${BASE_DIR}/lib/ImageMagick-6.9.6/modules-Q16/filters/"
+
+MAGICK_DIR="$(cd .. && ls -1d "${BASE_DIR}/lib/ImageMagick-"*)"
+export MAGICK_CONFIGURE_PATH="${MAGICK_DIR}/config-Q16/"
+export MAGICK_CODER_MODULE_PATH="${MAGICK_DIR}/modules-Q16/coders/"
+export MAGICK_CODER_FILTER_PATH="${MAGICK_DIR}/modules-Q16/filters/"
 
 # Create install-location-dependent config files for Pango and GDK image loaders
 # We have to do this every time because its possible that SYSPREFIX has changed

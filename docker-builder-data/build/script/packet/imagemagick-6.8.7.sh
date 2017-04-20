@@ -5,10 +5,15 @@ PK_ARCHIVE="$PK_DIRNAME.tar.xz"
 PK_URL="http://www.imagemagick.org/download/releases/$PK_ARCHIVE"
 
 PK_CONFIGURE_OPTIONS=" \
- --with-modules \
  --without-perl \
  --without-x \
  --with-threads \
  --with-magick_plus_plus"
+
+if [ "$PLATFORM" = "win" ]; then
+  PK_CONFIGURE_OPTIONS="$PK_CONFIGURE_OPTIONS --without-modules"
+else
+  PK_CONFIGURE_OPTIONS="$PK_CONFIGURE_OPTIONS --with-modules"
+fi 
 
 source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh
