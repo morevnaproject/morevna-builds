@@ -96,6 +96,8 @@ pkinstall() {
         cp $LOCAL_DIR/zlib*.dll          "$TARGET" || return 1
         cp $LOCAL_DIR/libbz2*.dll        "$TARGET" || return 1
         cp $LOCAL_DIR/libfreetype*.dll   "$TARGET" || return 1
+        cp $LOCAL_DIR/libjasper*.dll     "$TARGET" || return 1
+        cp $LOCAL_DIR/libjpeg*.dll       "$TARGET" || return 1
     else
         local TARGET="$INSTALL_PACKET_DIR/lib/"
         copy_system_lib libudev          "$TARGET" || return 1
