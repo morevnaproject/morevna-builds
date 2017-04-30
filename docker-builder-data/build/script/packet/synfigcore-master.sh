@@ -85,8 +85,7 @@ source $INCLUDE_SCRIPT_DIR/inc-pkall-git.sh
 pkbuild() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME/synfig-core" || return 1
     if ! check_packet_function $NAME build.configure; then
-        libtoolize --ltdl --copy --force || return 1
-        autoreconf --install --force || return 1
+        ./bootstrap.sh || return 1
         CPPFLAGS="$PK_CPPFLAGS $CPPFLAGS" \
          ./configure \
          --host=$HOST \

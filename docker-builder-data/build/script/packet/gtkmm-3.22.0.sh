@@ -1,4 +1,9 @@
-DEPS="gtk-3.22.2 atkmm-2.24.2 cairomm-1.12.0 pangomm-2.40.1 adwaitaicontheme-3.22.0 gnomethemesstandard-3.22.2"
+# GTK packets:
+#   gtkmm, atkmm, cairomm, pangomm, glibmm, sigcpp
+#   gtk
+#   adwaitaicontheme gnomethemesstandard
+
+DEPS="gtk-3.22.12 atkmm-2.24.2 cairomm-1.12.0 pangomm-2.40.1 adwaitaicontheme-3.24.0 gnomethemesstandard-3.22.3"
 
 PK_DIRNAME="gtkmm-3.22.0"
 PK_ARCHIVE="$PK_DIRNAME.tar.xz"
