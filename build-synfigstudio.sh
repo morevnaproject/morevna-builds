@@ -29,7 +29,7 @@ run_appimage() {
 
     "$PUBLISH_DIR/publish.sh" \
         "synfigstudio" \
-        "SynfigStudio-%VERSION%-%DATE%-%COMMIT%-$PLATFORM-${ARCH}bits.appimage" \
+        "SynfigStudio-%VERSION%-%DATE%-%COMMIT%-$PLATFORM-${ARCH}bit.appimage" \
         "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/synfigstudio-appimage/install_release" \
         "*.appimage" \
         "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/synfigstudio-appimage/envdeps_release/version-synfigstudio-master"
@@ -49,7 +49,7 @@ run_nsis() {
 
     "$PUBLISH_DIR/publish.sh" \
         "synfigstudio" \
-        "SynfigStudio-%VERSION%-%DATE%-%COMMIT%-$PLATFORM-${ARCH}bits.exe" \
+        "SynfigStudio-%VERSION%-%DATE%-%COMMIT%-$PLATFORM-${ARCH}bit.exe" \
         "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/synfigstudio-nsis/install_release" \
         "*.exe" \
         "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/synfigstudio-nsis/envdeps_release/version-synfigstudio-master"

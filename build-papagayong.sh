@@ -27,7 +27,7 @@ run_appimage() {
 
     "$PUBLISH_DIR/publish.sh" \
         "papagayong" \
-        "PapagayoNG-%VERSION%-%DATE%-%COMMIT%-$PLATFORM-${ARCH}bits.appimage" \
+        "PapagayoNG-%VERSION%-%DATE%-%COMMIT%-$PLATFORM-${ARCH}bit.appimage" \
         "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/papagayong-appimage/install_release" \
         "*.appimage" \
         "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/papagayong-appimage/envdeps_release/version-papagayong-master"
@@ -48,7 +48,7 @@ run_nsis() {
 
     "$PUBLISH_DIR/publish.sh" \
         "papagayong" \
-        "PapagayoNG-%VERSION%-%DATE%-%COMMIT%-$PLATFORM-${ARCH}bits.exe" \
+        "PapagayoNG-%VERSION%-%DATE%-%COMMIT%-$PLATFORM-${ARCH}bit.exe" \
         "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/papagayong-master/build" \
         "*.exe" \
         "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/papagayong-master/unpack/version-papagayong-master"
