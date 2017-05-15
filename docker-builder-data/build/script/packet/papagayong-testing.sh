@@ -1,0 +1,3 @@
+source "$PACKET_SCRIPT_DIR/papagayong-master.sh"
+
+PK_GIT_OPTIONS="--branch testing"

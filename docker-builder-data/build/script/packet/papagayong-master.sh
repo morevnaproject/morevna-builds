@@ -2,7 +2,6 @@ DEPS="wxphoenix-master python3pyaudio-master"
 
 PK_DIRNAME="papagayo-ng"
 PK_URL="https://github.com/morevnaproject/$PK_DIRNAME.git"
-#PK_GIT_OPTIONS="--branch testing"
 
 PK_LICENSE_FILES="readme.txt gpl.txt"
 
