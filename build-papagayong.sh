@@ -22,7 +22,7 @@ run_appimage() {
     echo ""
     echo "Update papagayong for $PLATFORM-$ARCH"
     echo ""
-    $SCRIPT update papagayong-master
+    $SCRIPT update papagayong-testing
     $SCRIPT clean_before_do install_release papagayong-appimage
 
     "$PUBLISH_DIR/publish.sh" \
@@ -30,7 +30,7 @@ run_appimage() {
         "PapagayoNG-%VERSION%-%DATE%-%COMMIT%-$PLATFORM-${ARCH}bit.appimage" \
         "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/papagayong-appimage/install_release" \
         "*.appimage" \
-        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/papagayong-appimage/envdeps_release/version-papagayong-master"
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/papagayong-appimage/envdeps_release/version-papagayong-testing"
 }
 
 run_nsis() {
@@ -40,18 +40,18 @@ run_nsis() {
     echo ""
     echo "Update papagayong for $PLATFORM-$ARCH"
     echo ""
-    $SCRIPT update papagayong-master
-    $SCRIPT clean_before_do unpack papagayong-master
+    $SCRIPT update papagayong-testing
+    $SCRIPT clean_before_do unpack papagayong-testing
 
     # QUICK HACK:
-    $SCRIPT shell papagayong-master "/build/script/packet/papagayong-master.files/build-win.sh"
+    $SCRIPT shell papagayong-testing "/build/script/packet/papagayong-testing.files/build-win.sh"
 
     "$PUBLISH_DIR/publish.sh" \
         "papagayong" \
         "PapagayoNG-%VERSION%-%DATE%-%COMMIT%-$PLATFORM-${ARCH}bit.exe" \
-        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/papagayong-master/build" \
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/papagayong-testing/build" \
         "*.exe" \
-        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/papagayong-master/unpack/version-papagayong-master"
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/papagayong-testing/unpack/version-papagayong-testing"
 }
 
 run_appimage linux 64
