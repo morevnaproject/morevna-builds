@@ -43,7 +43,7 @@ pkbuild() {
         set_done $NAME build.configure
     fi
     
-    native_at_place make -j${THREADS} || return 1
+    native_at_place make -j${THREADS} || native_at_place make ||return 1
 }
 
 pkinstall() {

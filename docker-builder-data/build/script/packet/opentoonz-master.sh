@@ -24,11 +24,13 @@ pkhook_version() {
 pkbuild() {
     local LOCAL_OPTIONS=
     local LOCAL_CMAKE_OPTIONS=
+    local LOCAL_LIB_SUFFIX=so
     if [ ! -z "$HOST" ]; then
         LOCAL_OPTIONS="--host=$HOST"
     fi
     if [ "$PLATFORM" = "win" ]; then
-        LOCAL_CMAKE_OPTIONS="-DCMAKE_SYSTEM_NAME=Windows"
+        LOCAL_CMAKE_OPTIONS="$LOCAL_CMAKE_OPTIONS -DCMAKE_SYSTEM_NAME=Windows"
+        LOCAL_LIB_SUFFIX="dll.a"
     fi
 
     if ! check_packet_function $NAME build.libtiff; then
@@ -50,6 +52,8 @@ pkbuild() {
               -DCMAKE_PREFIX_PATH="$ENVDEPS_PACKET_DIR" \
               -DCMAKE_MODULE_PATH="$ENVDEPS_NATIVE_PACKET_DIR/share/cmake-3.6.2/Modules" \
               -DCMAKE_INSTALL_PREFIX="$INSTALL_PACKET_DIR" \
+              -DPNG_PNG_INCLUDE_DIR="$ENVDEPS_PACKET_DIR/include" \
+              -DPNG_LIBRARY="$ENVDEPS_PACKET_DIR/lib/libpng16.$LOCAL_LIB_SUFFIX" \
               $LOCAL_CMAKE_OPTIONS \
               $PK_CONFIGURE_OPTIONS \
               ../sources; \
@@ -87,6 +91,10 @@ pkinstall() {
         cp "$LOCAL_DIR"/libintl*.dll       "$TARGET" || return 1
         cp "$LOCAL_DIR"/iconv*.dll         "$TARGET" || return 1
         cp "$LOCAL_DIR"/libtermcap*.dll    "$TARGET" || return 1
+        cp "$LOCAL_DIR"/libpcre*.dll       "$TARGET" || return 1
+        cp "$LOCAL_DIR"/libharfbuzz*.dll   "$TARGET" || return 1
+        cp "$LOCAL_DIR"/libjasper*.dll     "$TARGET" || return 1
+        cp "$LOCAL_DIR"/libjpeg*.dll       "$TARGET" || return 1
 
         # add icon
         cp "$BUILD_PACKET_DIR/$PK_DIRNAME/toonz/sources/toonz/toonz.ico" "$TARGET" || return 1

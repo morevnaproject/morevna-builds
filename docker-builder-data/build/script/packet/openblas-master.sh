@@ -31,9 +31,7 @@ NO_AFFINITY                = 1
 COMMON_PROF                = -pg
 EOF
 
-    if ! make -j${THREADS}; then
-        return 1
-    fi
+    make -j${THREADS} libs netlib shared || return 1
 }
 
 pkinstall() {

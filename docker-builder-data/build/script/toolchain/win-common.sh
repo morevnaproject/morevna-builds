@@ -47,16 +47,17 @@ export TC_SIZE=/usr/bin/$TC_HOST-size
 export TC_STRINGS=/usr/bin/$TC_HOST-strings
 export TC_STRIP=/usr/bin/$TC_HOST-strip
 export TC_WINDMC=/usr/bin/$TC_HOST-windmc
+export TC_RC=/usr/bin/$TC_HOST-windres
 export TC_WINDRES=/usr/bin/$TC_HOST-windres
 
 export TC_LDFLAGS=" -L/usr/$TC_HOST/sys-root/mingw/lib $INITIAL_LDFLAGS"
-export TC_CFLAGS=" $TC_EXTRA_CPP_OPTIONS -I/usr/$TC_HOST/sys-root/mingw/include $INITIAL_CFLAGS"
-export TC_CPPFLAGS=" $TC_EXTRA_CPP_OPTIONS -I/usr/$TC_HOST/sys-root/mingw/include $INITIAL_CPPFLAGS"
-export TC_CXXFLAGS=" $TC_EXTRA_CPP_OPTIONS -I/usr/$TC_HOST/sys-root/mingw/include $INITIAL_CXXFLAGS"
+export TC_CFLAGS=" $TC_EXTRA_CPP_OPTIONS $INITIAL_CFLAGS"
+export TC_CPPFLAGS=" $TC_EXTRA_CPP_OPTIONS $INITIAL_CPPFLAGS"
+export TC_CXXFLAGS=" $TC_EXTRA_CPP_OPTIONS $INITIAL_CXXFLAGS"
 export TC_PKG_CONFIG_PATH="/usr/lib/pkgconfig:/usr/$TC_HOST/sys-root/mingw/lib/pkgconfig"
 export TC_PKG_CONFIG_LIBDIR="/usr/$TC_HOST/sys-root/mingw/lib"
 export TC_XDG_DATA_DIRS="$INITIAL_XDG_DATA_DIRS"
-export TC_CMAKE_INCLUDE_PATH="/usr/$TC_HOST/sys-root/mingw/include:$INITIAL_CMAKE_INCLUDE_PATH"
+export TC_CMAKE_INCLUDE_PATH="$INITIAL_CMAKE_INCLUDE_PATH"
 export TC_CMAKE_LIBRARY_PATH="/usr/$TC_HOST/sys-root/mingw/lib:$INITIAL_CMAKE_LIBRARY_PATH"
 
 unset TC_EXTRA_CPP_OPTIONS

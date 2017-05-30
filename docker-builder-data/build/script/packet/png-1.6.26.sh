@@ -1,4 +1,6 @@
-DEPS=""
+if [ "$PLATFORM" = "win" ]; then
+    DEPS="zlib-1.2.11"
+fi
 
 PK_DIRNAME="libpng-1.6.26"
 PK_ARCHIVE="$PK_DIRNAME.tar.gz"
