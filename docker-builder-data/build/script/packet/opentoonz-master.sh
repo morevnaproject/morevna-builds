@@ -54,6 +54,7 @@ pkbuild() {
               -DCMAKE_INSTALL_PREFIX="$INSTALL_PACKET_DIR" \
               -DPNG_PNG_INCLUDE_DIR="$ENVDEPS_PACKET_DIR/include" \
               -DPNG_LIBRARY="$ENVDEPS_PACKET_DIR/lib/libpng16.$LOCAL_LIB_SUFFIX" \
+              -DGLUT_LIB="$ENVDEPS_PACKET_DIR/lib/libfreeglut.$LOCAL_LIB_SUFFIX" \
               $LOCAL_CMAKE_OPTIONS \
               $PK_CONFIGURE_OPTIONS \
               ../sources; \
