@@ -40,7 +40,7 @@ pkinstall() {
     mkdir -p $INSTALL_PACKET_DIR
     PYTHONHOME=$ENVDEPS_PACKET_DIR python3 build.py 3.6 \
         --gtk3 \
-        --release_build \
+        --release \
         -j8 \
         --extra_setup=--prefix=$INSTALL_PACKET_DIR \
         install \
