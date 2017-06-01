@@ -2,6 +2,7 @@ DEPS="python-3.6.0"
 
 PK_DIRNAME="requests"
 PK_URL="https://github.com/kennethreitz/$PK_DIRNAME.git"
+PK_GIT_CHECKOUT="tags/v2.17.3"
 PK_LICENSE_FILES="AUTHORS.rst LICENSE"
 
 source $INCLUDE_SCRIPT_DIR/inc-pkall-git.sh

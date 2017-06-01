@@ -2,6 +2,7 @@ DEPS_NATIVE="yasm-1.3.0"
 
 PK_DIRNAME="x264"
 PK_URL="http://git.videolan.org/git/$PK_DIRNAME.git"
+PK_GIT_CHECKOUT="d32d7bf1c6923a42cbd5ac2fd540ecbb009ba681"
 
 source $INCLUDE_SCRIPT_DIR/inc-pkall-git.sh
 

@@ -3,7 +3,7 @@ DEPS_NATIVE="libtool-2.4.6"
 
 PK_DIRNAME="synfig"
 PK_URL="https://github.com/synfig/$PK_DIRNAME.git"
-PK_GIT_OPTIONS="--branch testing"
+PK_GIT_CHECKOUT="origin/testing"
 PK_LICENSE_FILES="ETL/AUTHORS ETL/README"
 
 source $INCLUDE_SCRIPT_DIR/inc-pkall-git.sh

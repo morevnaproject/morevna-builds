@@ -4,6 +4,7 @@ DEPS="python-3.6.0 doxygen-1.8.8 python3requests-master gstreamerpluginsbase-0.1
 
 PK_DIRNAME="Phoenix"
 PK_URL="https://github.com/wxWidgets/$PK_DIRNAME.git"
+PK_GIT_CHECKOUT="tags/wxPython-4.0.0a2"
 
 PK_LICENSE_FILES=" \
     ext/wxWidgets/docs/readme.txt \

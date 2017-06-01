@@ -2,6 +2,7 @@ DEPS=""
 
 PK_DIRNAME="libepoxy"
 PK_URL="https://github.com/anholt/$PK_DIRNAME.git"
+PK_GIT_CHECKOUT="tags/1.4.2"
 
 source $INCLUDE_SCRIPT_DIR/inc-pkall-git.sh
 

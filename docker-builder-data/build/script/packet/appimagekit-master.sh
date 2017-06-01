@@ -3,7 +3,7 @@ DEPS_NATIVE="cmake-3.6.2"
 
 PK_DIRNAME="AppImageKit"
 PK_URL="https://github.com/probonopd/$PK_DIRNAME.git"
-PK_GIT_OPTIONS="--branch master"
+PK_GIT_CHECKOUT="origin/master"
 
 source $INCLUDE_SCRIPT_DIR/inc-pkall-git.sh
 

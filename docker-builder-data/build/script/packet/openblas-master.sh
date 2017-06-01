@@ -2,6 +2,7 @@ DEPS=""
 
 PK_DIRNAME="OpenBLAS"
 PK_URL="https://github.com/xianyi/$PK_DIRNAME.git"
+PK_GIT_CHECKOUT="tags/v0.2.19"
 PK_LICENSE_FILES="LICENSE CONTRIBUTORS.md BACKERS.md"
 
 source $INCLUDE_SCRIPT_DIR/inc-pkall-git.sh

@@ -28,7 +28,7 @@ fi
 
 PK_DIRNAME="synfig"
 PK_URL="https://github.com/synfig/$PK_DIRNAME.git"
-PK_GIT_OPTIONS="--branch testing"
+PK_GIT_CHECKOUT="origin/testing"
 PK_CPPFLAGS="-std=c++11"
 
 # put COPYING to front for license agreement page of NSIS installer
