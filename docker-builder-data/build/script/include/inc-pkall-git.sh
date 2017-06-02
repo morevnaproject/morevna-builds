@@ -6,7 +6,7 @@
 # PK_CFLAGS
 # PK_CPPFLAGS
 # PK_CONFIGURE_OPTIONS_DEFAULT
-# PK_GIT_OPTIONS
+# PK_GIT_CHECKOUT
 
 source $INCLUDE_SCRIPT_DIR/inc-pkallunpack-git.sh
 source $INCLUDE_SCRIPT_DIR/inc-pkallinstall-default.sh

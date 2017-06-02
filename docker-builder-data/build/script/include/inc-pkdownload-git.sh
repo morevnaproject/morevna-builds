@@ -1,7 +1,7 @@
 
 # PK_URL
 # PK_DIRNAME
-# PK_GIT_OPTIONS
+# PK_GIT_CHECKOUT
 
 pkdownload() {
     if [ -d "$DOWNLOAD_PACKET_DIR/$PK_DIRNAME/.git" ]; then
