@@ -24,13 +24,15 @@ pkhook_version() {
 pkbuild() {
     local LOCAL_OPTIONS=
     local LOCAL_CMAKE_OPTIONS=
-    local LOCAL_LIB_SUFFIX=so
+    local LOCAL_LIB_SUFFIX="so"
+    local LOCAL_GLUT_LIB="libglut"
     if [ ! -z "$HOST" ]; then
         LOCAL_OPTIONS="--host=$HOST"
     fi
     if [ "$PLATFORM" = "win" ]; then
         LOCAL_CMAKE_OPTIONS="$LOCAL_CMAKE_OPTIONS -DCMAKE_SYSTEM_NAME=Windows"
         LOCAL_LIB_SUFFIX="dll.a"
+        LOCAL_GLUT_LIB="libfreeglut"
     fi
 
     if ! check_packet_function $NAME build.libtiff; then
@@ -54,7 +56,7 @@ pkbuild() {
               -DCMAKE_INSTALL_PREFIX="$INSTALL_PACKET_DIR" \
               -DPNG_PNG_INCLUDE_DIR="$ENVDEPS_PACKET_DIR/include" \
               -DPNG_LIBRARY="$ENVDEPS_PACKET_DIR/lib/libpng16.$LOCAL_LIB_SUFFIX" \
-              -DGLUT_LIB="$ENVDEPS_PACKET_DIR/lib/libfreeglut.$LOCAL_LIB_SUFFIX" \
+              -DGLUT_LIB="$ENVDEPS_PACKET_DIR/lib/$LOCAL_GLUT_LIB.$LOCAL_LIB_SUFFIX" \
               $LOCAL_CMAKE_OPTIONS \
               $PK_CONFIGURE_OPTIONS \
               ../sources; \
