@@ -6,7 +6,7 @@ PUBLISH_DIR=$(cd `dirname "$0"`; pwd)
 
 publish() {
     local NAME="$1"
-    local TEMPLATE="$2" # Xxxxx-%VERSION%-%DATE%-%COMMIT%-xxxxx.xxx"
+    local TEMPLATE="$2" # Xxxxx-%VERSION%-%DATE%-%COMMIT%-xxxxx.xxx
     local FILEPATH="$3"
     local MASK="$4"
     local VERSION_FILE="$5"
