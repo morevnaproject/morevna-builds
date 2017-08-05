@@ -71,10 +71,6 @@ else
     DEPS="$DEPS glibmm-2.41.4 xmlpp-2.22.0"
 fi
 
-if [ "$PLATFORM" = "linux" ]; then
-    DEPS="$DEPS jack-0.125.0"
-fi
-
 PK_DIRNAME="synfig"
 PK_URL="https://github.com/synfig/$PK_DIRNAME.git"
 PK_GIT_CHECKOUT="origin/testing"

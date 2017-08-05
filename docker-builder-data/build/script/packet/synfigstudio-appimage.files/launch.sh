@@ -4,7 +4,7 @@ SCRIPT_DIR=$(cd `dirname "$0"`; pwd)
 BASE_DIR=`dirname "$SCRIPT_DIR"`
 
 # Check if this system have JACK installed
-if ( ! ldconfig -p | grep libjack.so >/dev/null ) || ( ! which jackd >/dev/null ) ; then
+if ! which jackd >/dev/null; then
 	# No JACK, so disable this functionality.
 	# (The bundled libjack won't work correctly anyway).
 	export SYNFIG_DISABLE_JACK=1
