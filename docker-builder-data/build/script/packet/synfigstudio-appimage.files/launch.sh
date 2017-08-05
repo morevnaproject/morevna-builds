@@ -4,11 +4,11 @@ SCRIPT_DIR=$(cd `dirname "$0"`; pwd)
 BASE_DIR=`dirname "$SCRIPT_DIR"`
 
 # Check if this system have JACK installed
-if ! which jackd >/dev/null; then
+if ! (which jackd &>/dev/null); then
 	# No JACK, so disable this functionality.
 	# (The bundled libjack won't work correctly anyway).
 	export SYNFIG_DISABLE_JACK=1
-	export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${BASE_DIR}/lib.extra"
+	export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${BASE_DIR}/lib.extra/jack"
 fi
 
 export USER_CONFIG_DIR=$HOME/.config/synfig

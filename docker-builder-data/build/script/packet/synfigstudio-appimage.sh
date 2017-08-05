@@ -47,7 +47,15 @@ pkinstall_release() {
 
     # clean examples
     rm -rf "$APPDIR/share/synfig/examples" || return 1
-		
+
+	# move jack
+	mkdir -p "$APPDIR/usr/lib.extra/jack"
+	(cp "$ENVDEPS_RELEASE_PACKET_DIR/lib/libjack"* "$APPDIR/usr/lib.extra/jack" &> /dev/null) \
+	|| (cp "$ENVDEPS_RELEASE_PACKET_DIR/lib64/libjack"* "$APPDIR/usr/lib.extra/jack" &> /dev/null)
+    rm -f "$APPDIR/usr/bin/jack"*
+	rm -f "$APPDIR/usr/lib/libjack"*
+	rm -f "$APPDIR/usr/lib64/libjack"*
+	
     cd "$INSTALL_RELEASE_PACKET_DIR" || return 1
     rm -f "$PK_APPDIR_NAME.tar.gz" || return 1
     tar -czf "$PK_APPDIR_NAME.tar.gz" "$PK_APPDIR_NAME.AppDir" || return 1
