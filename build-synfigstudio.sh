@@ -9,6 +9,10 @@ PUBLISH_DIR=$BASE_DIR/publish
 CONFIG_FILE="$BASE_DIR/config.sh"
 PACKET_BUILD_DIR="$BUILD_DIR/packet"
 SCRIPT_BUILD_DIR="$BUILD_DIR/script"
+SYNFIGSTUDIO_TESTING_TAG="testing"
+
+source "$BASE_DIR/gen-name.sh"
+
 if [ -f $CONFIG_FILE ]; then
     source $CONFIG_FILE
 fi
@@ -27,9 +31,10 @@ run_appimage() {
     $SCRIPT update synfigstudio-master
     $SCRIPT clean_before_do install_release synfigstudio-appimage
 
+    local TEMPLATE=`gen_name_template "SynfigStudio" "$SYNFIGSTUDIO_TESTING_TAG" "$PLATFORM" "$ARCH" ".appimage"`
     "$PUBLISH_DIR/publish.sh" \
         "synfigstudio" \
-        "SynfigStudio-%VERSION%-%DATE%-%COMMIT%-$PLATFORM-${ARCH}bit.appimage" \
+        "$TEMPLATE" \
         "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/synfigstudio-appimage/install_release" \
         "*.appimage" \
         "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/synfigstudio-appimage/envdeps_release/version-synfigstudio-master"
@@ -47,9 +52,10 @@ run_nsis() {
     $SCRIPT update synfigstudio-master
     $SCRIPT clean_before_do install_release synfigstudio-nsis
 
+    local TEMPLATE=`gen_name_template "SynfigStudio" "$SYNFIGSTUDIO_TESTING_TAG" "$PLATFORM" "$ARCH" ".exe"`
     "$PUBLISH_DIR/publish.sh" \
         "synfigstudio" \
-        "SynfigStudio-%VERSION%-%DATE%-%COMMIT%-$PLATFORM-${ARCH}bit.exe" \
+        "$TEMPLATE" \
         "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/synfigstudio-nsis/install_release" \
         "*.exe" \
         "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/synfigstudio-nsis/envdeps_release/version-synfigstudio-master"
