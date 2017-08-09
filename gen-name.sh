@@ -4,7 +4,7 @@ gen_name_template() {
     local TAG="$2"
     local PLATFORM="$3"
     local ARCH="$4"
-    local SUFFIX="$4"
+    local SUFFIX="$5"
     
     if [ ! -z "$TAG" ]; then
         TAG="-$TAG"
