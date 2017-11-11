@@ -10,3 +10,10 @@ if [ "$PLATFORM" = "win" ]; then
 fi
 
 source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh
+
+pkhook_prebuild() {
+    if [ ! -f "Makefile.in.orig" ]; then
+        mv Makefile.in Makefile.in.orig
+    fi
+    cat Makefile.in.orig | sed -e 's| -Werror | |g' > Makefile.in
+}
