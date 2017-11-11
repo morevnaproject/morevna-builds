@@ -1,0 +1,3 @@
+73a74,75
+> #define CANFD_BRS 0x01
+> #define CANFD_ESI 0x02
