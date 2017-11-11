@@ -14,9 +14,9 @@ RUN apt-get -yq upgrade
 RUN apt-get -yq install bash sudo pkg-config g++ make wget
 
 # upgrade gcc
-RUN apt-get -yq install libgmp-dev libmpfr-dev libmpc-dev
+RUN apt-get -yq install libgmp-dev libmpfr-dev libmpc-dev gcc-multilib
 COPY files/install-gcc.sh /
-RUN /install-gcc.sh
+RUN setarch i686 /install-gcc.sh
 
 # install tools
 RUN apt-get -yq install csh

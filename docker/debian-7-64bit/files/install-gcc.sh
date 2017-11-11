@@ -15,9 +15,7 @@ echo && echo "build and install" && echo
 
 mkdir -p build
 cd build
-[ -f "../configure.done" ] || ( \
-    ../gcc-*/configure --disable-multilib \
-    && touch "../configure.done")
+[ -f "../configure.done" ] || (../gcc-*/configure && touch "../configure.done")
 make -j`nproc`
 make install
 (cd /usr/local/bin && ln gcc cc)
