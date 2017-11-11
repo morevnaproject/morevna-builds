@@ -73,6 +73,14 @@ else
             rm -f "$INI.out"
         fi
     fi
+
+    # update themes
+    echo "fix config: update themes" 
+    cp -ur "$BASE_DIR/share/opentoonz/stuff/config/qss" "$CONFIG_DIR/stuff/config/" 
+
+    # update localizations
+    echo "fix config: update themes" 
+    cp -ur "$BASE_DIR/share/opentoonz/stuff/config/loc" "$CONFIG_DIR/stuff/config/" 
 fi
 
 cd "$BASE_DIR/bin"
