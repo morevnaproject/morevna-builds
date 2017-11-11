@@ -1,6 +1,6 @@
 # NB: version of doxygen should be EQUAL to 1.8.8 - not newer, not older
 
-DEPS="python-3.6.0 doxygen-1.8.8 python3requests-master gstreamerpluginsbase-0.10.36 gtk-3.14.14 adwaitaicontheme-3.15.1 gnomethemesstandard-3.15.2"
+DEPS="python-3.6.0 doxygen-1.8.8 python3requests-master gstreamerpluginsbase-0.10.36 gtk-3.22.12 adwaitaicontheme-3.24.0 gnomethemesstandard-3.22.3"
 
 PK_DIRNAME="Phoenix"
 PK_URL="https://github.com/wxWidgets/$PK_DIRNAME.git"
