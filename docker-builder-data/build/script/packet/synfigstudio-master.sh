@@ -17,14 +17,8 @@
 #   adwaitaicons                  | gtk, rsvg
 #   gnomethemes                   | gtk, rsvg
 
-DEPS="synfigcore-master"
+DEPS="synfigcore-master gtkmm-3.22.0"
 DEPS_NATIVE="libtool-2.4.6 synfigcore-master"
-
-if [ "$PLATFORM" = "win" ] || [ "$PLATFORM" = "fedora" ]; then
-    DEPS="$DEPS gtkmm-3.22.0"
-else
-    DEPS="$DEPS gtkmm-3.14.0"
-fi
 
 if [ "$PLATFORM" = "linux" ]; then
     DEPS="$DEPS jack-0.125.0"
