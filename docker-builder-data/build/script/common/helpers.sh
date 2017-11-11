@@ -157,6 +157,10 @@ copy_system_lib() {
     cp --remove-destination /lib/i386-linux-gnu/$SRC_NAME* "$DST_PATH" &> /dev/null
     cp --remove-destination /usr/lib/x86_64-linux-gnu/$SRC_NAME* "$DST_PATH" &> /dev/null
     cp --remove-destination /usr/lib/i386-linux-gnu/$SRC_NAME* "$DST_PATH" &> /dev/null
+    cp --remove-destination /usr/local/lib/$SRC_NAME* "$DST_PATH" &> /dev/null
+    cp --remove-destination /usr/local/lib64/$SRC_NAME* "$DST_PATH" &> /dev/null
+    cp --remove-destination /usr/local/lib/x86_64-linux-gnu/$SRC_NAME* "$DST_PATH" &> /dev/null
+    cp --remove-destination /usr/local/lib/i386-linux-gnu/$SRC_NAME* "$DST_PATH" &> /dev/null
     if ! (ls "$DST_PATH/$SRC_NAME"* &> /dev/null); then
         echo "$SRC_NAME not found in system libraries"
         return 1
@@ -215,7 +219,8 @@ copy_system_license() {
             for MASK in "/usr/share/doc/$SUB_NAME/copyright" \
                         "/usr/share/licenses/$SUB_NAME" \
                         "/usr/share/licenses/$SUB_NAME/*" \
-                        "/usr/share/doc/$SUB_NAME/*"
+                        "/usr/share/doc/$SUB_NAME/*" \
+                        "/usr/local/share/doc/$SUB_NAME/copyright"
             do
                 local FOUND=
                 ls -d1 $MASK 2>/dev/null | while read FILE; do

@@ -7,7 +7,11 @@ vars_clear "TC_"
 export TC_HOST=""
 
 export TC_PATH="$INITIAL_PATH"
-export TC_LD_LIBRARY_PATH="$INITIAL_LD_LIBRARY_PATH"
+export TC_LD_LIBRARY_PATH="/usr/local/lib:/usr/local/lib64:$INITIAL_LD_LIBRARY_PATH"
+export TC_LIBRARY_PATH="/usr/local/lib:/usr/local/lib64:$INITIAL_LIBRARY_PATH"
+
+export TC_CC=`which cc`
+export TC_CXX=`which c++`
 
 export TC_LDFLAGS="$INITIAL_LDFLAGS"
 export TC_CFLAGS="$INITIAL_CFLAGS"
