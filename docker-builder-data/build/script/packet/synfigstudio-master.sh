@@ -98,8 +98,8 @@ pkinstall() {
         cp $LOCAL_DIR/libjpeg*.dll       "$TARGET" || return 1
     else
         local TARGET="$INSTALL_PACKET_DIR/lib/"
+        copy_system_gcc_libs             "$TARGET" || return 1
         copy_system_lib libudev          "$TARGET" || return 1
-        copy_system_lib libgfortran      "$TARGET" || return 1
         copy_system_lib libdb            "$TARGET" || return 1
         copy_system_lib libpcre          "$TARGET" || return 1
         copy_system_lib libdirect        "$TARGET" || return 1
@@ -123,8 +123,8 @@ pkhook_postlicense() {
         copy_system_license mingw$ARCH-bzip2       "$TARGET" || return 1
         copy_system_license mingw$ARCH-freetype    "$TARGET" || return 1
     else
+        copy_system_license gcc                    "$TARGET" || return 1
         copy_system_license libudev                "$TARGET" || return 1
-        copy_system_license gfortran               "$TARGET" || return 1
         copy_system_license libdb                  "$TARGET" || return 1
         copy_system_license libpcre                "$TARGET" || return 1
         copy_system_license libdirectfb            "$TARGET" || return 1

@@ -103,8 +103,8 @@ pkinstall() {
         cp "$BUILD_PACKET_DIR/$PK_DIRNAME/toonz/sources/toonz/toonz.ico" "$TARGET" || return 1
     else
         local TARGET="$INSTALL_PACKET_DIR/lib/"
-        copy_system_lib libudev          "$TARGET" || return 1
-        copy_system_lib libgfortran      "$TARGET" || return 1
+        copy_system_gcc_libs               "$TARGET" || return 1
+        copy_system_lib libudev            "$TARGET" || return 1
     fi
 }
 
@@ -118,7 +118,7 @@ pkhook_postlicense() {
         copy_system_license mingw$ARCH-win-iconv   "$TARGET" || return 1
         copy_system_license mingw$ARCH-termcap     "$TARGET" || return 1
     else
+        copy_system_license gcc                    "$TARGET" || return 1
         copy_system_license libudev                "$TARGET" || return 1
-        copy_system_license gfortran               "$TARGET" || return 1
     fi
 }

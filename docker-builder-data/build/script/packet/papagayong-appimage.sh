@@ -18,8 +18,8 @@ pkinstall() {
 	cp --remove-destination "$FILES_PACKET_DIR/launch.sh" "$APPDIR/usr/bin/" || return 1
 	cp --remove-destination "$FILES_PACKET_DIR/papagayong" "$APPDIR/usr/bin/" || return 1
 
+    copy_system_gcc_libs        "$APPDIR/usr/lib/" || return 1
 	copy_system_lib libudev     "$APPDIR/usr/lib/" || return 1
-	copy_system_lib libgfortran "$APPDIR/usr/lib/" || return 1
 	copy_system_lib libpng12    "$APPDIR/usr/lib/" || return 1
 	copy_system_lib libffi      "$APPDIR/usr/lib/" || return 1
 	copy_system_lib libdb       "$APPDIR/usr/lib/" || return 1

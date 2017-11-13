@@ -167,6 +167,15 @@ copy_system_lib() {
     fi
 }
 
+copy_system_gcc_libs() {
+    local DST_PATH=$1
+    copy_system_lib libgcc      "$DST_PATH" || return 1
+    copy_system_lib libquadmath "$DST_PATH" || return 1
+    copy_system_lib libgfortran "$DST_PATH" || return 1
+    copy_system_lib libssp      "$DST_PATH" || return 1
+    copy_system_lib libstdc++   "$DST_PATH" || return 1
+}
+
 add_common_licenses() {
     local FILE="$1"
     local TARGET="$2"
