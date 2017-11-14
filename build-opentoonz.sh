@@ -23,10 +23,10 @@ run_appimage() {
     export ARCH="$2"
 
     echo ""
-    echo "Update opentoonz for $PLATFORM-$ARCH"
+    echo "Update and build opentoonz for $PLATFORM-$ARCH"
     echo ""
-    $SCRIPT update opentoonz-master
-    $SCRIPT clean_before_do install_release opentoonz-appimage
+    $SCRIPT chain update opentoonz-master \
+            chain clean_before_do install_release opentoonz-appimage
 
     local TEMPLATE=`gen_name_template "OpenToonz" "" "$PLATFORM" "$ARCH" ".appimage"`
     "$PUBLISH_DIR/publish.sh" \
@@ -42,10 +42,10 @@ run_nsis() {
     export ARCH="$2"
 
     echo ""
-    echo "Update opentoonz for $PLATFORM-$ARCH"
+    echo "Update and build opentoonz for $PLATFORM-$ARCH"
     echo ""
-    $SCRIPT update opentoonz-master
-    $SCRIPT clean_before_do install_release opentoonz-nsis
+    $SCRIPT chain update opentoonz-master \
+            chain clean_before_do install_release opentoonz-nsis
 
     local TEMPLATE=`gen_name_template "OpenToonz" "" "$PLATFORM" "$ARCH" ".exe"`
     "$PUBLISH_DIR/publish.sh" \

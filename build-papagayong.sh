@@ -23,10 +23,10 @@ run_appimage() {
     export ARCH="$2"
 
     echo ""
-    echo "Update papagayong for $PLATFORM-$ARCH"
+    echo "Update and build  papagayong for $PLATFORM-$ARCH"
     echo ""
-    $SCRIPT update papagayong-testing
-    $SCRIPT clean_before_do install_release papagayong-appimage
+    $SCRIPT chain update papagayong-testing \
+            chain clean_before_do install_release papagayong-appimage
 
     local TEMPLATE=`gen_name_template "PapagayoNG" "" "$PLATFORM" "$ARCH" ".appimage"`
     "$PUBLISH_DIR/publish.sh" \
@@ -42,13 +42,12 @@ run_nsis() {
     export ARCH="$2"
 
     echo ""
-    echo "Update papagayong for $PLATFORM-$ARCH"
+    echo "Update and build papagayong for $PLATFORM-$ARCH"
     echo ""
-    $SCRIPT update papagayong-testing
-    $SCRIPT clean_before_do unpack papagayong-testing
-
     # QUICK HACK:
-    $SCRIPT shell papagayong-testing "/build/script/packet/papagayong-testing.files/build-win.sh"
+    $SCRIPT chain update papagayong-testing \
+            chain clean_before_do unpack papagayong-testing \
+            chain shell papagayong-testing "/build/script/packet/papagayong-testing.files/build-win.sh"
 
     local TEMPLATE=`gen_name_template "PapagayoNG" "" "$PLATFORM" "$ARCH" ".exe"`
     "$PUBLISH_DIR/publish.sh" \

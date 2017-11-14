@@ -1085,6 +1085,18 @@ foreach_packet() {
     done
 }
 
+chain() {
+    local ARG
+    local CNT=1
+    for ARG in "$@"; do
+        if [ "${@:CNT:1}" = "chain" ]; then
+            break;
+        fi
+        CNT=$((CNT+1))
+    done
+    if ! "${@:0:CNT}"; then return 1; fi
+    if ! "${@:CNT}"; then return 1; fi
+}
 
 set_toolchain
 "$@"

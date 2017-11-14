@@ -24,12 +24,15 @@ run_appimage() {
     export ARCH="$2"
 
     echo ""
-    echo "Update synfigstudio for $PLATFORM-$ARCH"
+    echo "Update and build synfigstudio for $PLATFORM-$ARCH"
     echo ""
-    $SCRIPT update synfigetl-master
-    $SCRIPT update synfigcore-master
-    $SCRIPT update synfigstudio-master
-    $SCRIPT clean_before_do install_release synfigstudio-appimage
+    $SCRIPT chain native update synfigetl-master \
+            chain native update synfigcore-master \
+            chain native update synfigstudio-master \
+            chain update synfigetl-master \
+            chain update synfigcore-master \
+            chain update synfigstudio-master \
+            chain clean_before_do install_release synfigstudio-appimage
 
     local TEMPLATE=`gen_name_template "SynfigStudio" "$SYNFIGSTUDIO_TESTING_TAG" "$PLATFORM" "$ARCH" ".appimage"`
     "$PUBLISH_DIR/publish.sh" \
@@ -45,12 +48,15 @@ run_nsis() {
     export ARCH="$2"
 
     echo ""
-    echo "Update synfigstudio for $PLATFORM-$ARCH"
+    echo "Update and build synfigstudio for $PLATFORM-$ARCH"
     echo ""
-    $SCRIPT update synfigetl-master
-    $SCRIPT update synfigcore-master
-    $SCRIPT update synfigstudio-master
-    $SCRIPT clean_before_do install_release synfigstudio-nsis
+    $SCRIPT chain native update synfigetl-master \
+            chain native update synfigcore-master \
+            chain native update synfigstudio-master \
+            chain update synfigetl-master \
+            chain update synfigcore-master \
+            chain update synfigstudio-master \
+            chain clean_before_do install_release synfigstudio-nsis
 
     local TEMPLATE=`gen_name_template "SynfigStudio" "$SYNFIGSTUDIO_TESTING_TAG" "$PLATFORM" "$ARCH" ".exe"`
     "$PUBLISH_DIR/publish.sh" \
