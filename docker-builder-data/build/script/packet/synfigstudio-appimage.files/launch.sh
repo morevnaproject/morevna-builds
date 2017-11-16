@@ -16,6 +16,7 @@ export USER_CONFIG_DIR=$HOME/.config/synfig
 export LD_LIBRARY_PATH="${BASE_DIR}/lib:${BASE_DIR}/lib64:$LD_LIBRARY_PATH"
 export XDG_DATA_DIRS="${BASE_DIR}/share:$XDG_DATA_DIRS:/usr/local/share/:/usr/share/"
 export XDG_CONFIG_DIRS="$HOME/.config/synfig:$XDG_CONFIG_DIRS"
+export XCURSOR_PATH="${BASE_DIR}/share/icons:$XCURSOR_PATH:/usr/local/share/icons:/usr/share/icons"
 export GSETTINGS_SCHEMA_DIR="${BASE_DIR}/share/glib-2.0/schemas/"
 export QT_XKB_CONFIG_ROOT=$QT_XKB_CONFIG_ROOT:/usr/local/share/X11/xkb:/usr/share/X11/xkb
 

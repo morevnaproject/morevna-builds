@@ -6,7 +6,8 @@ cd "$OLDDIR"
 BASE_DIR=`dirname "$SCRIPT_DIR"`
 
 export LD_LIBRARY_PATH="$BASE_DIR/lib:$BASE_DIR/lib/opentoonz:$BASE_DIR/lib64:$LD_LIBRARY_PATH"
-export QT_XKB_CONFIG_ROOT=$QT_XKB_CONFIG_ROOT:/usr/local/share/X11/xkb:/usr/share/X11/xkb
+export XCURSOR_PATH="$BASE_DIR/share/icons:$XCURSOR_PATH:/usr/local/share/icons:/usr/share/icons"
+export QT_XKB_CONFIG_ROOT="$QT_XKB_CONFIG_ROOT:/usr/local/share/X11/xkb:/usr/share/X11/xkb"
 
 # fix stuff
 CONFIG_DIR="$HOME/.config/OpenToonz"
