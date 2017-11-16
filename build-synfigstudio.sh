@@ -28,7 +28,6 @@ run_appimage() {
     echo ""
     $SCRIPT chain native update synfigetl-master \
             chain native update synfigcore-master \
-            chain native update synfigstudio-master \
             chain update synfigetl-master \
             chain update synfigcore-master \
             chain update synfigstudio-master \
@@ -52,7 +51,6 @@ run_nsis() {
     echo ""
     $SCRIPT chain native update synfigetl-master \
             chain native update synfigcore-master \
-            chain native update synfigstudio-master \
             chain update synfigetl-master \
             chain update synfigcore-master \
             chain update synfigstudio-master \
