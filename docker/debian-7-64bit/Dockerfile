@@ -10,13 +10,21 @@ RUN apt-get -yq update
 # upgrade
 RUN apt-get -yq upgrade
 
+# update ca-certificates
+RUN apt-get -yq purge ca-certificates
+RUN apt-get -yq install ca-certificates
+
 # install tools
-RUN apt-get -yq install bash sudo pkg-config g++ make wget
+RUN apt-get -yq install bash sudo pkg-config g++ make wget bzip2
 
 # upgrade gcc
 RUN apt-get -yq install libgmp-dev libmpfr-dev libmpc-dev gcc-multilib
 COPY files/install-gcc.sh /
 RUN /install-gcc.sh
+
+# install mingw
+COPY files/install-mingw.sh /
+RUN /install-mingw.sh
 
 # install tools
 RUN apt-get -yq install csh
@@ -26,7 +34,6 @@ RUN apt-get -yq install automake
 RUN apt-get -yq install intltool
 RUN apt-get -yq install libtool
 RUN apt-get -yq install git
-RUN apt-get -yq install bzip2
 
 # qt deps see: http://doc.qt.io/qt-5/linux-requirements.html
 RUN apt-get -yq install libxrender-dev

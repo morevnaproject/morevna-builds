@@ -7,7 +7,7 @@ cd install-gcc
 
 echo && echo "download and unpack" && echo
 
-GCC_SOURCES_URL="ftp://ftp.gnu.org/gnu/gcc/gcc-7.2.0/gcc-7.2.0.tar.xz"
+GCC_SOURCES_URL="https://ftp.gnu.org/gnu/gcc/gcc-7.2.0/gcc-7.2.0.tar.xz"
 wget -c "$GCC_SOURCES_URL"
 tar -xf gcc-*.tar.*
 

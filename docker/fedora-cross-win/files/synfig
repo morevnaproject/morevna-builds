@@ -1,3 +1,0 @@
-#!/bin/bash
-
-APPIMAGE_WORKDIR=$PWD /build/packet/linux-x64/synfigstudio-appimage/install_release/synfigstudio.appimage "$@"
