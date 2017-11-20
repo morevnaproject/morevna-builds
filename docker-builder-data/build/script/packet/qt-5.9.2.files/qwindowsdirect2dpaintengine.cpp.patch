@@ -1,0 +1,27 @@
+65a66,83
+> namespace D2D1 {
+>     D2D1_BITMAP_BRUSH_PROPERTIES1
+>     BitmapBrushProperties1(
+>         D2D1_EXTEND_MODE extendModeX = D2D1_EXTEND_MODE_CLAMP,
+>         D2D1_EXTEND_MODE extendModeY = D2D1_EXTEND_MODE_CLAMP,
+>         D2D1_INTERPOLATION_MODE interpolationMode = D2D1_INTERPOLATION_MODE_LINEAR
+>         )
+>     {
+>         D2D1_BITMAP_BRUSH_PROPERTIES1 bitmapBrush1Properties;
+> 
+>         bitmapBrush1Properties.extendModeX = extendModeX;
+>         bitmapBrush1Properties.extendModeY = extendModeY;
+>         bitmapBrush1Properties.interpolationMode = interpolationMode;
+> 
+>         return bitmapBrush1Properties;
+>     }
+> }
+> 
+947c965
+<             ComPtr<ID2D1Geometry> geometry = vectorPathToID2D1PathGeometry(path);
+---
+>             ComPtr<ID2D1Geometry> geometry = vectorPathToID2D1PathGeometry(path).Get();
+1206c1224
+<     ComPtr<ID2D1Geometry> geometry = d->vectorPathToID2D1PathGeometry(path);
+---
+>     ComPtr<ID2D1Geometry> geometry = d->vectorPathToID2D1PathGeometry(path).Get();

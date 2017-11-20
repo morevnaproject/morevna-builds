@@ -1,0 +1,4 @@
+111c111
+<                         if (VerQueryValue(info.constData(), __TEXT("\\"),
+---
+>                         if (VerQueryValue(const_cast<unsigned char*>(info.constData()), __TEXT("\\"),

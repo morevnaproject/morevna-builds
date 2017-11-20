@@ -1,0 +1,4 @@
+8c8
+< LIBS += -ldwmapi -ld2d1 -ld3d11 -ldwrite -lVersion -lgdi32
+---
+> LIBS += -ldwmapi -ld2d1 -ld3d11 -ldwrite -lversion -lgdi32
