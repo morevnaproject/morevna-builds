@@ -126,6 +126,15 @@ Section "Start Menu Shortcuts"
   CreateShortCut "$SMPROGRAMS\${PK_NAME_FULL}\${PK_NAME_FULL}.lnk" "$INSTDIR\${PK_EXECUTABLE}" "" "$INSTDIR\${PK_ICON}" 0
 SectionEnd
 
+Section "Desktop Icon"
+  SetRegView ${PK_ARCH}
+
+  SetOutPath "$INSTDIR\bin"
+
+  SetShellVarContext All
+  CreateShortCut "$DESKTOP\${PK_NAME_FULL}.lnk" "$INSTDIR\${PK_EXECUTABLE}" "" "$INSTDIR\${PK_ICON}" 0
+SectionEnd
+
 ;--------------------------------
 ; Uninstaller
 ;--------------------------------
@@ -149,6 +158,7 @@ Section "Uninstall"
   SetShellVarContext All
   Delete "$SMPROGRAMS\${PK_NAME_FULL}\${PK_NAME_FULL}.lnk"
   Delete "$SMPROGRAMS\${PK_NAME_FULL}\Uninstall ${PK_NAME_FULL}.lnk"
+  Delete "$DESKTOP\${PK_NAME_FULL}.lnk"
 
   ; Remove directories used
   RMDir "$SMPROGRAMS\${PK_NAME_FULL}"
