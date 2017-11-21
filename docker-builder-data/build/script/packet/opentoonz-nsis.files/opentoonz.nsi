@@ -169,6 +169,17 @@ Section "Uninstall"
 SectionEnd
 
 Function .onInit
+
+  SetRegView ${PK_ARCH}
+
+  ; Check previous installation
+  ReadRegStr $R0 HKLM "${PRODUCT_UNINSTALL_KEY}" "UninstallString"
+  StrCmp $R0 "" 0 oops
+
+  ; Check previous installation 2
+  ReadRegStr $R0 HKLM "${PRODUCT_UNINSTALL_KEY2}" "UninstallString"
+  StrCmp $R0 "" 0 oops
+
   SetRegView 32
 
   ; Check previous installation
