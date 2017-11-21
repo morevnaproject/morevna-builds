@@ -28,6 +28,11 @@ pkinstall_release() {
 
     local APPDIR="$INSTALL_RELEASE_PACKET_DIR/$PK_APPDIR_NAME.AppDir"
     copy "$ENVDEPS_RELEASE_PACKET_DIR" "$APPDIR/usr" || return 1
+    
+    mkdir -p "$APPDIR/usr/share/icons/default/128x128/apps/"
+    cp "$ENVDEPS_RELEASE_PACKET_DIR/share/pixmaps/synfig_icon.png" "$APPDIR/usr/share/icons/default/128x128/apps/synfigstudio.png" || return 1
+    mkdir -p "$APPDIR/usr/share/icons/default/128x128/mimetypes/"
+    cp "$ENVDEPS_RELEASE_PACKET_DIR/share/pixmaps/sif_icon.png" "$APPDIR/usr/share/icons/default/128x128/mimetypes/application-x-sif.png" || return 1
 
     # clean bin
     #rm -f "$APPDIR/usr/bin/"* || return 1

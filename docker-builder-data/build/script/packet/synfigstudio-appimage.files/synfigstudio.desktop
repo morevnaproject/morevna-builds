@@ -4,3 +4,4 @@ Name=Synfig Studio
 Exec=launch.sh
 Icon=synfigstudio
 Categories=Graphics;
+MimeType=application/x-sif;
