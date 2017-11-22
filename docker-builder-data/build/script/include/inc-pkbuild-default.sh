@@ -13,13 +13,13 @@ pkbuild() {
         return 1
     fi
 
-    if ! check_packet_function $NAME build.cunfigure; then
+    if ! check_packet_function $NAME build.configure; then
         CFLAGS="$PK_CFLAGS $CFLAGS" CPPFLAGS="$PK_CPPFLAGS $CPPFLAGS" LDFLAGS="$PK_LDFLAGS $LDFLAGS" \
         ./configure \
-         $PK_CONFIGURE_OPTIONS_DEFAULT \
-         $PK_CONFIGURE_OPTIONS \
+            $PK_CONFIGURE_OPTIONS_DEFAULT \
+            $PK_CONFIGURE_OPTIONS \
          || return 1
-        set_done $NAME build.cunfigure
+        set_done $NAME build.configure
     fi
     
     if ! CFLAGS="$PK_CFLAGS $CFLAGS" CPPFLAGS="$PK_CPPFLAGS $CPPFLAGS" LDFLAGS="$PK_LDFLAGS $LDFLAGS" \

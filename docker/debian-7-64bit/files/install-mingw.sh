@@ -116,6 +116,7 @@ install_gcc() {
                 --target="$ARCH" \
                 --disable-multilib \
                 --enable-shared \
+                --enable-threads=posix \
                 --with-sysroot="/usr/local/$ARCH/sys-root" \
                 --prefix="/usr/local/$ARCH/sys-root"
             touch "configure.done"
@@ -162,22 +163,20 @@ finish_gcc() {
     cd ../../..
 }
 
-install_libmangle() {
+install_library() {
     local ARCH="$1"
+    local NAME="$2"
     export PATH="/usr/local/$ARCH/sys-root/bin:$INITIAL_PATH"
-    mkdir -p "install-mingw/build/libmangle-$ARCH"
-    cd       "install-mingw/build/libmangle-$ARCH"
+    mkdir -p "install-mingw/build/mingw-$NAME-$ARCH"
+    cd       "install-mingw/build/mingw-$NAME-$ARCH"
     if [ ! -f "done" ]; then
-        echo && echo "install libmangle $ARCH" && echo
+        echo && echo "install library $NAME $ARCH" && echo
         if [ ! -f "configure.done" ]; then
-            "../../download/$DIR_MINGW/configure" \
+            "../../download/$DIR_MINGW/mingw-w64-libraries/$NAME/configure" \
                 --host="$ARCH" \
-                --without-headers \
-                --without-crt \
-                --with-libraries=libmangle \
-                --with-tools=no \
                 --with-sysroot="/usr/local/$ARCH/sys-root" \
-                --prefix="/usr/local/$ARCH/sys-root"
+                --prefix="/usr/local/$ARCH/sys-root" \
+                ${@:3}
             touch "configure.done"
         fi
         make -j$THREADS || make
@@ -187,22 +186,19 @@ install_libmangle() {
     cd ../../..
 }
 
-install_libs() {
+install_tool() {
     local ARCH="$1"
+    local NAME="$2"
     export PATH="/usr/local/$ARCH/sys-root/bin:$INITIAL_PATH"
-    mkdir -p "install-mingw/build/libs-$ARCH"
-    cd       "install-mingw/build/libs-$ARCH"
+    mkdir -p "install-mingw/build/mingw-$NAME-$ARCH"
+    cd       "install-mingw/build/mingw-$NAME-$ARCH"
     if [ ! -f "done" ]; then
-        echo && echo "install libs $ARCH" && echo
+        echo && echo "install tool $NAME $ARCH" && echo
         if [ ! -f "configure.done" ]; then
-            "../../download/$DIR_MINGW/configure" \
-                --host="$ARCH" \
-                --without-headers \
-                --without-crt \
-                --with-libraries=winpthreads \
-                --with-tools=all \
-                --with-sysroot="/usr/local/$ARCH/sys-root" \
-                --prefix="/usr/local/$ARCH/sys-root"
+            "../../download/$DIR_MINGW/mingw-w64-tools/$NAME/configure" \
+                --target="$ARCH" \
+                --prefix="/usr/local/$ARCH/sys-root" \
+                ${@:3}
             touch "configure.done"
         fi
         make -j$THREADS || make
@@ -296,9 +292,17 @@ install() {
     install_headers "$ARCH"
     install_gcc "$ARCH"
     install_crt "$ARCH"
+    install_library "$ARCH" "winpthreads"
     finish_gcc "$ARCH"
-    install_libmangle "$ARCH"
-    install_libs "$ARCH"
+
+    install_library "$ARCH" "libmangle"
+    install_library "$ARCH" "winstorecompat"
+    install_tool "$ARCH" "gendef"
+    install_tool "$ARCH" "genidl"
+    install_tool "$ARCH" "genlib"
+    install_tool "$ARCH" "genpeimg"
+    install_tool "$ARCH" "widl"
+
     install_iconv "$ARCH"
     install_gettext "$ARCH"
 

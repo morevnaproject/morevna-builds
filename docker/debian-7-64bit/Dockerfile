@@ -68,5 +68,11 @@ RUN apt-get -yq install libegl1-mesa-dev
 RUN apt-get -yq install libdirectfb-dev
 RUN apt-get -yq install libxcursor-dev
 
+# wget cannot check SSL-certificate for some sites
+RUN apt-get -yq install curl
+
+# for synfigstudio-nsis
+RUN apt-get -yq install unzip
+
 # build dir
 RUN mkdir /build

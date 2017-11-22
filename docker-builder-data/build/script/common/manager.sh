@@ -1047,10 +1047,9 @@ native() {
 }
 
 native_at_place() {
-    local ARGS="$@"
     local LOCAL_ERROR=0
     if [ ! -z "$IS_NATIVE" ]; then
-        $ARGS
+        "$@"
     else
         local WAS_PLATFORM=$PLATFORM
         local WAS_ARCH=$ARCH
@@ -1062,7 +1061,7 @@ native_at_place() {
             set_environment_vars $NAME
         fi
 
-        $ARGS
+        "$@"
         LOCAL_ERROR=$?
 
         PLATFORM=$WAS_PLATFORM
@@ -1096,6 +1095,18 @@ chain() {
     done
     if ! "${@:0:CNT}"; then return 1; fi
     if ! "${@:CNT}"; then return 1; fi
+}
+
+with_envvar() {
+    local LOCAL_ENVVAR_NAME="$1"
+    local LOCAL_ENVVAR_VALUE="$2"
+    local LOCAL_ENVVAR_PREV="${!LOCAL_ENVVAR_NAME}"
+    eval export $LOCAL_ENVVAR_NAME="$LOCAL_ENVVAR_VALUE"
+    if ! "${@:3}"; then
+        eval export $1="$LOCAL_ENVVAR_PREV"
+        return 1
+    fi
+    eval export $1="$LOCAL_ENVVAR_PREV"
 }
 
 set_toolchain

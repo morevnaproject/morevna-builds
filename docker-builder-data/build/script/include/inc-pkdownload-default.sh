@@ -3,7 +3,7 @@
 # PK_ARCHIVE
 
 pkdownload() {
-    if ! wget -c "$PK_URL" -O "$PK_ARCHIVE"; then
-        return 1
-    fi
+    wget -c "$PK_URL" -O "$PK_ARCHIVE" \
+     || curl "$PK_URL" -o "$PK_ARCHIVE" \
+     || return 1
 }
