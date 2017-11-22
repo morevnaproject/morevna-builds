@@ -1,4 +1,4 @@
-DEPS="opentoonz-master"
+DEPS="opentoonz-master nsis-3.02.1"
 
 pkfunc_register_file() {
     local FILE=$1
@@ -65,7 +65,7 @@ pkinstall_release() {
 EOF
 
     # let's go
-    makensis opentoonz.nsi || return 1
+    makensis -INPUTCHARSET UTF8 opentoonz.nsi || return 1
 
     # remove temporary dir
     cd "$INSTALL_RELEASE_PACKET_DIR" || return 1

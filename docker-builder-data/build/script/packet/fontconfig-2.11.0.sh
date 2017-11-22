@@ -1,4 +1,4 @@
-DEPS=""
+DEPS="freetype-2.8.1 expat-2.2.5"
 
 PK_DIRNAME="fontconfig-2.11.0"
 PK_ARCHIVE="$PK_DIRNAME.tar.gz"

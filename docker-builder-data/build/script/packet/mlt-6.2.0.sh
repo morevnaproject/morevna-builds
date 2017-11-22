@@ -27,6 +27,8 @@ if [ "$PLATFORM" = "linux" ]; then
 fi
 
 if [ "$PLATFORM" = "win" ]; then
+    DEPS="$DEPS dlfcnwin32-1.1.1"
+
     PK_CONFIGURE_OPTIONS="$PK_CONFIGURE_OPTIONS --target-os=MinGW"
     if [ "$ARCH" = "32" ]; then
         PK_CONFIGURE_OPTIONS="$PK_CONFIGURE_OPTIONS --target-arch=i686"

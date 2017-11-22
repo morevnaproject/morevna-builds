@@ -1,4 +1,4 @@
-DEPS=""
+DEPS="zlib-1.2.11 bzip2-1.0.6"
 
 PK_DIRNAME="boost_1_61_0"
 PK_ARCHIVE="$PK_DIRNAME.tar.bz2"
@@ -18,7 +18,7 @@ pkbuild() {
     local LOCAL_OPTIONS=
     if [ "$PLATFORM" = "win" ]; then
         LOCAL_OPTIONS="variant=release runtime-link=shared toolset=gcc-win binary-format=pe abi=ms target-os=windows --user-config=$BUILD_PACKET_DIR/$PK_DIRNAME/user-config.jam"
-        echo "using gcc : win : $CXX : cflags=$CFLAGS cxxflags=$CXXFLAGS linkflags=$LDFLAGS ;" > user-config.jam
+        echo "using gcc : win : $CXX : <cflags>$CFLAGS <cxxflags>$CXXFLAGS <linkflags>$LDFLAGS ;" > user-config.jam
     fi
     ./b2 -j${THREADS} $LOCAL_OPTIONS || return 1
 }

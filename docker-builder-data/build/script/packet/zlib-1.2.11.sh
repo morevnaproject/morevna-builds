@@ -13,13 +13,13 @@ if [ "$PLATFORM" = "win" ]; then
 pkbuild() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME" || return 1
     cp "$FILES_PACKET_DIR/Makefile.mingw" .
-    make -fMakefile.mingw -j${THREADS} || return 1
+    make -fMakefile.mingw SHARED_MODE=1 -j${THREADS} || return 1
 }
 pkinstall() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME"
-    BINARY_PATH="$INTALL_PACKET_DIR/bin" \
-    INCLUDE_PATH="$INTALL_PACKET_DIR/include" \
-    LIBRARY_PATH="$INTALL_PACKET_DIR/lib" \
-    make -fMakefile.mingw install || return 1
+    BINARY_PATH="$INSTALL_PACKET_DIR/bin" \
+    INCLUDE_PATH="$INSTALL_PACKET_DIR/include" \
+    LIBRARY_PATH="$INSTALL_PACKET_DIR/lib" \
+    make -fMakefile.mingw SHARED_MODE=1 install || return 1
 }
 fi

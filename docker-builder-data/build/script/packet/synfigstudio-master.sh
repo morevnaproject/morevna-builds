@@ -80,32 +80,28 @@ pkinstall() {
     # copy system libraries
     if [ "$PLATFORM" = "win" ]; then
         local TARGET="$INSTALL_PACKET_DIR/bin/"
-        local LOCAL_DIR="/usr/$HOST/sys-root/mingw/bin/"
-        cp $LOCAL_DIR/libgcc*.dll        "$TARGET" || return 1
-        cp $LOCAL_DIR/libstdc*.dll       "$TARGET" || return 1
-        cp $LOCAL_DIR/libwinpthread*.dll "$TARGET" || return 1
-        cp $LOCAL_DIR/libquadmath*.dll   "$TARGET" || return 1
-        cp $LOCAL_DIR/libgfortran*.dll   "$TARGET" || return 1
-        cp $LOCAL_DIR/iconv*.dll         "$TARGET" || return 1
-        cp $LOCAL_DIR/libintl*.dll       "$TARGET" || return 1
-        cp $LOCAL_DIR/libdl*.dll         "$TARGET" || return 1
-        cp $LOCAL_DIR/libltdl*.dll       "$TARGET" || return 1
-        cp $LOCAL_DIR/libexpat*.dll      "$TARGET" || return 1
-        cp $LOCAL_DIR/zlib*.dll          "$TARGET" || return 1
-        cp $LOCAL_DIR/libbz2*.dll        "$TARGET" || return 1
-        cp $LOCAL_DIR/libfreetype*.dll   "$TARGET" || return 1
-        cp $LOCAL_DIR/libjasper*.dll     "$TARGET" || return 1
-        cp $LOCAL_DIR/libjpeg*.dll       "$TARGET" || return 1
+
+        local LOCAL_DIR="/usr/local/$HOST/sys-root/$HOST/lib/"
+        cp "$LOCAL_DIR"/libgcc*.dll        "$TARGET" || return 1
+        cp "$LOCAL_DIR"/libstdc*.dll       "$TARGET" || return 1
+        cp "$LOCAL_DIR"/libquadmath*.dll   "$TARGET" || return 1
+        cp "$LOCAL_DIR"/libgfortran*.dll   "$TARGET" || return 1
+
+        local LOCAL_DIR="/usr/local/$HOST/sys-root/bin/"
+        cp "$LOCAL_DIR"/libwinpthread*.dll "$TARGET" || return 1
+        cp "$LOCAL_DIR"/libgettextlib*.dll "$TARGET" || return 1
+        cp "$LOCAL_DIR"/libintl*.dll       "$TARGET" || return 1
+        cp "$LOCAL_DIR"/libiconv*.dll      "$TARGET" || return 1
     else
         local TARGET="$INSTALL_PACKET_DIR/lib/"
-        copy_system_gcc_libs             "$TARGET" || return 1
-        copy_system_lib libudev          "$TARGET" || return 1
-        copy_system_lib libdb            "$TARGET" || return 1
-        copy_system_lib libpcre          "$TARGET" || return 1
-        copy_system_lib libdirect        "$TARGET" || return 1
-        copy_system_lib libfusion        "$TARGET" || return 1
-        copy_system_lib libbz2           "$TARGET" || return 1
-        copy_system_lib libselinux       "$TARGET" || return 1
+        copy_system_gcc_libs               "$TARGET" || return 1
+        copy_system_lib libudev            "$TARGET" || return 1
+        copy_system_lib libdb              "$TARGET" || return 1
+        copy_system_lib libpcre            "$TARGET" || return 1
+        copy_system_lib libdirect          "$TARGET" || return 1
+        copy_system_lib libfusion          "$TARGET" || return 1
+        copy_system_lib libbz2             "$TARGET" || return 1
+        copy_system_lib libselinux         "$TARGET" || return 1
     fi
 }
 
@@ -113,15 +109,10 @@ pkhook_postlicense() {
     local TARGET="$LICENSE_PACKET_DIR"
     if [ "$PLATFORM" = "win" ]; then
         local LOCAL_DIR="/usr/$HOST/sys-root/mingw/bin/"
-        copy_system_license "mingw$ARCH-gcc gcc"   "$TARGET" || return 1
-        copy_system_license mingw$ARCH-winpthreads "$TARGET" || return 1
-        copy_system_license mingw$ARCH-gettext     "$TARGET" || return 1
-        copy_system_license mingw$ARCH-win-iconv   "$TARGET" || return 1
-        copy_system_license mingw$ARCH-dlfcn       "$TARGET" || return 1
-        copy_system_license mingw$ARCH-libltdl     "$TARGET" || return 1
-        copy_system_license mingw$ARCH-expat       "$TARGET" || return 1
-        copy_system_license mingw$ARCH-bzip2       "$TARGET" || return 1
-        copy_system_license mingw$ARCH-freetype    "$TARGET" || return 1
+        copy_system_license gcc                    "$TARGET" || return 1
+        copy_system_license mingw-w64              "$TARGET" || return 1
+        copy_system_license gettext                "$TARGET" || return 1
+        copy_system_license iconv                  "$TARGET" || return 1
     else
         copy_system_license gcc                    "$TARGET" || return 1
         copy_system_license libudev                "$TARGET" || return 1

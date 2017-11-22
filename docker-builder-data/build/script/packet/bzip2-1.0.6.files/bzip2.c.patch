@@ -1,0 +1,4 @@
+131c131
+< #   include <sys\stat.h>
+---
+> #   include <sys/stat.h>

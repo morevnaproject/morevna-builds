@@ -1,0 +1,4 @@
+1275c1275
+< #if defined(G_OS_WIN32)
+---
+> #if defined(G_OS_WIN32) && 0
