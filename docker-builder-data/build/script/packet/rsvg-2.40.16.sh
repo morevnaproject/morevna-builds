@@ -1,5 +1,8 @@
 DEPS="croco-0.6.11 gdkpixbuf-2.36.0 cairo-1.15.4 pango-1.40.3"
-DEPS_NATIVE="gdkpixbuf-2.36.0"
+
+if [ "$PLATFORM" = "win" ]; then
+    DEPS_NATIVE="gdkpixbuf-2.36.0"
+fi
 
 PK_DIRNAME="librsvg-2.40.16"
 PK_ARCHIVE="$PK_DIRNAME.tar.xz"
