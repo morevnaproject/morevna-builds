@@ -1,4 +1,5 @@
-DEPS="synfigstudio-master nsis-3.02.1"
+DEPS="synfigstudio-master"
+DEPS_NATIVE="nsis-3.02.1"
 
 PK_PYTHON_DIRNAME="python"
 PK_PYTHON_ARCHIVE="portable-python-3.2.5.1.zip"

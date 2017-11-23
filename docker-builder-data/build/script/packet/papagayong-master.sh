@@ -1,5 +1,9 @@
 DEPS="wxphoenix-master python3pyaudio-master"
 
+if [ "$PLATFORM" = "win" ]; then
+    DEPS_NATIVE="nsis-3.02.1"
+fi
+
 PK_DIRNAME="papagayo-ng"
 PK_URL="https://github.com/morevnaproject/$PK_DIRNAME.git"
 

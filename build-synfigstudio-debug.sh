@@ -49,6 +49,7 @@ run_nsis() {
     echo ""
     echo "Update synfigstudio-debug for $PLATFORM-$ARCH"
     echo ""
+    PLATFORM=win ARCH=32 $SCRIPT clean_before_do env zlib-1.2.11 # for NSIS
     $SCRIPT chain native update synfigetl-debug \
             chain native update synfigcore-debug \
             chain update synfigetl-debug \

@@ -45,8 +45,9 @@ run_nsis() {
     echo "Update and build papagayong for $PLATFORM-$ARCH"
     echo ""
     # QUICK HACK:
+    PLATFORM=win ARCH=32 $SCRIPT clean_before_do env zlib-1.2.11 # for NSIS
     $SCRIPT chain update papagayong-testing \
-            chain clean_before_do unpack papagayong-testing \
+            chain clean_before_do build papagayong-testing \
             chain shell papagayong-testing "/build/script/packet/papagayong-testing.files/build-win.sh"
 
     local TEMPLATE=`gen_name_template "PapagayoNG" "" "$PLATFORM" "$ARCH" ".exe"`
