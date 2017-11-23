@@ -1,7 +1,7 @@
 DEPS="wxphoenix-master python3pyaudio-master"
 
 if [ "$PLATFORM" = "win" ]; then
-    DEPS_NATIVE="nsis-3.02.1"
+    DEPS_NATIVE="nsis-2.50"
 fi
 
 PK_DIRNAME="papagayo-ng"

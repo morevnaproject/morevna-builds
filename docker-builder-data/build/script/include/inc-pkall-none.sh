@@ -29,6 +29,14 @@ PK_CONFIGURE_OPTIONS_DEFAULT=" \
  --enable-shared "
 
 
+pkhelper_patch() {
+    local FILE_PATH="$1"
+    local FILE_NAME="$2"
+    cp --remove-destination "$UNPACK_PACKET_DIR/$PK_DIRNAME/$FILE_PATH/$FILE_NAME" "$FILE_PATH/" || return 1
+    patch "$FILE_PATH/$FILE_NAME" "$FILES_PACKET_DIR/$FILE_NAME.patch" || return 1
+}
+
+
 pkdownload() {
     return 0
 }
