@@ -39,7 +39,7 @@ pkinstall_release() {
 
     # copy files
     copy "$ENVDEPS_RELEASE_PACKET_DIR" "./" || return 1
-    
+
     # get version
     local LOCAL_VERSION_FULL=$(cat $ENVDEPS_RELEASE_PACKET_DIR/version-opentoonz-*)
     local LOCAL_VERSION=$(echo "$LOCAL_VERSION_FULL" | cut -d - -f 1)
@@ -53,7 +53,7 @@ pkinstall_release() {
 
     # copy NSIS configuration
     cp "$FILES_PACKET_DIR/opentoonz.nsi" "./" || return 1
-            
+
     # create config.nsh (see opentoons.nsi)
     cat > config.nsh << EOF
 !define PK_NAME         "OpenToonz" 
@@ -66,7 +66,7 @@ pkinstall_release() {
 EOF
 
     # let's go
-    makensis -INPUTCHARSET UTF8 opentoonz.nsi || return 1
+    makensis opentoonz.nsi || return 1
 
     # remove temporary dir
     cd "$INSTALL_RELEASE_PACKET_DIR" || return 1
