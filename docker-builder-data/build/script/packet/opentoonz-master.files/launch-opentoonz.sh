@@ -32,13 +32,6 @@ TOONZSTUDIOPALETTE="$HOME/.config/OpenToonz/stuff/projects/studiopalette"
 EOF
 
 else
-    # add mypaint brushes if need
-    if [ ! -d "$CONFIG_DIR/stuff/library/mypaint brushes" ]; then
-        echo "fix config: copy mypaint brushes" 
-        mkdir -p "$CONFIG_DIR/stuff/library"
-        cp -r "$BASE_DIR/share/opentoonz/stuff/library/mypaint brushes" "$CONFIG_DIR/stuff/library/" 
-    fi
-
     # fix paths
     INI="$HOME/.config/OpenToonz/SystemVar.ini"
     if [ -e "$INI" ]; then
@@ -75,13 +68,15 @@ else
         fi
     fi
 
-    # update themes
-    echo "fix config: update themes" 
+    # update library
+    echo "update stuff" 
+    mkdir -p "$CONFIG_DIR/stuff/config"
+    mkdir -p "$CONFIG_DIR/stuff/profiles"
+    cp -ur "$BASE_DIR/share/opentoonz/stuff/library" "$CONFIG_DIR/stuff/" 
     cp -ur "$BASE_DIR/share/opentoonz/stuff/config/qss" "$CONFIG_DIR/stuff/config/" 
-
-    # update localizations
-    echo "fix config: update themes" 
     cp -ur "$BASE_DIR/share/opentoonz/stuff/config/loc" "$CONFIG_DIR/stuff/config/" 
+    cp -ur "$BASE_DIR/share/opentoonz/stuff/profiles/layouts" "$CONFIG_DIR/stuff/profiles/" 
+    cp -ur "$BASE_DIR/share/opentoonz/stuff/config/current.txt" "$CONFIG_DIR/stuff/config/" 
 fi
 
 cd "$BASE_DIR/bin"
