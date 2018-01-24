@@ -1,5 +1,9 @@
 DEPS="png-1.6.26 glib-2.50.0"
 
+if [ "$PLATFORM" = "linux" ]; then
+    DEPS="$DEPS pulseaudio-11.1"
+fi
+
 PK_DIRNAME="qt-everywhere-opensource-src-5.9.2"
 PK_ARCHIVE="$PK_DIRNAME.tar.xz"
 PK_URL="http://download.qt.io/official_releases/qt/5.9/5.9.2/single/$PK_ARCHIVE"
