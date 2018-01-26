@@ -18,6 +18,8 @@ pkinstall() {
     cp --remove-destination "$FILES_PACKET_DIR/opentoonz.png" "$APPDIR/" || return 1
     mkdir -p "$APPDIR/usr/share/icons/default/128x128/apps/"
     cp --remove-destination "$FILES_PACKET_DIR/opentoonz.png" "$APPDIR/usr/share/icons/default/128x128/apps/opentoonz.png" || return 1
+    mkdir -p "$APPDIR/usr/share/icons/hicolor/128x128/apps/"
+    cp --remove-destination "$FILES_PACKET_DIR/opentoonz.png" "$APPDIR/usr/share/icons/hicolor/128x128/apps/opentoonz.png" || return 1
 }
 
 pkinstall_release() {
