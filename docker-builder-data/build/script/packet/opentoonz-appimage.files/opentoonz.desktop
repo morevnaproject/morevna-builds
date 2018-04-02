@@ -3,4 +3,4 @@ Type=Application
 Name=OpenToonz
 Exec=launch-opentoonz-appimage.sh
 Icon=opentoonz
-Categories=Graphics
+Categories=Graphics;
