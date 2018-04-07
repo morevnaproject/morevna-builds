@@ -36,7 +36,7 @@ InstallDir "$PROGRAMFILES${PK_ARCH}\${PK_NAME}"
 Var STUFFDIR
 
 ; Request application privileges for Windows Vista
-RequestExecutionLevel highest
+RequestExecutionLevel admin
 
 !insertmacro MUI_LANGUAGE "English"
 

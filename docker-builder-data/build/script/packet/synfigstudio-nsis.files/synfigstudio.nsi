@@ -36,7 +36,7 @@ OutFile "${PK_NAME}-${PK_VERSION_FULL}.exe"
 InstallDir "$PROGRAMFILES${PK_ARCH}\${PK_DIR_NAME}"
 
 ; Request application privileges for Windows Vista
-RequestExecutionLevel highest
+RequestExecutionLevel admin
 
 !insertmacro MUI_LANGUAGE "English"
 
