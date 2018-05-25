@@ -10,9 +10,3 @@ pkhook_prebuild() {
     rm -rf test
     ln -s src test
 }
-
-if [ "$PLATFORM" != "win" ]; then
-    pkinstall_release() {
-        return 0
-    }
-fi

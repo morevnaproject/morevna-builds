@@ -7,6 +7,7 @@ export LD_LIBRARY_PATH="${BASE_DIR}/lib:${BASE_DIR}/lib64:$LD_LIBRARY_PATH"
 export XDG_DATA_DIRS="${BASE_DIR}/share:$XDG_DATA_DIRS:/usr/local/share/:/usr/share/"
 export GSETTINGS_SCHEMA_DIR="${BASE_DIR}/share/glib-2.0/schemas/"
 export PYTHONHOME=$BASE_DIR
+export FONTCONFIG_PATH=/etc/fonts
 
 #sed "s?@ROOTDIR@/modules?${BASE_DIR}/lib/pango/1.6.0/modules?" < $ETC_DIR/pango/pango.modules.in > $USER_CONFIG_DIR/pango/pango.modules
 if [ -e ${BASE_DIR}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache.in ]; then
