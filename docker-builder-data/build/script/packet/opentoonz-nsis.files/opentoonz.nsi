@@ -204,6 +204,10 @@ Function .onInit
   Return
 
 oops:
-  MessageBox MB_OK|MB_ICONEXCLAMATION "Another version of ${PK_NAME_FULL} appears to be installed. Please, uninstall it first?"
+  MessageBox MB_YESNO|MB_ICONEXCLAMATION "Another version of ${PK_NAME_FULL} appears to be installed, we recommend to uninstall it first. Do you wish to continue with installation of this version anyway?" IDNO cancel
+  BringToFront
+  Return
+
+cancel:
   Abort
 FunctionEnd
