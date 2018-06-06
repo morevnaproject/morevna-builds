@@ -167,9 +167,11 @@ Section "Uninstall"
 
   ; Remove shortcuts, if any
   SetShellVarContext All
-  Delete "$SMPROGRAMS\${PK_NAME_FULL}\${PK_NAME_FULL}.lnk"
   Delete "$DESKTOP\${PK_NAME_FULL}.lnk"
-  Delete "$SMPROGRAMS\${PK_NAME_FULL}\Uninstall ${PK_NAME_FULL}.lnk"
+  Delete "$SMPROGRAMS\${PK_DIR_NAME}\${PK_NAME_FULL}.lnk"
+  Delete "$SMPROGRAMS\${PK_DIR_NAME}\Uninstall ${PK_NAME_FULL}.lnk"
+  Delete "$SMPROGRAMS\${PK_DIR_NAME}\${PK_NAME_FULL} (Debug Console).lnk"
+  RMDir "$SMPROGRAMS\${PK_DIR_NAME}"
 
   ; Remove directories used
   RMDir "$SMPROGRAMS\${PK_NAME_FULL}"
