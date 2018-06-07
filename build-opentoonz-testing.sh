@@ -47,7 +47,8 @@ run_nsis() {
     echo ""
     PLATFORM=win ARCH=32 $SCRIPT clean_before_do env zlib-1.2.11 # for NSIS
     $SCRIPT chain update opentoonz-testing \
-            chain clean_before_do install_release opentoonz-testingnsis
+            chain clean_before_do install_release opentoonz-testingnsis \
+            chain clean_before_do install_release opentoonz-testingportable
 
     local TEMPLATE=`gen_name_template "OpenToonz" "$OPENTOONZ_TESTING_TAG" "$PLATFORM" "$ARCH" ".exe"`
     "$PUBLISH_DIR/publish.sh" \
@@ -56,6 +57,14 @@ run_nsis() {
         "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-testingnsis/install_release" \
         "*.exe" \
         "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-testingnsis/envdeps_release/version-opentoonz-testing"
+    
+    local TEMPLATE=`gen_name_template "OpenToonz" "$OPENTOONZ_TESTING_TAG" "$PLATFORM" "$ARCH" ".zip"`
+    "$PUBLISH_DIR/publish.sh" \
+        "opentoonz-testing" \
+        "$TEMPLATE" \
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-testingportable/install_release" \
+        "*.zip" \
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-testingportable/envdeps_release/version-opentoonz-testing"
 }
 
 run_appimage linux 64
