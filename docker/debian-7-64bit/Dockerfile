@@ -74,5 +74,8 @@ RUN apt-get -yq install curl
 # for synfigstudio-nsis
 RUN apt-get -yq install unzip
 
+# for portable versions
+RUN apt-get -yq install zip
+
 # build dir
 RUN mkdir /build

@@ -57,7 +57,7 @@ run_nsis() {
         "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-testingnsis/install_release" \
         "*.exe" \
         "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-testingnsis/envdeps_release/version-opentoonz-testing"
-    
+
     local TEMPLATE=`gen_name_template "OpenToonz" "$OPENTOONZ_TESTING_TAG" "$PLATFORM" "$ARCH" ".zip"`
     "$PUBLISH_DIR/publish.sh" \
         "opentoonz-testing" \
