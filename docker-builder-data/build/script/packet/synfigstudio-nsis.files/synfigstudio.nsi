@@ -171,10 +171,9 @@ Section "Uninstall"
   Delete "$SMPROGRAMS\${PK_DIR_NAME}\${PK_NAME_FULL}.lnk"
   Delete "$SMPROGRAMS\${PK_DIR_NAME}\Uninstall ${PK_NAME_FULL}.lnk"
   Delete "$SMPROGRAMS\${PK_DIR_NAME}\${PK_NAME_FULL} (Debug Console).lnk"
-  RMDir "$SMPROGRAMS\${PK_DIR_NAME}"
 
   ; Remove directories used
-  RMDir "$SMPROGRAMS\${PK_NAME_FULL}"
+  RMDir "$SMPROGRAMS\${PK_DIR_NAME}"
   RMDir "$INSTDIR"
 
   System::Call 'Shell32::SHChangeNotify(i ${SHCNE_ASSOCCHANGED}, i ${SHCNF_IDLIST}, i 0, i 0)'
@@ -199,8 +198,8 @@ Function .onInit
   Return
 
 oops:
-  MessageBox MB_YESNOCANCEL|MB_ICONEXCLAMATION "Another version of ${PK_NAME_FULL} appears to be installed. Would you like to uninstall it first?" IDNO ignore IDCANCEL cancel
-  ExecWait '$R0 _?=$INSTDIR'
+  MessageBox MB_YESNOCANCEL|MB_ICONEXCLAMATION "Another version of this software appears to be installed. Would you like to uninstall it first?" IDNO ignore IDCANCEL cancel
+  ExecWait '$R0'
   BringToFront
   Return
 

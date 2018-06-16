@@ -159,7 +159,6 @@ Section "Uninstall"
   Delete "$DESKTOP\${PK_NAME_FULL}.lnk"
   Delete "$SMPROGRAMS\${PK_NAME_FULL}\${PK_NAME_FULL}.lnk"
   Delete "$SMPROGRAMS\${PK_NAME_FULL}\Uninstall ${PK_NAME_FULL}.lnk"
-  RMDir "$SMPROGRAMS\${PK_NAME_FULL}"
 
   ; Remove directories used
   RMDir "$SMPROGRAMS\${PK_NAME_FULL}"
@@ -205,7 +204,7 @@ Function .onInit
   Return
 
 oops:
-  MessageBox MB_YESNO|MB_ICONEXCLAMATION "Another version of ${PK_NAME_FULL} appears to be installed, we recommend to uninstall it first. Do you wish to continue with installation of this version anyway?" IDNO cancel
+  MessageBox MB_YESNO|MB_ICONEXCLAMATION "Another version of OpenToonz appears to be installed, we recommend to make backup of the Stuff directory and uninstall another version first. Do you wish to continue with installation of this version anyway?" IDNO cancel
   BringToFront
   Return
 

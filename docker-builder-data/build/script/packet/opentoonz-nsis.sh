@@ -54,11 +54,16 @@ pkinstall_release() {
     # copy NSIS configuration
     cp "$FILES_PACKET_DIR/opentoonz.nsi" "./" || return 1
 
+    local LOCAL_OPENTOONZ_NAME_FULL="OpenToonz"
+    if [ "$ARCH" != "64" ]; then
+        LOCAL_OPENTOONZ_NAME_FULL="$LOCAL_OPENTOONZ_NAME_FULL $ARCH"
+    fi
+
     # create config.nsh (see opentoons.nsi)
     cat > config.nsh << EOF
 !define PK_NAME         "OpenToonz" 
-!define PK_NAME_FULL    "OpenToonz"
-!define PK_ARCH         "$ARCH"
+!define PK_NAME_FULL    "${LOCAL_OPENTOONZ_NAME_FULL}"
+!define PK_ARCH         "${ARCH}"
 !define PK_VERSION      "${LOCAL_VERSION2}"
 !define PK_VERSION_FULL "${LOCAL_VERSION}-${LOCAL_COMMIT:0:5}" 
 !define PK_EXECUTABLE   "bin\\\${PK_NAME}_${LOCAL_VERSION2}.exe" 
