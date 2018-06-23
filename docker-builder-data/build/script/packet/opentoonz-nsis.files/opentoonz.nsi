@@ -121,9 +121,9 @@ Section "Start Menu Shortcuts"
   SetOutPath "$INSTDIR\bin"
 
   SetShellVarContext All
-  CreateDirectory "$SMPROGRAMS\${PK_NAME_FULL}"
-  CreateShortCut "$SMPROGRAMS\${PK_NAME_FULL}\Uninstall ${PK_NAME_FULL}.lnk" "$INSTDIR\uninstall-${PK_NAME}.exe" "" "$INSTDIR\uninstall-${PK_NAME}.exe" 0
-  CreateShortCut "$SMPROGRAMS\${PK_NAME_FULL}\${PK_NAME_FULL}.lnk" "$INSTDIR\${PK_EXECUTABLE}" "" "$INSTDIR\${PK_ICON}" 0
+  CreateDirectory "$SMPROGRAMS\${PK_NAME} (${PK_ARCH}bit)"
+  CreateShortCut "$SMPROGRAMS\${PK_NAME} (${PK_ARCH}bit)\Uninstall ${PK_NAME}.lnk" "$INSTDIR\uninstall-${PK_NAME}.exe" "" "$INSTDIR\uninstall-${PK_NAME}.exe" 0
+  CreateShortCut "$SMPROGRAMS\${PK_NAME} (${PK_ARCH}bit)\${PK_NAME}.lnk" "$INSTDIR\${PK_EXECUTABLE}" "" "$INSTDIR\${PK_ICON}" 0
 SectionEnd
 
 Section "Desktop Icon"
@@ -157,11 +157,11 @@ Section "Uninstall"
   ; Remove shortcuts, if any
   SetShellVarContext All
   Delete "$DESKTOP\${PK_NAME_FULL}.lnk"
-  Delete "$SMPROGRAMS\${PK_NAME_FULL}\${PK_NAME_FULL}.lnk"
-  Delete "$SMPROGRAMS\${PK_NAME_FULL}\Uninstall ${PK_NAME_FULL}.lnk"
+  Delete "$SMPROGRAMS\${PK_NAME} (${PK_ARCH}bit)\${PK_NAME}.lnk"
+  Delete "$SMPROGRAMS\${PK_NAME} (${PK_ARCH}bit)\Uninstall ${PK_NAME}.lnk"
 
   ; Remove directories used
-  RMDir "$SMPROGRAMS\${PK_NAME_FULL}"
+  RMDir "$SMPROGRAMS\${PK_NAME} (${PK_ARCH}bit)"
   RMDir "$STUFFDIR"
   RMDir "$INSTDIR"
 

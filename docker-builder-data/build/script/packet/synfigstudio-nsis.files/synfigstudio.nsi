@@ -125,10 +125,10 @@ Section "Start Menu Shortcuts"
   SetOutPath "$INSTDIR\bin"
 
   SetShellVarContext All
-  CreateDirectory "$SMPROGRAMS\${PK_DIR_NAME}"
-  CreateShortCut "$SMPROGRAMS\${PK_DIR_NAME}\Uninstall ${PK_NAME_FULL}.lnk" "$INSTDIR\uninstall-${PK_NAME}.exe" "" "$INSTDIR\uninstall-${PK_NAME}.exe" 0
-  CreateShortCut "$SMPROGRAMS\${PK_DIR_NAME}\${PK_NAME_FULL}.lnk" "$INSTDIR\${PK_EXECUTABLE}" "" "$INSTDIR\${PK_ICON}" 0
-  CreateShortCut "$SMPROGRAMS\${PK_DIR_NAME}\${PK_NAME_FULL} (Debug Console).lnk" "$INSTDIR\${PK_EXECUTABLE}" "--console" "$INSTDIR\${PK_ICON}" 0
+  CreateDirectory "$SMPROGRAMS\${PK_DIR_NAME} ${PK_ARCH}bit"
+  CreateShortCut "$SMPROGRAMS\${PK_DIR_NAME} ${PK_ARCH}bit\Uninstall ${PK_NAME_FULL}.lnk" "$INSTDIR\uninstall-${PK_NAME}.exe" "" "$INSTDIR\uninstall-${PK_NAME}.exe" 0
+  CreateShortCut "$SMPROGRAMS\${PK_DIR_NAME} ${PK_ARCH}bit\${PK_NAME_FULL}.lnk" "$INSTDIR\${PK_EXECUTABLE}" "" "$INSTDIR\${PK_ICON}" 0
+  CreateShortCut "$SMPROGRAMS\${PK_DIR_NAME} ${PK_ARCH}bit\${PK_NAME_FULL} (Debug Console).lnk" "$INSTDIR\${PK_EXECUTABLE}" "--console" "$INSTDIR\${PK_ICON}" 0
 SectionEnd
 
 Section "Desktop Icon"
@@ -168,12 +168,12 @@ Section "Uninstall"
   ; Remove shortcuts, if any
   SetShellVarContext All
   Delete "$DESKTOP\${PK_NAME_FULL}.lnk"
-  Delete "$SMPROGRAMS\${PK_DIR_NAME}\${PK_NAME_FULL}.lnk"
-  Delete "$SMPROGRAMS\${PK_DIR_NAME}\Uninstall ${PK_NAME_FULL}.lnk"
-  Delete "$SMPROGRAMS\${PK_DIR_NAME}\${PK_NAME_FULL} (Debug Console).lnk"
+  Delete "$SMPROGRAMS\${PK_DIR_NAME} ${PK_ARCH}bit\${PK_NAME_FULL}.lnk"
+  Delete "$SMPROGRAMS\${PK_DIR_NAME} ${PK_ARCH}bit\Uninstall ${PK_NAME_FULL}.lnk"
+  Delete "$SMPROGRAMS\${PK_DIR_NAME} ${PK_ARCH}bit\${PK_NAME_FULL} (Debug Console).lnk"
 
   ; Remove directories used
-  RMDir "$SMPROGRAMS\${PK_DIR_NAME}"
+  RMDir "$SMPROGRAMS\${PK_DIR_NAME} ${PK_ARCH}bit"
   RMDir "$INSTDIR"
 
   System::Call 'Shell32::SHChangeNotify(i ${SHCNE_ASSOCCHANGED}, i ${SHCNF_IDLIST}, i 0, i 0)'
@@ -204,7 +204,7 @@ oops:
   Return
 
 cancel:
-  MessageBox MB_OK|MB_ICONEXCLAMATION "Unable to uninstall another version of ${PK_NAME_FULL}"
+  MessageBox MB_OK|MB_ICONEXCLAMATION "Unable to uninstall another version of Synfig"
   Abort
 
 ignore:

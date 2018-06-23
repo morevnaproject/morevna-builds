@@ -84,22 +84,12 @@ pkinstall_release() {
 
     # copy NSIS configuration
     cp "$FILES_PACKET_DIR/synfigstudio.nsi" "./" || return 1
-    
-    local LOCAL_SYNFIG_DIR_NAME="Synfig"
-    if [ "$ARCH" != "64" ]; then
-        LOCAL_SYNFIG_DIR_NAME="$LOCAL_SYNFIG_DIR_NAME $ARCH"
-    fi
-
-    local LOCAL_SYNFIG_NAME_FULL="Synfig Studio"
-    if [ "$ARCH" != "64" ]; then
-        LOCAL_SYNFIG_NAME_FULL="$LOCAL_SYNFIG_NAME_FULL $ARCH"
-    fi
 
     # create config.nsh (see opentoons.nsi)
     cat > config.nsh << EOF
 !define PK_NAME          "synfigstudio" 
-!define PK_DIR_NAME      "${LOCAL_SYNFIG_DIR_NAME}" 
-!define PK_NAME_FULL     "${LOCAL_SYNFIG_NAME_FULL}"
+!define PK_DIR_NAME      "Synfig"
+!define PK_NAME_FULL     "Synfig Studio (${ARCH}bit)"
 !define PK_ARCH          "${ARCH}"
 !define PK_VERSION       "${LOCAL_VERSION2}"
 !define PK_VERSION_FULL  "${LOCAL_VERSION}-${LOCAL_COMMIT:0:5}"
