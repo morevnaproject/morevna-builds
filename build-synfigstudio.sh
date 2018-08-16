@@ -55,7 +55,8 @@ run_nsis() {
             chain update synfigetl-master \
             chain update synfigcore-master \
             chain update synfigstudio-master \
-            chain clean_before_do install_release synfigstudio-nsis
+            chain clean_before_do install_release synfigstudio-nsis \
+            chain clean_before_do install_release synfigstudio-portable
 
     local TEMPLATE=`gen_name_template "SynfigStudio" "$SYNFIGSTUDIO_TESTING_TAG" "$PLATFORM" "$ARCH" ".exe"`
     "$PUBLISH_DIR/publish.sh" \
