@@ -1,5 +1,22 @@
 DEPS="synfigstudio-master"
 
+PK_PYTHON_DIRNAME="python"
+PK_PYTHON_ARCHIVE="portable-python-3.2.5.1.zip"
+PK_PYTHON_URL="https://download.tuxfamily.org/synfig/packages/sources/$PK_PYTHON_ARCHIVE"
+
+# download portable python and pass downloaded files through all build phases
+pkdownload() {
+    wget -c --no-check-certificate "$PK_PYTHON_URL" -O "$PK_PYTHON_ARCHIVE" || return 1
+}
+
+pkunpack() {
+    unzip "$DOWNLOAD_PACKET_DIR/$PK_PYTHON_ARCHIVE" || return 1
+}
+
+pkinstall() {
+    copy "$BUILD_PACKET_DIR" "$INSTALL_PACKET_DIR" || return 1
+}
+
 pkinstall_release() {
     # create temporary dir
     rm -rf "$INSTALL_RELEASE_PACKET_DIR/portable"
