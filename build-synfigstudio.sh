@@ -65,6 +65,14 @@ run_nsis() {
         "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/synfigstudio-nsis/install_release" \
         "*.exe" \
         "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/synfigstudio-nsis/envdeps_release/version-synfigstudio-master"
+
+    local TEMPLATE=`gen_name_template "SynfigStudio" "$SYNFIGSTUDIO_TESTING_TAG" "$PLATFORM" "$ARCH" ".zip"`
+    "$PUBLISH_DIR/publish.sh" \
+        "synfigstudio" \
+        "$TEMPLATE" \
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/synfigstudio-portable/install_release" \
+        "*.zip" \
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/synfigstudio-portable/envdeps_release/version-synfigstudio-master"
 }
 
 run_appimage linux 64
