@@ -55,7 +55,8 @@ run_nsis() {
             chain update synfigetl-debug \
             chain update synfigcore-debug \
             chain update synfigstudio-debug \
-            chain clean_before_do install_release synfigstudio-debugnsis
+            chain clean_before_do install_release synfigstudio-debugnsis \
+            chain clean_before_do install_release synfigstudio-portable
 
     local TEMPLATE=`gen_name_template "SynfigStudio" "$SYNFIGSTUDIO_DEBUG_TAG" "$PLATFORM" "$ARCH" ".exe"`
     "$PUBLISH_DIR/publish.sh" \
@@ -64,6 +65,14 @@ run_nsis() {
         "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/synfigstudio-debugnsis/install_release" \
         "*.exe" \
         "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/synfigstudio-debugnsis/envdeps_release/version-synfigstudio-debug"
+
+    local TEMPLATE=`gen_name_template "SynfigStudio" "$SYNFIGSTUDIO_DEBUG_TAG" "$PLATFORM" "$ARCH" ".zip"`
+    "$PUBLISH_DIR/publish.sh" \
+        "synfigstudio-debug" \
+        "$TEMPLATE" \
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/synfigstudio-debugportable/install_release" \
+        "*.zip" \
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/synfigstudio-debugportable/envdeps_release/version-synfigstudio-debug"
 }
 
 run_appimage linux 64
