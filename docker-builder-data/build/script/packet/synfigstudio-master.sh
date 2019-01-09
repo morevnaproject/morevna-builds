@@ -17,7 +17,7 @@
 #   adwaitaicons                  | gtk, rsvg
 #   gnomethemes                   | gtk, rsvg
 
-DEPS="synfigcore-master gtkmm-3.22.0"
+DEPS="synfigcore-master gtkmm-3.22.0 sdl_mixer-2.0.4"
 DEPS_NATIVE="libtool-2.4.6 synfigcore-master"
 
 if [ "$PLATFORM" = "linux" ]; then
@@ -36,9 +36,7 @@ source $INCLUDE_SCRIPT_DIR/inc-pkall-git.sh
 
 pkhook_version() {
     cat "$PK_DIRNAME/synfig-studio/configure.ac" \
-    | grep "AC_INIT" \
-    | cut -d [ -f 3 \
-    | cut -d ] -f 1 \
+    | egrep "AC_INIT\(\[Synfig Studio\],"| sed "s|.*Studio\],\[||" | sed "s|\],\[.*||" \
     || return 1
 }
 

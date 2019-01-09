@@ -1,8 +1,8 @@
 DEPS=""
 
 PK_DIRNAME="libxml2-2.9.4"
-PK_ARCHIVE="$PK_DIRNAME.tar.xz"
-PK_URL="https://git.gnome.org/browse/libxml2/snapshot/$PK_ARCHIVE"
+PK_ARCHIVE="$PK_DIRNAME.tar.gz"
+PK_URL="http://xmlsoft.org/sources/$PK_ARCHIVE"
 
 source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh
 

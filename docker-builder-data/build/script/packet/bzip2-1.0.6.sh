@@ -1,7 +1,7 @@
 
 PK_DIRNAME="bzip2-1.0.6"
 PK_ARCHIVE="$PK_DIRNAME.tar.gz"
-PK_URL="http://bzip.org/1.0.6/$PK_ARCHIVE"
+PK_URL="https://fossies.org/linux/misc/$PK_ARCHIVE"
 
 source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh
 
