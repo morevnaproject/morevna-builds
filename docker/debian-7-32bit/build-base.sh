@@ -4,7 +4,7 @@ set -e
 
 arch=i386
 suite=wheezy
-docker_image="morevna/debian-$arch:$suite"
+docker_image="morevnaproject/debian-$arch:$suite"
 
 SCRIPT_DIR=$(cd `dirname "$0"`; pwd)
 BASE_DIR=`dirname "$SCRIPT_DIR"`

@@ -35,6 +35,6 @@ docker run -it \
     -e PLATFORM="$PLATFORM" \
     -e ARCH="$ARCH" \
     -e THREADS="$THREADS" \
-    morevna/build-debian-7-64 \
+    morevnaproject/builder-64:debian7 \
     /build/script/common/manager.sh "$@"
 

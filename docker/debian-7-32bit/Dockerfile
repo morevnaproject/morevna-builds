@@ -1,4 +1,4 @@
-FROM morevna/debian-i386:wheezy
+FROM morevnaproject/debian-i386:wheezy
 ARG ALL_PROXY
 
 # set available apt sources
