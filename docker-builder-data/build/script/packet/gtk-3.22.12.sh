@@ -15,6 +15,13 @@ if [ "$PLATFORM" = "win" ]; then
     PK_CONFIGURE_OPTIONS="--enable-introspection=no"
 fi
 
+pkhook_prebuild() {
+    if [ "$PLATFORM" = "win" ]; then
+        cp --remove-destination "$UNPACK_PACKET_DIR/$PK_DIRNAME/gtk/gtkwindow.c" "gtk/gtkwindow.c" || return 1
+        patch -p1 -i "$FILES_PACKET_DIR/0001-gtkwindow-Don-t-force-enable-CSD-under-Windows.patch" || return 1
+    fi
+}
+
 pkinstall() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME"
     local LOCAL_BIN="$BUILD_PACKET_DIR/$PK_DIRNAME/gtk"
