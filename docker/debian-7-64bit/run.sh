@@ -17,6 +17,9 @@ export NATIVE_PLATFORM=debian
 if [ -z "$PLATFORM" ]; then
     export PLATFORM=linux
 fi
+if [ -z "$ARCH" ]; then
+    export ARCH=64
+fi
 if [ -z "$TASK" ]; then
     export TASK=builder-$NATIVE_PLATFORM
 fi
