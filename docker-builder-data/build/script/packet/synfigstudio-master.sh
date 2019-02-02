@@ -67,7 +67,7 @@ pkinstall() {
     if [ "$PLATFORM" = "win" ]; then
         mv "share/pixmaps/synfigstudio/"* "share/pixmaps/"
         mkdir -p "share/gtk-3.0"
-        cp "$FILES_PACKET_DIR/settings.ini" "share/gtk-3.0/" || return 1
+        cp "$BUILD_PACKET_DIR/$PK_DIRNAME/autobuild/gtk-3.0/settings.ini" "share/gtk-3.0/" || return 1
         mkdir -p "lib/gdk-pixbuf-2.0/2.10.0"
         cp "$FILES_PACKET_DIR/loaders.cache" "lib/gdk-pixbuf-2.0/2.10.0/"  || return 1
     fi
