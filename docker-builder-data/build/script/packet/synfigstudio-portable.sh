@@ -58,6 +58,9 @@ pkinstall_release() {
     
     # add portable python
     copy "$INSTALL_PACKET_DIR/$PK_PYTHON_DIRNAME" "./python" || return 1
+    
+    #config directory
+    mkdir "./config"
 
     # get version
     local LOCAL_VERSION_FULL=$(cat $ENVDEPS_RELEASE_PACKET_DIR/version-synfigstudio-*)
