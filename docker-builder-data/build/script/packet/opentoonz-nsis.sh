@@ -61,8 +61,7 @@ pkinstall_release() {
 !define PK_ARCH         "${ARCH}"
 !define PK_VERSION      "${LOCAL_VERSION2}"
 !define PK_VERSION_FULL "${LOCAL_VERSION}-${LOCAL_COMMIT:0:5}" 
-;!define PK_EXECUTABLE   "bin\\\${PK_NAME}_${LOCAL_VERSION2}.exe"
-!define PK_EXECUTABLE   "bin\\\${PK_NAME}_1.2.exe"
+!define PK_EXECUTABLE   "bin\\\${PK_NAME}.exe"
 !define PK_ICON         "bin\\toonz.ico" 
 EOF
 
