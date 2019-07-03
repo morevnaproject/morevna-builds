@@ -16,4 +16,4 @@ if [[ "$(docker images -q morevnaproject/debian-i386:wheezy 2> /dev/null)" == ""
 	bash ${SCRIPT_DIR}/build-base.sh
 fi
 
-docker build -t morevnaproject/builder-32:debian7 $DOCKER_BUILD_OPTIONS "$SCRIPT_DIR"
+docker build -t morevnaproject/build-debian-7-32 $DOCKER_BUILD_OPTIONS "$SCRIPT_DIR"
