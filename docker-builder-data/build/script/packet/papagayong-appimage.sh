@@ -1,4 +1,5 @@
-DEPS="appimagekit-master papagayong-testing"
+DEPS="papagayong-testing"
+DEPS_NATIVE="appimagekit-master"
 
 PK_APPIMAGEKIT_DIR=$PACKET_DIR/appimagekit-master/
 PK_APPDIR_NAME="papagayong"
