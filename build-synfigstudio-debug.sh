@@ -56,7 +56,7 @@ run_nsis() {
             chain update synfigcore-debug \
             chain update synfigstudio-debug \
             chain clean_before_do install_release synfigstudio-debugnsis \
-            chain clean_before_do install_release synfigstudio-portable
+            chain clean_before_do install_release synfigstudio-debugportable
 
     local TEMPLATE=`gen_name_template "SynfigStudio" "$SYNFIGSTUDIO_DEBUG_TAG" "$PLATFORM" "$ARCH" ".exe"`
     "$PUBLISH_DIR/publish.sh" \
