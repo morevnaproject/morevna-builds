@@ -52,7 +52,7 @@ pkbuild() {
          || return 1
         set_done $NAME build.configure
     fi
-    make -j${THREADS} || return 1
+    make -j${THREADS} || make || make || return 1
 }
 
 pkinstall() {
