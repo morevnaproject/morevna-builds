@@ -10,7 +10,6 @@ SCRIPT_BUILD_DIR="$BUILD_DIR/script"
 if [ -f $CONFIG_FILE ]; then
 	source $CONFIG_FILE
 fi
-export PACKET_BUILD_DIR
 mkdir -p $PACKET_BUILD_DIR
 
-docker build -t morevnaproject/build-debian-7-64 $DOCKER_BUILD_OPTIONS "$SCRIPT_DIR"
+chrooter build -t morevnaproject/build-debian-7-32 $CHROOTER_BUILD_OPTIONS "$SCRIPT_DIR"

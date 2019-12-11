@@ -3,7 +3,7 @@
 set -e
 
 BASE_DIR=$(cd `dirname "$0"`; pwd)
-DATA_DIR="$BASE_DIR/docker-builder-data"
+DATA_DIR="$BASE_DIR/env-builder-data"
 BUILD_DIR=$DATA_DIR/build
 PUBLISH_DIR=$BASE_DIR/publish
 CONFIG_FILE="$BASE_DIR/config.sh"
@@ -17,7 +17,7 @@ if [ -f $CONFIG_FILE ]; then
 	source $CONFIG_FILE
 fi
 
-SCRIPT="$BASE_DIR/docker/run.sh"
+SCRIPT="$BASE_DIR/env/run.sh"
 
 run_appimage() {
     export PLATFORM="$1"

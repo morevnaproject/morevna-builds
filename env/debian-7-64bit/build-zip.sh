@@ -2,10 +2,10 @@
 
 set -e
 
-arch=i386
+arch=amd64
 suite=wheezy
 chroot_dir="/var/chroot/$suite"
-apt_mirror="ftp://ftp.debian.org/debian/"
+apt_mirror="http://ftp.de.debian.org/debian/"
 
 SCRIPT_DIR=$(cd `dirname "$0"`; pwd)
 BASE_DIR=`dirname "$SCRIPT_DIR"`
@@ -30,5 +30,8 @@ chroot $chroot_dir apt-get autoclean
 chroot $chroot_dir apt-get clean
 chroot $chroot_dir apt-get autoremove
 
-tar cfz "$SCRIPT_DIR/debian-$suite-$arch.tar.gz" -C $chroot_dir .
+pushd $chroot_dir
+zip "$SCRIPT_DIR/debian-$suite-$arch.zip" -qyr0 . || true # zip cannot process some files from /dev
+popd
+
 rm -rf $chroot_dir

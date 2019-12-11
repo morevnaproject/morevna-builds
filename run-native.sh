@@ -3,7 +3,7 @@
 OLDDIR=`pwd`
 BASE_DIR=$(cd `dirname "$0"`; pwd)
 cd "$OLDDIR"
-DATA_DIR="$BASE_DIR/docker-builder-data"
+DATA_DIR="$BASE_DIR/env-builder-data"
 BUILD_DIR=$DATA_DIR/build
 
 CONFIG_FILE="$BASE_DIR/config.sh"

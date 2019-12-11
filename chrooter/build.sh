@@ -14,4 +14,4 @@ fi
 export PACKET_BUILD_DIR
 mkdir -p $PACKET_BUILD_DIR
 
-docker build -t my/builder $DOCKER_BUILD_OPTIONS "$SCRIPT_DIR"
+chrooter build -t my/builder $CHROOTER_BUILD_OPTIONS "$SCRIPT_DIR"

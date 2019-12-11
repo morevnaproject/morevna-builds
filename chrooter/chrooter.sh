@@ -18,11 +18,11 @@ fi
 
 image_mount_add() {
 	echo "Mount: $1 -> $2"
-	sudo mkdir -p "$IMAGE_MOUNT_DIR$2"
-	sudo mount --bind "$1" "$IMAGE_MOUNT_DIR$2"
-	echo "umount \"$IMAGE_MOUNT_DIR$2\" \\" >> "/$PREFIX/$INSTANCE_NAME.umount.sh"
-	echo "|| (echo \"next try after 10 seconds\" && sleep 10 && umount -f \"$IMAGE_MOUNT_DIR$2\") \\" >> "/$PREFIX/$INSTANCE_NAME.umount.sh"
-	echo "|| (echo \"final try after 10 seconds\" && sleep 10 && umount -f \"$IMAGE_MOUNT_DIR$2\")" >> "/$PREFIX/$INSTANCE_NAME.umount.sh"
+	sudo mkdir -p "$IMAGE_MOUNT_DIR/root$2"
+	sudo mount --bind "$1" "$IMAGE_MOUNT_DIR/root$2"
+	echo "umount \"$IMAGE_MOUNT_DIR/root$2\" \\" >> "/$PREFIX/$INSTANCE_NAME.umount.sh"
+	echo "|| (echo \"next try after 10 seconds\" && sleep 10 && umount -f \"$IMAGE_MOUNT_DIR/root$2\") \\" >> "/$PREFIX/$INSTANCE_NAME.umount.sh"
+	echo "|| (echo \"final try after 10 seconds\" && sleep 10 && umount -f \"$IMAGE_MOUNT_DIR/root$2\")" >> "/$PREFIX/$INSTANCE_NAME.umount.sh"
 }
 
 image_mount() {
@@ -38,20 +38,23 @@ image_mount() {
 	fi	
 	
 	local IMAGE_NAME="$(echo $1 | tr "/:" "_")"
-	local IMAGE_FILE="$BASE_DIR/image/$IMAGE_NAME.tgz"
+	local IMAGE_FILE="$BASE_DIR/image/$IMAGE_NAME.zip"
 	
-	echo "Unpack image: $1"
+	echo "Prepare image: $1"
 	IMAGE_MOUNT_DIR="/$PREFIX/$INSTANCE_NAME"
-	mkdir -p "$IMAGE_MOUNT_DIR"
-	cd "$IMAGE_MOUNT_DIR"
-	sudo tar -xzf $IMAGE_FILE
-	cd "$OLDDIR"
+	mkdir -p "$IMAGE_MOUNT_DIR/zip"
+	mkdir -p "$IMAGE_MOUNT_DIR/work"
+	mkdir -p "$IMAGE_MOUNT_DIR/root"
 	
 	echo "Add -.chroot.sh file"
-	sudo mv "/$PREFIX/$INSTANCE_NAME.chroot.sh" "$IMAGE_MOUNT_DIR"
-	sudo chmod a+x "$IMAGE_MOUNT_DIR/$INSTANCE_NAME.chroot.sh"
-	
-    set -- "${@:2}"
+	sudo mv "/$PREFIX/$INSTANCE_NAME.chroot.sh" "$IMAGE_MOUNT_DIR/work/"
+	sudo chmod a+x "$IMAGE_MOUNT_DIR/work/$INSTANCE_NAME.chroot.sh"
+
+	echo "Mount root"
+	sudo fuse-zip -o ro "$IMAGE_FILE" "$IMAGE_MOUNT_DIR/zip"
+	sudo mount -wt aufs -o br=$IMAGE_MOUNT_DIR/work:$IMAGE_MOUNT_DIR/zip -o udba=none /dev/null $IMAGE_MOUNT_DIR/root/
+
+	set -- "${@:2}"
 	echo "Mount subs: $@"
 	echo "#!/bin/sh" > "/$PREFIX/$INSTANCE_NAME.umount.sh"
 	echo "" >> "/$PREFIX/$INSTANCE_NAME.umount.sh"
@@ -69,7 +72,8 @@ image_mount() {
 	done
 
 	echo "Add /etc/resolv.conf"
-	sudo mkdir -p $IMAGE_MOUNT_DIR/etc && cp /etc/resolv.conf $IMAGE_MOUNT_DIR/etc
+	sudo cp /etc/resolv.conf $IMAGE_MOUNT_DIR/root/
+	sudo mkdir -p $IMAGE_MOUNT_DIR/root/etc && sudo cp /etc/resolv.conf $IMAGE_MOUNT_DIR/root/etc/
 }
 
 image_unmount() {
@@ -85,22 +89,26 @@ image_unmount() {
 	sudo rm -f "/$PREFIX/$INSTANCE_NAME.umount.sh"
 
 	echo "Remove -.chroot.sh file"
-	sudo rm -f "$IMAGE_MOUNT_DIR/$INSTANCE_NAME.chroot.sh"
-	
+	sudo rm -f "$IMAGE_MOUNT_DIR/root/$INSTANCE_NAME.chroot.sh"
+
 	if [ ! -z $1 ]; then
 		echo "Save image: $1"
 		
 		local IMAGE_NAME="$(echo $1 | tr "/:" "_")"
-		local IMAGE_FILE="$BASE_DIR/image/$IMAGE_NAME.tgz"
+		local IMAGE_FILE="$BASE_DIR/image/$IMAGE_NAME.zip"
 		local IMAGE_DIR=`dirname "$IMAGE_FILE"`
 		mkdir -p "$IMAGE_DIR"
 		
-		cd "$IMAGE_MOUNT_DIR"
-		sudo tar -czf $IMAGE_FILE .
+		cd "$IMAGE_MOUNT_DIR/root"
+		sudo rm "$IMAGE_FILE"
+		sudo zip "$IMAGE_FILE" -qyr0 .
 		cd "$OLDDIR"
 	fi
-	
-	echo "Remove unpacked image"
+
+	sudo umount "$IMAGE_MOUNT_DIR/root" || (sleep 10 && umount -f "$IMAGE_MOUNT_DIR/root")
+	sudo fusermount -u "$IMAGE_MOUNT_DIR/zip"
+
+	echo "Remove mount dirs"
 	sudo rm -rf --one-file-system "$IMAGE_MOUNT_DIR"
 	IMAGE_MOUNT_DIR=
 }
@@ -113,7 +121,7 @@ image_command() {
 		return 1
 	fi
 
-	if ! env -i /usr/bin/sudo -i chroot "$IMAGE_MOUNT_DIR" "/$INSTANCE_NAME.chroot.sh" $@; then
+	if ! env -i /usr/bin/sudo -i chroot "$IMAGE_MOUNT_DIR/root" "/$INSTANCE_NAME.chroot.sh" $@; then
 		COMMAND_ERROR=1
 		echo "Command returned with error"
 	fi
@@ -122,8 +130,8 @@ image_command() {
 image_copy() {
 	echo "Copy into image: $1 $2"
 	
-	if ! cp "$1" "$IMAGE_MOUNT_DIR/$2"; then
-		echo "Cannot copy \"$1\" -> \"$IMAGE_MOUNT_DIR/$2\""
+	if ! cp "$1" "$IMAGE_MOUNT_DIR/root/$2"; then
+		echo "Cannot copy \"$1\" -> \"$IMAGE_MOUNT_DIR/root/$2\""
 		return 1
 	fi
 }
@@ -155,7 +163,7 @@ import() {
 	
 		
 	local IMAGE_NAME="$(echo $2 | tr "/:" "_")"
-	local IMAGE_FILE="$BASE_DIR/image/$IMAGE_NAME.tgz"
+	local IMAGE_FILE="$BASE_DIR/image/$IMAGE_NAME.zip"
 	local IMAGE_DIR=`dirname "$IMAGE_FILE"`
 	mkdir -p "$IMAGE_DIR"
 	cat "/dev/stdin" > $IMAGE_FILE
@@ -212,13 +220,13 @@ build() {
 		return 1
 	fi
 								
-	local DOCKERFILE="$WORK_DIR/Dockerfile"
-	if [ ! -f "$DOCKERFILE" ]; then
-		echo "Dockerfile not found at: $DOCKERFILE"
+	local BUILDFILE="$WORK_DIR/Buildfile"
+	if [ ! -f "$BUILDFILE" ]; then
+		echo "Buildfile not found at: $BUILDFILE"
 		return 1
 	fi
 
-	echo "Read $DOCKERFILE"
+	echo "Read $BUILDFILE"
 	FULLROW=
 	while read ROW; do
 		FULLROW="$FULLROW$ROW"
@@ -242,7 +250,7 @@ build() {
 			IMAGE_NAME=""
 			break
 		fi
-	done < "$DOCKERFILE"
+	done < "$BUILDFILE"
 	
 	image_unmount "$IMAGE_NAME"
 }

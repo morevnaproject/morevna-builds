@@ -1,18 +1,18 @@
-Build docker:
+Build env:
 
-	cd docker
-	./build.sh  # sudo?
+	cd env
+	./run.sh  # sudo?
 
 Example usage:
 
-	./run-native with_deps unpack MEGAPROGRAM-1.0.0 
-	cd docker-builder
-	./run env_release MEGAPROGRAM-1.0.0  # sudo?
+	./run-native.sh with_deps unpack MEGAPROGRAM-1.0.0 
+	cd env
+	./run.sh env_release MEGAPROGRAM-1.0.0  # sudo?
 
 
 ready environment will placed into:
 
-	docker-builder-data/build/packet/linux-x64/MEGAPROGRAM-1.0.0/env_release
+	env-builder-data/build/packet/linux-x64/MEGAPROGRAM-1.0.0/env_release
 
 "dry_run" option for paranoics:
 	./run-native dry_run with_deps unpack MEGAPROGRAM-1.0.0 

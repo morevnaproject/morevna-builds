@@ -6,7 +6,6 @@ arch=i386
 suite=wheezy
 chroot_dir="/var/chroot/$suite"
 apt_mirror="ftp://ftp.debian.org/debian/"
-docker_image="my/debian-$arch:$suite"
 
 export DEBIAN_FRONTEND=noninteractive
 debootstrap --arch $arch $suite $chroot_dir $apt_mirror
@@ -23,5 +22,9 @@ chroot $chroot_dir apt-get autoclean
 chroot $chroot_dir apt-get clean
 chroot $chroot_dir apt-get autoremove
 
-tar cfz debian-$suite-$arch.tar.gz -C $chroot_dir .
+olddir=`pwd`
+pushd $chroot_dir
+zip "$olddir/debian-$suite-$arch.zip" -qyr0 . || true # zip cannot process some files from /dev
+popd
+
 rm -rf $chroot_dir

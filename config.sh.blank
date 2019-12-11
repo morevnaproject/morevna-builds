@@ -1,9 +1,9 @@
 # PACKET_BUILD_DIR=/data/builder
 # PROXY=http://1.2.3.4:1234
-# DOCKER_BUILD_OPTIONS="--build-arg=http_proxy=$PROXY --build-arg=https_proxy=$PROXY"
-# DOCKER_RUN_OPTIONS="-e http_proxy=$PROXY -e https_proxy=$PROXY"
+# CHROOTER_BUILD_OPTIONS="--build-arg=http_proxy=$PROXY --build-arg=https_proxy=$PROXY"
+# CHROOTER_RUN_OPTIONS="-e http_proxy=$PROXY -e https_proxy=$PROXY"
 
-# docker() {
+# chrooter() {
 #     export CHROOTER_PREFIX="/mnt"
 #     $BASE_DIR/chrooter/chrooter.sh $@
 # }

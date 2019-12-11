@@ -10,10 +10,7 @@ SCRIPT_BUILD_DIR="$BUILD_DIR/script"
 if [ -f $CONFIG_FILE ]; then
 	source $CONFIG_FILE
 fi
+export PACKET_BUILD_DIR
 mkdir -p $PACKET_BUILD_DIR
 
-if [[ "$(docker images -q morevnaproject/debian-i386:wheezy 2> /dev/null)" == "" ]]; then
-	bash ${SCRIPT_DIR}/build-base.sh
-fi
-
-docker build -t morevnaproject/build-debian-7-32 $DOCKER_BUILD_OPTIONS "$SCRIPT_DIR"
+chrooter build -t morevnaproject/build-debian-7-64 $CHROOTER_BUILD_OPTIONS "$SCRIPT_DIR"

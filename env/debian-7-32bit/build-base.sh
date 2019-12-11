@@ -4,7 +4,7 @@ set -e
 
 arch=i386
 suite=wheezy
-docker_image="morevnaproject/debian-$arch:$suite"
+chrooter_image="morevnaproject/debian-$arch:$suite"
 
 SCRIPT_DIR=$(cd `dirname "$0"`; pwd)
 BASE_DIR=`dirname "$SCRIPT_DIR"`
@@ -14,15 +14,15 @@ if [ -f $CONFIG_FILE ]; then
 	source $CONFIG_FILE
 fi
 
-IMAGE_FILE="$SCRIPT_DIR/debian-$suite-$arch.tar.gz"
+IMAGE_FILE="$SCRIPT_DIR/debian-$suite-$arch.zip"
 if [ ! -f "$IMAGE_FILE" ]; then
-    "$SCRIPT_DIR/build-tgz.sh"
+    "$SCRIPT_DIR/build-zip.sh"
 fi
 
 
 if [ -f "$IMAGE_FILE" ]; then
-    docker import - $docker_image < "$IMAGE_FILE"
+    chrooter import - $chrooter_image < "$IMAGE_FILE"
 else
     echo "File $IMAGE_FILE not found"
-    echo "You may try to create it by command $SCRIPT_DIR/build-tgz.sh"
+    echo "You may try to create it by command $SCRIPT_DIR/build-zip.sh"
 fi
