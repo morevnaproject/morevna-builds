@@ -1,11 +1,9 @@
 PACKET_BUILD_DIR=/data/builder             # where you will store a build data
-
-CHROOTER_BUILD_OPTIONS="--privileged=true" # required by appimagekit
                                            # default value is env-builder-data/build
                                            # but we recommend to use directory outside of project sources
 
 # PROXY=http://1.2.3.4:1234                # if you are behind a proxy
-# CHROOTER_BUILD_OPTIONS="$CHROOTER_BUILD_OPTIONS --build-arg=http_proxy=$PROXY --build-arg=https_proxy=$PROXY"
+# CHROOTER_BUILD_OPTIONS="--build-arg=http_proxy=$PROXY --build-arg=https_proxy=$PROXY"
 # CHROOTER_RUN_OPTIONS="-e http_proxy=$PROXY -e https_proxy=$PROXY"
 
 chrooter() {                               # configure chrooter command

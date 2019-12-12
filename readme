@@ -17,7 +17,6 @@ create and edit config file:
 
     we use config (some_path is a fake):
         PACKET_BUILD_DIR=/some_path/builder-packet
-        CHROOTER_BUILD_OPTIONS="--privileged=true"
         chrooter() {
             export CHROOTER_PREFIX="/some_path_to_mount"
             $BASE_DIR/chrooter/chrooter.sh $@
