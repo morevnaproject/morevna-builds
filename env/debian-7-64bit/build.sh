@@ -13,4 +13,4 @@ fi
 export PACKET_BUILD_DIR
 mkdir -p $PACKET_BUILD_DIR
 
-chrooter build -t morevnaproject/build-debian-7-64 $CHROOTER_BUILD_OPTIONS "$SCRIPT_DIR"
+chrooter build -t morevnaproject/build-debian-7-64 --privileged=true $CHROOTER_BUILD_OPTIONS "$SCRIPT_DIR"

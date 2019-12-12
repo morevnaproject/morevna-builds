@@ -21,10 +21,10 @@ trap 'image_unmount; exit 1' SIGINT
 image_mount_add() {
 	echo "Mount: $1 -> $2"
 	sudo mkdir -p "$IMAGE_MOUNT_DIR/root$2"
-	sudo mount --bind "$1" "$IMAGE_MOUNT_DIR/root$2"
-	echo "umount \"$IMAGE_MOUNT_DIR/root$2\" \\" >> "/$PREFIX/$INSTANCE_NAME.umount.sh"
-	echo "|| (echo \"next try after 10 seconds\" && sleep 10 && umount -f \"$IMAGE_MOUNT_DIR/root$2\") \\" >> "/$PREFIX/$INSTANCE_NAME.umount.sh"
-	echo "|| (echo \"final try after 10 seconds\" && sleep 10 && umount -f \"$IMAGE_MOUNT_DIR/root$2\")" >> "/$PREFIX/$INSTANCE_NAME.umount.sh"
+	sudo mount --rbind "$1" "$IMAGE_MOUNT_DIR/root$2"
+	echo "umount -R \"$IMAGE_MOUNT_DIR/root$2\" \\" >> "/$PREFIX/$INSTANCE_NAME.umount.sh"
+	echo "|| (echo \"next try after 10 seconds\" && sleep 10 && umount -Rf \"$IMAGE_MOUNT_DIR/root$2\") \\" >> "/$PREFIX/$INSTANCE_NAME.umount.sh"
+	echo "|| (echo \"final try after 10 seconds\" && sleep 10 && umount -Rf \"$IMAGE_MOUNT_DIR/root$2\")" >> "/$PREFIX/$INSTANCE_NAME.umount.sh"
 }
 
 image_mount() {
@@ -37,7 +37,7 @@ image_mount() {
 	if [ -z "$1" ]; then
 		echo "Image name was not set"
 		return 1
-	fi	
+	fi
 	
 	local IMAGE_NAME="$(echo $1 | tr "/:" "_")"
 	local IMAGE_FILE="$BASE_DIR/image/$IMAGE_NAME.zip"
@@ -178,36 +178,39 @@ build() {
 	local WORK_DIR=
 		
 	chroot_file_begin
-    local MODE=
-    for ARG in $@; do
-    	if [ -z "$WORK_DIR" ]; then
-	    	if [ "$MODE" = "-t" ]; then
-	    		IMAGE_NAME="$ARG"
-	    		echo "Set image name: $IMAGE_NAME"
-	    		MODE=
-	    		continue
-	    	fi
-	    fi
-    	
-    	if [ ! -z "$MODE" ]; then
-    		echo "Unknown commandline argument: $MODE"
-    	fi
+	local MODE=
+	for ARG in $@; do
+		if [ -z "$WORK_DIR" ]; then
+			if [ "$MODE" = "-t" ]; then
+				IMAGE_NAME="$ARG"
+				echo "Set image name: $IMAGE_NAME"
+				MODE=
+				continue
+			fi
+		fi
 
-    	MODE=
-    	if [ ! -z "$WORK_DIR" ]; then
-    		echo "Unknown commandline argument: $ARG"
+		if [ ! -z "$MODE" ]; then
+			echo "Unknown commandline argument: $MODE"
+		fi
+
+		MODE=
+		if [ ! -z "$WORK_DIR" ]; then
+			echo "Unknown commandline argument: $ARG"
+		elif [ "$ARG" = "--privileged=true" ]; then
+			PRIVILEGED=1
+			echo "Set privileged: true"
 		elif [ "${ARG:0:1}" = "-" ]; then
-    		SUBMODE="$(echo "$ARG" | cut -d'=' -f 1)"
-    		SUBVALUE="$(echo "$ARG" | cut -d'=' -f 2-)"
-    		if [ "$SUBMODE" = "--build-arg" ]; then
-    			ENVKEY="$(echo "$SUBVALUE" | cut -d'=' -f 1)"
-    			ENVVALUE="$(echo "$SUBVALUE" | cut -d'=' -f 2-)"
-    			chroot_file_env "$ENVKEY" "$ENVVALUE"
-    			continue
-    		else
-    			MODE=$ARG
-    		fi
-    	else
+			SUBMODE="$(echo "$ARG" | cut -d'=' -f 1)"
+			SUBVALUE="$(echo "$ARG" | cut -d'=' -f 2-)"
+			if [ "$SUBMODE" = "--build-arg" ]; then
+				ENVKEY="$(echo "$SUBVALUE" | cut -d'=' -f 1)"
+				ENVVALUE="$(echo "$SUBVALUE" | cut -d'=' -f 2-)"
+				chroot_file_env "$ENVKEY" "$ENVVALUE"
+				continue
+			else
+				MODE=$ARG
+			fi
+		else
 			WORK_DIR=$ARG
 			echo "Set work dir: $WORK_DIR"
 		fi
@@ -221,7 +224,7 @@ build() {
 		echo "Image name was not set"
 		return 1
 	fi
-								
+
 	local BUILDFILE="$WORK_DIR/Buildfile"
 	if [ ! -f "$BUILDFILE" ]; then
 		echo "Buildfile not found at: $BUILDFILE"

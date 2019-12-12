@@ -12,4 +12,4 @@ if [ -f $CONFIG_FILE ]; then
 fi
 mkdir -p $PACKET_BUILD_DIR
 
-chrooter build -t morevnaproject/build-debian-7-32 $CHROOTER_BUILD_OPTIONS "$SCRIPT_DIR"
+chrooter build -t morevnaproject/build-debian-7-32 --privileged=true $CHROOTER_BUILD_OPTIONS "$SCRIPT_DIR"
