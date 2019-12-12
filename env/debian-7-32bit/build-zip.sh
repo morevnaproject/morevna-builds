@@ -5,7 +5,7 @@ set -e
 arch=i386
 suite=wheezy
 chroot_dir="/var/chroot/$suite"
-apt_mirror="http://ftp.de.debian.org/debian/"
+apt_mirror="http://archive.debian.org/debian/"
 
 SCRIPT_DIR=$(cd `dirname "$0"`; pwd)
 BASE_DIR=`dirname "$SCRIPT_DIR"`
@@ -20,8 +20,8 @@ debootstrap --arch $arch $suite $chroot_dir $apt_mirror
 
 cat <<EOF > $chroot_dir/etc/apt/sources.list
 deb $apt_mirror $suite main
-deb $apt_mirror $suite-updates main
-deb http://security.debian.org/ $suite/updates main
+#deb $apt_mirror $suite-updates main
+#deb http://security.debian.org/ $suite/updates main
 EOF
 
 chroot $chroot_dir apt-get update

@@ -36,14 +36,11 @@ download virtual environment:
 build virtual environment:
     if you does not want to download os images you can build it
 
-    Impotant:
-        Debian project does not support Debian 7 (wheezy) anymore
-        so you need to find an active hosting of Debian 7 packages
-        enter valid url into files:
-            env/debian-7-32bit/files/sources.list
-            env/debian-7-64bit/files/sources.list
-            env/debian-7-32bit/build-zip.sh into variable apt_mirror
-            env/debian-7-64bit/build-zip.sh into variable apt_mirror
+    before begin you may configure debian mirror in files:
+        env/debian-7-32bit/files/sources.list
+        env/debian-7-64bit/files/sources.list
+        env/debian-7-32bit/build-zip.sh into variable apt_mirror
+        env/debian-7-64bit/build-zip.sh into variable apt_mirror
 
     here you still can download a base debian images from:
         https://coolbug.org/downloads/builder-images/debian-wheezy-i386.zip
