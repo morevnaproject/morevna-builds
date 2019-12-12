@@ -1,15 +1,21 @@
-# PACKET_BUILD_DIR=/data/builder
-# PROXY=http://1.2.3.4:1234
-# CHROOTER_BUILD_OPTIONS="--build-arg=http_proxy=$PROXY --build-arg=https_proxy=$PROXY"
+PACKET_BUILD_DIR=/data/builder             # where you will store a build data
+
+CHROOTER_BUILD_OPTIONS="--privileged=true" # required by appimagekit
+                                           # default value is env-builder-data/build
+                                           # but we recommend to use directory outside of project sources
+
+# PROXY=http://1.2.3.4:1234                # if you are behind a proxy
+# CHROOTER_BUILD_OPTIONS="$CHROOTER_BUILD_OPTIONS --build-arg=http_proxy=$PROXY --build-arg=https_proxy=$PROXY"
 # CHROOTER_RUN_OPTIONS="-e http_proxy=$PROXY -e https_proxy=$PROXY"
 
-# chrooter() {
-#     export CHROOTER_PREFIX="/mnt"
-#     $BASE_DIR/chrooter/chrooter.sh $@
-# }
+chrooter() {                               # configure chrooter command
+#   export CHROOTER_PREFIX="/tmp"          # where to mount a virtual environment
+                                           # if you will build os images from scratch you need 10Gb of free space
+    $BASE_DIR/chrooter/chrooter.sh $@      # chrooter is required, it is to commnads in virtual environment
+}
 
-# gen_name_template() {
-#     local NAME="$1"
+# gen_name_template() {                    # here you may override a naming rules for out packages
+#     local NAME="$1"                      # see build-*.sh, publish/publish.sh
 #     local TAG="$2"
 #     local PLATFORM="$3"
 #     local ARCH="$4"
@@ -22,6 +28,6 @@
 #     echo "$NAME-%VERSION%-${ARCH}bit-$PLATFORM$TAG-%DATE%-%COMMIT%$SUFFIX"
 # }
 
-# OPENTOONZ_TESTING_TAG="test"
-# SYNFIGSTUDIO_TESTING_TAG="test"
+# OPENTOONZ_TESTING_TAG="test"             # uses in build-opentoonz-testing.sh for naming out packages
+# SYNFIGSTUDIO_TESTING_TAG="test"          # uses in build-synfigstudio.sh for naming out packages
 

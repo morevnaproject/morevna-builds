@@ -1,70 +1,193 @@
-Build env:
+Install:
 
-	cd env
-	./run.sh  # sudo?
-
-Example usage:
-
-	./run-native.sh with_deps unpack MEGAPROGRAM-1.0.0 
-	cd env
-	./run.sh env_release MEGAPROGRAM-1.0.0  # sudo?
+run all commands from root (as superuser)
 
 
-ready environment will placed into:
+install dependency packages:
+    you need: bash aufs-tools fuse-zip
+    for apt based OS use comand:
+        apt-get install bash aufs-tools fuse-zip
 
-	env-builder-data/build/packet/linux-x64/MEGAPROGRAM-1.0.0/env_release
+
+create and edit config file:
+    use config.sh.blank as a base:
+        cp config.sh.blank config.sh
+
+    we use config (some_path is a fake):
+        PACKET_BUILD_DIR=/some_path/builder-packet
+        CHROOTER_BUILD_OPTIONS="--privileged=true"
+        chrooter() {
+            export CHROOTER_PREFIX="/some_path_to_mount"
+            $BASE_DIR/chrooter/chrooter.sh $@
+        }
+        OPENTOONZ_TESTING_TAG="morevna"
+
+
+download virtual environment:
+    you may download our (we are Morevna Project) os images from:
+        https://coolbug.org/downloads/builder-images/
+
+    you need two files:
+        https://coolbug.org/downloads/builder-images/morevnaproject_build-debian-7-32.zip
+        https://coolbug.org/downloads/builder-images/morevnaproject_build-debian-7-64.zip
+    approximate 6.5Gb, place both into chrooter/images/
+
+
+build virtual environment:
+    if you does not want to download os images you can build it
+
+    Impotant:
+        Debian project does not support Debian 7 (wheezy) anymore
+        so you need to find an active hosting of Debian 7 packages
+        enter valid url into files:
+            env/debian-7-32bit/files/sources.list
+            env/debian-7-64bit/files/sources.list
+            env/debian-7-32bit/build-zip.sh into variable apt_mirror
+            env/debian-7-64bit/build-zip.sh into variable apt_mirror
+
+    here you still can download a base debian images from:
+        https://coolbug.org/downloads/builder-images/debian-wheezy-i386.zip
+        https://coolbug.org/downloads/builder-images/debian-wheezy-amd64.zip
+    approximate 500Mb, place first into env/debian-7-32bit and second into env/debian-7-64bit
+
+    or build these images from scratch by debootstrap
+    install packages: debootstrap zip; for apt based OS use command:
+        apt-get install debootstrap zip
+    and build base debian images
+        cd env/debian-7-32bit # go to env/debian-7-32bit
+        ./build-zip.sh
+        cd ../debian-7-64bit  # go to env/debian-7-64bit
+        ./build-zip.sh
+        cd ../..              # go back
+
+    now when you have files debian-wheezy-XXXX.zip you can build os images for builder
+    it's a long process because it will build GCC and MinGW from scratch
+    run commands:
+        cd env/debian-7-32bit # go to env/debian-7-32bit
+        ./build-base.sh       # just to copy base os image into chrooter/images
+        ./build.sh            # a long build process
+        cd ../debian-7-64bit  # go to env/debian-7-64bit
+        ./build-base.sh       # just to copy base os image into chrooter/images
+        ./build.sh            # a long build process
+        cd ../..              # go back
+
+    build environment ready
+
+
+installation done
+
+
+
+Usage:
+
+
+now you may build packages by macro script:
+    see files ./build-*.sh
+
+also you can add hooks to publish built packages:
+    for example create file publish/publish-synfigstudio.sh with content:
+        #!/bin/bash
+        cp "$1" /var/www/public/downloads/
+    when build is done new synfigstudio packge will placed into web-site directory
+    you may look file publish/publish.sh for more info
+
+run internal builder commands in virtual environment:
+    cd env
+    ./run.sh some_command
+
+also you may use:
+    env/debian-7-32bit/run.sh
+    env/debian-7-64bit/run.sh
+    env/debian-7-64bit/win32.sh
+    env/debian-7-64bit/win64.sh
+
+run build commands in native environment
+    ./run-native.sh some_command
+
+build a selected package:
+    cd env
+    ./run.sh env_release MEGAPROGRAM-1.0.0
+
+take files from directory
+    env-builder-data/build/packet/linux-x64/MEGAPROGRAM-1.0.0/env_release
+or
+    your_build_path/packet/linux-x64/MEGAPROGRAM-1.0.0/env_release
+
 
 "dry_run" option for paranoics:
-	./run-native dry_run with_deps unpack MEGAPROGRAM-1.0.0 
+    ./run.sh dry_run with_deps unpack MEGAPROGRAM-1.0.0 
 
-	
 List of commands
-	<action> <packet>
-		do <action> for <packet>
-		List of actions:
-			- download
-			- unpack
-			- build
-			- install
-			- install_release
-			- envdeps
-			- envdeps_release
-			- env
-			- env_release
+    <action> <packet>
+        do <action> for <packet>
+        List of actions:
+        - download
+        - unpack
+        - build
+        - install
+        - install_release
+        - envdeps
+        - envdeps_release
+        - env
+        - env_release
 
-	dry_run <any other command>
-		- simulate activity
+    dry_run <any other command>
+        - simulate activity
 
-	with_deps <command> <packet>
-		- execute <command> for <packet> and all deps
-	
-	clean_ACTION <packet>
-		- remove all data of completed ACTION for <packet>
-		ex.: clean_unpack MEGAPROGRAM-1.0.0
+    with_deps <command> <packet>
+        - execute <command> for <packet> and all deps
 
-	clean_all_unpack <packet>
-		- cleans download and unpack
-		see: clean_ACTION <packet>
+    clean_ACTION <packet>
+        - remove all data of completed ACTION for <packet>
+        ex.: clean_unpack MEGAPROGRAM-1.0.0
 
-	clean_all_env <packet>
-		- cleans install, install_release, envdeps, envdeps_release, env and env_release
-		see: clean_ACTION <packet>
+    clean_all_unpack <packet>
+        - cleans download and unpack
+        see: clean_ACTION <packet>
 
-	clean_all_install <packet>
-		- cleans all env and build
-		see: clean_all_env <packet>, clean_ACTION <packet>
+    clean_all_env <packet>
+        - cleans install, install_release, envdeps, envdeps_release, env and env_release
+        see: clean_ACTION <packet>
 
-	clean_all <packet>
-		- remove all data of all completed actions for <packet>
-	
-	set_undone_ACTION <packet>
-	set_undone_all_unpack <packet>
-	set_undone_all_env <packet>
-	set_undone_all_install <packet>
-	set_undone_all <packet>
-		- mark ACTION incomplete for <packet>, but keep action data
-		see: clean_* comands
-		
-	shell <packet>
-		- run shell in environment of <packet>
-		
+    clean_all_install <packet>
+        - cleans all env and build
+        see: clean_all_env <packet>, clean_ACTION <packet>
+
+    clean_all <packet>
+        - remove all data of all completed actions for <packet>
+
+    set_undone_ACTION <packet>
+    set_undone_all_unpack <packet>
+    set_undone_all_env <packet>
+    set_undone_all_install <packet>
+    set_undone_all <packet>
+        - mark ACTION incomplete for <packet>, but keep action data
+        see: clean_* comands
+
+    shell <packet>
+        - run shell in environment of <packet>
+
+    chain <command> chain <other_command> ...
+        - run several command sequentially wihtout remounting of environment to increase speed
+
+see also
+    env-builder-data/build/script/common/manager.sh
+
+
+Troubles:
+    sometimes virtual environmens does not unmounted properly
+    to clear this you need to unmount all mounts for */chrooter-*
+    look mounts list by command:
+        mount
+
+    unmount by command:
+        umount "/some_path/chrooter-SOME_UUID"
+    or with "force" option
+        umount -f "/some_path/chrooter-SOME_UUID" 
+
+    after that remove the files
+    you MUST do unmount before, if some dir are still mounted you can remove some system files
+    we recommend to check content of directories before remove
+    option "--one-file-system" for additional protection but anyway BE CAREFULL!!
+    command:
+        rm -rf --one-file-system /some_path/chrooter-*
