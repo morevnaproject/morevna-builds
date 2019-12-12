@@ -4,9 +4,12 @@ run all commands from root (as superuser)
 
 
 install dependency packages:
-    you need: bash aufs-tools fuse-zip
+    you need: bash sudo uuid-runtime aufs-tools fuse-zip
     for apt based OS use comand:
-        apt-get install bash aufs-tools fuse-zip
+        apt-get install bash sudo uuid-runtime aufs-tools fuse-zip
+
+if you are inside a  linux container then your container need
+a priveleged mode and access to /dev/fuse device
 
 
 create and edit config file:
@@ -24,12 +27,12 @@ create and edit config file:
 
 
 download virtual environment:
-    you may download our (we are Morevna Project) os images from:
-        https://coolbug.org/downloads/builder-images/
+    you may download our (we are Morevna Project team) os images from:
+        https://coolbug.org/downloads/morevna/builder-images/
 
     you need two files:
-        https://coolbug.org/downloads/builder-images/morevnaproject_build-debian-7-32.zip
-        https://coolbug.org/downloads/builder-images/morevnaproject_build-debian-7-64.zip
+        https://coolbug.org/downloads/morevna/builder-images/morevnaproject_build-debian-7-32.zip
+        https://coolbug.org/downloads/morevna/builder-images/morevnaproject_build-debian-7-64.zip
     approximate 6.5Gb, place both into chrooter/images/
 
 
@@ -43,8 +46,8 @@ build virtual environment:
         env/debian-7-64bit/build-zip.sh into variable apt_mirror
 
     here you still can download a base debian images from:
-        https://coolbug.org/downloads/builder-images/debian-wheezy-i386.zip
-        https://coolbug.org/downloads/builder-images/debian-wheezy-amd64.zip
+        https://coolbug.org/downloads/morevna/builder-images/debian-wheezy-i386.zip
+        https://coolbug.org/downloads/morevna/builder-images/debian-wheezy-amd64.zip
     approximate 500Mb, place first into env/debian-7-32bit and second into env/debian-7-64bit
 
     or build these images from scratch by debootstrap
