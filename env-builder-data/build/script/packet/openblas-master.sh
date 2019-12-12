@@ -9,7 +9,9 @@ source $INCLUDE_SCRIPT_DIR/inc-pkall-git.sh
 
 pkbuild() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME"
-    
+
+    pkhelper_patch . getarch.c
+
     local LOCAL_BINARY_OPTION=
     if [ "$ARCH" = "32" ]; then
         LOCAL_BINARY_OPTION="BINARY=$ARCH"

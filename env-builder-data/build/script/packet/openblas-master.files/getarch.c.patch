@@ -1,0 +1,4 @@
+140c140
+< /* #define FORCE_GENERIC	*/
+---
+> #define FORCE_GENERIC
