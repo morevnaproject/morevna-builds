@@ -16,6 +16,8 @@ if [ -z "$PREFIX" ]; then
     PREFIX="/tmp"
 fi
 
+trap 'image_unmount; exit 1' SIGINT
+
 image_mount_add() {
 	echo "Mount: $1 -> $2"
 	sudo mkdir -p "$IMAGE_MOUNT_DIR/root$2"
@@ -52,7 +54,7 @@ image_mount() {
 
 	echo "Mount root"
 	sudo fuse-zip -o ro "$IMAGE_FILE" "$IMAGE_MOUNT_DIR/zip"
-	sudo mount -wt aufs -o br=$IMAGE_MOUNT_DIR/work:$IMAGE_MOUNT_DIR/zip -o udba=none /dev/null $IMAGE_MOUNT_DIR/root/
+	sudo unionfs-fuse -o cow $IMAGE_MOUNT_DIR/work=RW:$IMAGE_MOUNT_DIR/zip=RO $IMAGE_MOUNT_DIR/root/
 
 	set -- "${@:2}"
 	echo "Mount subs: $@"
@@ -106,7 +108,7 @@ image_unmount() {
 	fi
 
 	sudo umount "$IMAGE_MOUNT_DIR/root" || (sleep 10 && umount -f "$IMAGE_MOUNT_DIR/root")
-	sudo fusermount -u "$IMAGE_MOUNT_DIR/zip"
+	sudo umount "$IMAGE_MOUNT_DIR/zip" || (sleep 10 && umount -f "$IMAGE_MOUNT_DIR/zip")
 
 	echo "Remove mount dirs"
 	sudo rm -rf --one-file-system "$IMAGE_MOUNT_DIR"
@@ -259,48 +261,48 @@ run() {
 	local IMAGE_NAME=
 	local COMMAND=
 	local SUBMOUNT=
-	
+
 	chroot_file_begin
-    local MODE=
-    for ARG in $@; do
-    	if [ ! -z "$COMMAND" ]; then
-	    	COMMAND="$COMMAND $ARG"
-    	else
-	    	if [ "$MODE" = "-e" ]; then
+	local MODE=
+	for ARG in $@; do
+		if [ ! -z "$COMMAND" ]; then
+			COMMAND="$COMMAND $ARG"
+		else
+			if [ "$MODE" = "-e" ]; then
 				ENVKEY="$(echo "$ARG" | cut -d'=' -f 1)"
 				ENVVALUE="$(echo "$ARG" | cut -d'=' -f 2-)"
 				chroot_file_env "$ENVKEY" "$ENVVALUE"
 				MODE=
 				continue
-	    	elif [ "$MODE" = "-v" ]; then
+			elif [ "$MODE" = "-v" ]; then
 				SUBMOUNT="$SUBMOUNT$ARG "
-	    		echo "Add submount: $ARG"
+				echo "Add submount: $ARG"
 				MODE=
 				continue
-	    	elif [ "$MODE" = "--name" ]; then
-	    		echo "Set name: $ARG (not uses)"
+			elif [ "$MODE" = "--name" ]; then
+				echo "Set name: $ARG (not uses)"
 				MODE=
 				continue
-	    	fi
-	    
-	    	if [ ! -z "$MODE" ]; then
-	    		echo "Unknown commandline argument $MODE"
-	    	fi
-	    	    	    	    	
-	    	MODE=
-	    	if [ -z "$MODE" ]; then
-	    		if [ "$ARG" = "--privileged=true" ]; then
-	    			PRIVILEGED=1
-	    			echo "Set privileged: true"
-	    		elif [ "${ARG:0:1}" = "-" ]; then
-    				MODE=$ARG
-		    	elif [ -z "$IMAGE_NAME" ]; then
-		    		IMAGE_NAME=$ARG
-	    			echo "Set image name: $IMAGE_NAME"
-		    	elif [ -z "$COMMAND" ]; then
-	    			COMMAND=$ARG
-	    		fi
-	    	fi
+			fi
+
+			if [ ! -z "$MODE" ]; then
+				echo "Unknown commandline argument $MODE"
+			fi
+
+			MODE=
+			if [ -z "$MODE" ]; then
+				if [ "$ARG" = "--privileged=true" ]; then
+					PRIVILEGED=1
+					echo "Set privileged: true"
+				elif [ "${ARG:0:1}" = "-" ]; then
+					MODE=$ARG
+				elif [ -z "$IMAGE_NAME" ]; then
+					IMAGE_NAME=$ARG
+					echo "Set image name: $IMAGE_NAME"
+				elif [ -z "$COMMAND" ]; then
+					COMMAND=$ARG
+				fi
+			fi
 		fi
 	done
 	if [ ! -z "$MODE" ]; then

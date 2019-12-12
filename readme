@@ -4,12 +4,11 @@ run all commands from root (as superuser)
 
 
 install dependency packages:
-    you need: bash sudo uuid-runtime aufs-tools fuse-zip
+    you need: bash sudo uuid-runtime unionfs-fuse fuse-zip
     for apt based OS use comand:
-        apt-get install bash sudo uuid-runtime aufs-tools fuse-zip
+        apt-get install bash sudo uuid-runtime unionfs-fuse fuse-zip
 
-if you are inside a  linux container then your container need
-a priveleged mode and access to /dev/fuse device
+if you are inside a linux container then your container need access to /dev/fuse device
 
 
 create and edit config file:
