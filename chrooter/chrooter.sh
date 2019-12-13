@@ -9,6 +9,7 @@ cd "$OLDDIR"
 INSTANCE_NAME=`uuidgen`
 INSTANCE_NAME="chrooter-$INSTANCE_NAME"
 PRIVILEGED=
+COMMANDARCH=
 IMAGE_MOUNT_DIR=
 COMMAND_ERROR=
 PREFIX="$CHROOTER_PREFIX"
@@ -21,10 +22,8 @@ trap 'image_unmount; exit 1' SIGINT
 image_mount_add() {
 	echo "Mount: $1 -> $2"
 	sudo mkdir -p "$IMAGE_MOUNT_DIR/root$2"
-	sudo mount --rbind "$1" "$IMAGE_MOUNT_DIR/root$2"
-	echo "umount -R \"$IMAGE_MOUNT_DIR/root$2\" \\" >> "/$PREFIX/$INSTANCE_NAME.umount.sh"
-	echo "|| (echo \"next try after 10 seconds\" && sleep 10 && umount -Rf \"$IMAGE_MOUNT_DIR/root$2\") \\" >> "/$PREFIX/$INSTANCE_NAME.umount.sh"
-	echo "|| (echo \"final try after 10 seconds\" && sleep 10 && umount -Rf \"$IMAGE_MOUNT_DIR/root$2\")" >> "/$PREFIX/$INSTANCE_NAME.umount.sh"
+	sudo mount --bind "$1" "$IMAGE_MOUNT_DIR/root$2"
+	echo "umount -f \"$IMAGE_MOUNT_DIR/root$2\" || umount -l \"$IMAGE_MOUNT_DIR/root$2\"" >> "/$PREFIX/$INSTANCE_NAME.umount.sh"
 }
 
 image_mount() {
@@ -40,11 +39,11 @@ image_mount() {
 	fi
 	
 	local IMAGE_NAME="$(echo $1 | tr "/:" "_")"
-	local IMAGE_FILE="$BASE_DIR/image/$IMAGE_NAME.zip"
+	local IMAGE_FILE="$BASE_DIR/image/$IMAGE_NAME.iso"
 	
 	echo "Prepare image: $1"
 	IMAGE_MOUNT_DIR="/$PREFIX/$INSTANCE_NAME"
-	mkdir -p "$IMAGE_MOUNT_DIR/zip"
+	mkdir -p "$IMAGE_MOUNT_DIR/iso"
 	mkdir -p "$IMAGE_MOUNT_DIR/work"
 	mkdir -p "$IMAGE_MOUNT_DIR/root"
 	
@@ -53,21 +52,19 @@ image_mount() {
 	sudo chmod a+x "$IMAGE_MOUNT_DIR/work/$INSTANCE_NAME.chroot.sh"
 
 	echo "Mount root"
-	sudo fuse-zip -o ro "$IMAGE_FILE" "$IMAGE_MOUNT_DIR/zip"
-	sudo unionfs-fuse -o cow $IMAGE_MOUNT_DIR/work=RW:$IMAGE_MOUNT_DIR/zip=RO $IMAGE_MOUNT_DIR/root/
+	sudo mount -r "$IMAGE_FILE" "$IMAGE_MOUNT_DIR/iso"
+	sudo mount -wt aufs -o br=$IMAGE_MOUNT_DIR/work:$IMAGE_MOUNT_DIR/iso -o udba=none none $IMAGE_MOUNT_DIR/root/
 
 	set -- "${@:2}"
 	echo "Mount subs: $@"
-	echo "#!/bin/sh" > "/$PREFIX/$INSTANCE_NAME.umount.sh"
-	echo "" >> "/$PREFIX/$INSTANCE_NAME.umount.sh"
-	echo "set -e" >> "/$PREFIX/$INSTANCE_NAME.umount.sh"
+	echo "#!/bin/bash" > "/$PREFIX/$INSTANCE_NAME.umount.sh"
 	chmod a+x "/$PREFIX/$INSTANCE_NAME.umount.sh"
 	if [ ! -z "$PRIVILEGED" ]; then
 		echo "Mount /proc and /dev for priveleged feature"
 		image_mount_add /proc /proc
 		image_mount_add /dev /dev
 	fi
-    for ARG in $@; do
+	for ARG in $@; do
 		SRC="$(echo "$ARG" | cut -d':' -f 1)"
 		DEST="$(echo "$ARG" | cut -d':' -f 2-)"
 		image_mount_add $SRC $DEST
@@ -80,7 +77,7 @@ image_mount() {
 
 image_unmount() {
 	echo "Unmount image"
-	
+
 	if [ -z "$IMAGE_MOUNT_DIR" ]; then
 		echo "Image not mounted"
 		return 1
@@ -95,20 +92,18 @@ image_unmount() {
 
 	if [ ! -z $1 ]; then
 		echo "Save image: $1"
-		
+
 		local IMAGE_NAME="$(echo $1 | tr "/:" "_")"
-		local IMAGE_FILE="$BASE_DIR/image/$IMAGE_NAME.zip"
+		local IMAGE_FILE="$BASE_DIR/image/$IMAGE_NAME.iso"
 		local IMAGE_DIR=`dirname "$IMAGE_FILE"`
 		mkdir -p "$IMAGE_DIR"
-		
-		cd "$IMAGE_MOUNT_DIR/root"
-		sudo rm "$IMAGE_FILE"
-		sudo zip "$IMAGE_FILE" -qyr0 .
-		cd "$OLDDIR"
+
+		sudo rm -f "$IMAGE_FILE"
+		sudo genisoimage -quiet -R -o "$IMAGE_FILE" "$IMAGE_MOUNT_DIR/root"
 	fi
 
-	sudo umount "$IMAGE_MOUNT_DIR/root" || (sleep 10 && umount -f "$IMAGE_MOUNT_DIR/root")
-	sudo umount "$IMAGE_MOUNT_DIR/zip" || (sleep 10 && umount -f "$IMAGE_MOUNT_DIR/zip")
+	sudo umount -R -f "$IMAGE_MOUNT_DIR/root" || umount -R -l "$IMAGE_MOUNT_DIR/root"
+	sudo umount -f "$IMAGE_MOUNT_DIR/iso"  || umount -l "$IMAGE_MOUNT_DIR/iso"
 
 	echo "Remove mount dirs"
 	sudo rm -rf --one-file-system "$IMAGE_MOUNT_DIR"
@@ -117,13 +112,18 @@ image_unmount() {
 
 image_command() {
 	echo "Run command: $@"
-	
+
 	if [ -z "$IMAGE_MOUNT_DIR" ]; then
 		echo "Image not mounted"
 		return 1
 	fi
 
-	if ! env -i /usr/bin/sudo -i chroot "$IMAGE_MOUNT_DIR/root" "/$INSTANCE_NAME.chroot.sh" $@; then
+	local SETARCH=
+	if [ ! -z "$COMMANDARCH" ]; then
+		SETARCH=setarch
+	fi
+
+	if ! env -i /usr/bin/sudo -i $SETARCH $COMMANDARCH chroot "$IMAGE_MOUNT_DIR/root" "/$INSTANCE_NAME.chroot.sh" $@; then
 		COMMAND_ERROR=1
 		echo "Command returned with error"
 	fi
@@ -131,7 +131,7 @@ image_command() {
 
 image_copy() {
 	echo "Copy into image: $1 $2"
-	
+
 	if ! cp "$1" "$IMAGE_MOUNT_DIR/root/$2"; then
 		echo "Cannot copy \"$1\" -> \"$IMAGE_MOUNT_DIR/root/$2\""
 		return 1
@@ -144,7 +144,7 @@ chroot_file_begin() {
 }
 
 chroot_file_env() {
-    echo "Set env: $1=\"$2\""
+	echo "Set env: $1=\"$2\""
 	echo "export $1=\"$2\"" >> "/$PREFIX/$INSTANCE_NAME.chroot.sh"
 }
 
@@ -154,18 +154,18 @@ chroot_file_end() {
 
 import() {
 	echo "Import $2"
-	
+
 	if [ ! "$1" = "-" ]; then
-    	echo "Unknown commandline argument $1"
+		echo "Unknown commandline argument $1"
 	fi
 	if [ -z "$2" ]; then
-    	echo "Image name was not set"
-    	return 1
+		echo "Image name was not set"
+		return 1
 	fi
-	
-		
+
+
 	local IMAGE_NAME="$(echo $2 | tr "/:" "_")"
-	local IMAGE_FILE="$BASE_DIR/image/$IMAGE_NAME.zip"
+	local IMAGE_FILE="$BASE_DIR/image/$IMAGE_NAME.iso"
 	local IMAGE_DIR=`dirname "$IMAGE_FILE"`
 	mkdir -p "$IMAGE_DIR"
 	cat "/dev/stdin" > $IMAGE_FILE
@@ -173,10 +173,10 @@ import() {
 
 build() {
 	echo "Build"
-	
+
 	local IMAGE_NAME=
 	local WORK_DIR=
-		
+
 	chroot_file_begin
 	local MODE=
 	for ARG in $@; do
@@ -206,6 +206,9 @@ build() {
 				ENVKEY="$(echo "$SUBVALUE" | cut -d'=' -f 1)"
 				ENVVALUE="$(echo "$SUBVALUE" | cut -d'=' -f 2-)"
 				chroot_file_env "$ENVKEY" "$ENVVALUE"
+				continue
+			elif [ "$SUBMODE" = "--buildarch" ]; then
+				COMMANDARCH="$SUBVALUE"
 				continue
 			else
 				MODE=$ARG
@@ -326,14 +329,14 @@ run() {
 
 
 if [ "$1" = "import" ]; then
-    set -- "${@:2}"
-    import $@
+	set -- "${@:2}"
+	import $@
 elif [ "$1" = "build" ]; then
-    set -- "${@:2}"
-    build $@
+	set -- "${@:2}"
+	build $@
 elif [ "$1" = "run" ]; then
-    set -- "${@:2}"
-    run $@
+	set -- "${@:2}"
+	run $@
 else
 	echo "Unknown command: $1"
 	COMMAND_ERROR=1

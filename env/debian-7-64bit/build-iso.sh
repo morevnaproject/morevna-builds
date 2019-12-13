@@ -2,7 +2,7 @@
 
 set -e
 
-arch=i386
+arch=amd64
 suite=wheezy
 chroot_dir="/var/chroot/$suite"
 apt_mirror="http://archive.debian.org/debian/"
@@ -16,7 +16,7 @@ if [ -f $CONFIG_FILE ]; then
 fi
 
 export DEBIAN_FRONTEND=noninteractive
-debootstrap --arch $arch $suite $chroot_dir $apt_mirror
+setarch x86_64 debootstrap --arch $arch $suite $chroot_dir $apt_mirror
 
 cat <<EOF > $chroot_dir/etc/apt/sources.list
 deb $apt_mirror $suite main
@@ -30,8 +30,6 @@ chroot $chroot_dir apt-get autoclean
 chroot $chroot_dir apt-get clean
 chroot $chroot_dir apt-get autoremove
 
-pushd $chroot_dir
-zip "$SCRIPT_DIR/debian-$suite-$arch.zip" -qyr0 . || true # zip cannot process some files from /dev
-popd
+genisoimage -quiet -R -o "$SCRIPT_DIR/debian-$suite-$arch.iso" "$chroot_dir"
 
 rm -rf $chroot_dir

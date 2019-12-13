@@ -2,7 +2,7 @@
 
 set -e
 
-arch=amd64
+arch=i386
 suite=wheezy
 chroot_dir="/var/chroot/$suite"
 apt_mirror="http://archive.debian.org/debian/"
@@ -30,8 +30,6 @@ chroot $chroot_dir apt-get autoclean
 chroot $chroot_dir apt-get clean
 chroot $chroot_dir apt-get autoremove
 
-pushd $chroot_dir
-zip "$SCRIPT_DIR/debian-$suite-$arch.zip" -qyr0 . || true # zip cannot process some files from /dev
-popd
+genisoimage -quiet -R -o "$SCRIPT_DIR/debian-$suite-$arch.iso" "$chroot_dir"
 
 rm -rf $chroot_dir

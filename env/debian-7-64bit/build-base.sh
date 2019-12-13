@@ -14,9 +14,9 @@ if [ -f $CONFIG_FILE ]; then
 	source $CONFIG_FILE
 fi
 
-IMAGE_FILE="$SCRIPT_DIR/debian-$suite-$arch.zip"
+IMAGE_FILE="$SCRIPT_DIR/debian-$suite-$arch.iso"
 if [ ! -f "$IMAGE_FILE" ]; then
-    "$SCRIPT_DIR/build-zip.sh"
+    "$SCRIPT_DIR/build-iso.sh"
 fi
 
 
@@ -24,5 +24,5 @@ if [ -f "$IMAGE_FILE" ]; then
     chrooter import - $chrooter_image < "$IMAGE_FILE"
 else
     echo "File $IMAGE_FILE not found"
-    echo "You may try to create it by command $SCRIPT_DIR/build-zip.sh"
+    echo "You may try to create it by command $SCRIPT_DIR/build-iso.sh"
 fi

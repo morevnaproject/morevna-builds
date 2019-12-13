@@ -22,9 +22,6 @@ chroot $chroot_dir apt-get autoclean
 chroot $chroot_dir apt-get clean
 chroot $chroot_dir apt-get autoremove
 
-olddir=`pwd`
-pushd $chroot_dir
-zip "$olddir/debian-$suite-$arch.zip" -qyr0 . || true # zip cannot process some files from /dev
-popd
+genisoimage -quiet -R -o "$olddir/debian-$suite-$arch.iso" "$chroot_dir"
 
 rm -rf $chroot_dir

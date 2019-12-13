@@ -4,11 +4,9 @@ run all commands from root (as superuser)
 
 
 install dependency packages:
-    you need: bash sudo uuid-runtime unionfs-fuse fuse-zip
+    you need: bash sudo uuid-runtime aufs-tools fuse genisoimage
     for apt based OS use comand:
-        apt-get install bash sudo uuid-runtime unionfs-fuse fuse-zip
-
-if you are inside a linux container then your container need access to /dev/fuse device
+        apt-get install bash sudo uuid-runtime aufs-tools fuse genisoimage
 
 
 create and edit config file:
@@ -29,8 +27,8 @@ download virtual environment:
         https://coolbug.org/downloads/morevna/builder-images/
 
     you need two files:
-        https://coolbug.org/downloads/morevna/builder-images/morevnaproject_build-debian-7-32.zip
-        https://coolbug.org/downloads/morevna/builder-images/morevnaproject_build-debian-7-64.zip
+        https://coolbug.org/downloads/morevna/builder-images/morevnaproject_build-debian-7-32.iso
+        https://coolbug.org/downloads/morevna/builder-images/morevnaproject_build-debian-7-64.iso
     approximate 6.5Gb, place both into chrooter/images/
 
 
@@ -40,25 +38,29 @@ build virtual environment:
     before begin you may configure debian mirror in files:
         env/debian-7-32bit/files/sources.list
         env/debian-7-64bit/files/sources.list
-        env/debian-7-32bit/build-zip.sh into variable apt_mirror
-        env/debian-7-64bit/build-zip.sh into variable apt_mirror
+        env/debian-7-32bit/build-iso.sh into variable apt_mirror
+        env/debian-7-64bit/build-iso.sh into variable apt_mirror
 
     here you still can download a base debian images from:
-        https://coolbug.org/downloads/morevna/builder-images/debian-wheezy-i386.zip
-        https://coolbug.org/downloads/morevna/builder-images/debian-wheezy-amd64.zip
+        https://coolbug.org/downloads/morevna/builder-images/debian-wheezy-i386.iso
+        https://coolbug.org/downloads/morevna/builder-images/debian-wheezy-amd64.iso
     approximate 500Mb, place first into env/debian-7-32bit and second into env/debian-7-64bit
 
     or build these images from scratch by debootstrap
-    install packages: debootstrap zip; for apt based OS use command:
-        apt-get install debootstrap zip
+    install debootstarp:
+        apt-get install debootstrap
     and build base debian images
         cd env/debian-7-32bit # go to env/debian-7-32bit
-        ./build-zip.sh
+        ./build-iso.sh
         cd ../debian-7-64bit  # go to env/debian-7-64bit
-        ./build-zip.sh
+        ./build-iso.sh
         cd ../..              # go back
+    after that will appear two new files:
+        env/debian-7-32bit/debian-wheezy-i386.iso
+        env/debian-7-64bit/debian-wheezy-amd64.iso
 
-    now when you have files debian-wheezy-XXXX.zip you can build os images for builder
+
+    now when you have files debian-wheezy-XXXX.iso you can build os images for builder
     it's a long process because it will build GCC and MinGW from scratch
     run commands:
         cd env/debian-7-32bit # go to env/debian-7-32bit

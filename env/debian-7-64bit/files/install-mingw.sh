@@ -47,7 +47,7 @@ download() {
 
         wget -c --no-cookies --max-redirect 40 "$URL_BINUTILS"
         wget -c --no-cookies --max-redirect 40 "$URL_GCC"
-        wget -c --no-cookies --max-redirect 40 "$URL_MINGW"
+        wget -c --no-cookies --max-redirect 40 "$URL_MINGW" || curl -L "$URL_MINGW" -o "$ARH_MINGW"
         wget -c --no-cookies --max-redirect 40 "$URL_ICONV"
         wget -c --no-cookies --max-redirect 40 "$URL_GETTEXT"
 
@@ -76,7 +76,7 @@ install_binutils() {
                 --prefix="/usr/local/$ARCH/sys-root"
             touch "configure.done"
         fi
-        make -j$THREADS || make
+        make -j$THREADS || make || make
         sudo make install
         touch "done"
     fi
@@ -95,7 +95,7 @@ install_headers() {
                 --prefix="/usr/local/$ARCH/sys-root"
             touch "configure.done"
         fi
-        make -j$THREADS || make
+        make -j$THREADS || make || make
         sudo make install
         pushd "/usr/local/$ARCH/sys-root"
         sudo ln -s . mingw
@@ -121,7 +121,7 @@ install_gcc() {
                 --prefix="/usr/local/$ARCH/sys-root"
             touch "configure.done"
         fi
-        make -j$THREADS all-gcc || make
+        make -j$THREADS all-gcc || make || make
         sudo make install-gcc
         touch "gcc.done"
     fi
@@ -142,7 +142,7 @@ install_crt() {
                 --prefix="/usr/local/$ARCH/sys-root"
             touch "configure.done"
         fi
-        make -j$THREADS || make
+        make -j$THREADS || make || make
         sudo "../../../$0" host_install "$ARCH"
         touch "done"
     fi
@@ -156,7 +156,7 @@ finish_gcc() {
     cd       "install-mingw/build/gcc-$ARCH"
     if [ ! -f "done" ]; then
         echo && echo "finish gcc $ARCH" && echo
-        make -j$THREADS || make
+        make -j$THREADS || make || make
         sudo "../../../$0" host_install "$ARCH"
         touch "done"
     fi
@@ -179,7 +179,7 @@ install_library() {
                 ${@:3}
             touch "configure.done"
         fi
-        make -j$THREADS || make
+        make -j$THREADS || make || make
         sudo "../../../$0" host_install "$ARCH"
         touch "done"
     fi
@@ -201,7 +201,7 @@ install_tool() {
                 ${@:3}
             touch "configure.done"
         fi
-        make -j$THREADS || make
+        make -j$THREADS || make || make
         sudo "../../../$0" host_install "$ARCH"
         touch "done"
     fi
@@ -224,7 +224,7 @@ install_iconv() {
                 --prefix="/usr/local/$ARCH/sys-root"
             touch "configure.done"
         fi
-        make -j$THREADS || make
+        make -j$THREADS || make || make
         sudo "../../../$0" host_install "$ARCH"
         touch "done"
     fi
@@ -253,7 +253,7 @@ install_gettext() {
                 --prefix="/usr/local/$ARCH/sys-root"
             touch "configure.done"
         fi
-        make -j$THREADS || make
+        make -j$THREADS || make || make
         sudo "../../../$0" host_install "$ARCH"
         touch "done"
     fi

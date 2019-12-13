@@ -16,7 +16,7 @@ echo && echo "build and install" && echo
 mkdir -p build
 cd build
 [ -f "../configure.done" ] || (../gcc-*/configure && touch "../configure.done")
-make -j`nproc`
+make -j`nproc` || make || make
 make install
 (cd /usr/local/bin && ln gcc cc)
 cd ..
