@@ -136,6 +136,8 @@ List of commands
 
     with_deps <command> <packet>
         - execute <command> for <packet> and all deps
+          for example, you can call download for all deps without build:
+                run.sh with_deps download mypacket
 
     clean_ACTION <packet>
         - remove all data of completed ACTION for <packet>
