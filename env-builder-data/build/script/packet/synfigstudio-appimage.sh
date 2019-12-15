@@ -12,8 +12,8 @@ pkinstall() {
     mkdir -p "$APPDIR/usr/bin"
     mkdir -p "$APPDIR/usr/lib"
 
-    cp --remove-destination "$ENVDEPS_PACKET_DIR/bin/AppRun" "$APPDIR/" || return 1
-    cp --remove-destination "$ENVDEPS_PACKET_DIR/bin/desktopintegration" "$APPDIR/usr/bin/synfigstudio.wrapper"|| return 1
+    cp --remove-destination "$ENVDEPS_NATIVE_PACKET_DIR/bin/AppRun" "$APPDIR/" || return 1
+    cp --remove-destination "$ENVDEPS_NATIVE_PACKET_DIR/bin/desktopintegration" "$APPDIR/usr/bin/synfigstudio.wrapper"|| return 1
 
     cp --remove-destination "$FILES_PACKET_DIR/synfigstudio.desktop" "$APPDIR/" || return 1
     cp --remove-destination "$FILES_PACKET_DIR/synfigstudio.png" "$APPDIR/" || return 1

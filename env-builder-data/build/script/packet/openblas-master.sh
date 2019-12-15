@@ -11,6 +11,10 @@ pkbuild() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME"
 
     pkhelper_patch . getarch.c
+    if [ "$PLATFORM" = "win" ]; then
+        pkhelper_patch kernel/x86    KERNEL.generic
+        pkhelper_patch kernel/x86_64 KERNEL.generic
+    fi
 
     local LOCAL_BINARY_OPTION=
     if [ "$ARCH" = "32" ]; then

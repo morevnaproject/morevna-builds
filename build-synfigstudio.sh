@@ -49,7 +49,7 @@ run_nsis() {
     echo ""
     echo "Update and build synfigstudio for $PLATFORM-$ARCH"
     echo ""
-    #PLATFORM=win ARCH=32 $SCRIPT clean_before_do env zlib-1.2.11 # for NSIS
+    PLATFORM=win ARCH=32 $SCRIPT clean_before_do env zlib-1.2.11 # for NSIS
     $SCRIPT chain native update synfigetl-master \
             chain native update synfigcore-master \
             chain update synfigetl-master \
@@ -57,6 +57,7 @@ run_nsis() {
             chain update synfigstudio-master \
             chain clean_before_do install_release synfigstudio-nsis \
             chain clean_before_do install_release synfigstudio-portable
+
 
     local TEMPLATE=`gen_name_template "SynfigStudio" "$SYNFIGSTUDIO_TESTING_TAG" "$PLATFORM" "$ARCH" ".exe"`
     "$PUBLISH_DIR/publish.sh" \

@@ -6,3 +6,8 @@ PK_URL="https://gstreamer.freedesktop.org/src/gst-plugins-base/$PK_ARCHIVE"
 PK_LICENSE_FILES="AUTHORS COPYING COPYING.LIB"
 
 source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh
+
+
+pkhook_prebuild() {
+    pkhelper_patch gst/audioresample resample.c
+}

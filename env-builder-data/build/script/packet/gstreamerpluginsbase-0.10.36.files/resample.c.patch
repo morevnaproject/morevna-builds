@@ -1,0 +1,8 @@
+80c80
+< #ifndef HAVE_XMMINTRIN_H
+---
+> #if !defined(__SSE__) || !defined(HAVE_XMMINTRIN_H)
+86c86
+< #ifndef HAVE_EMMINTRIN_H
+---
+> #if !defined(__SSE2__) || !defined(HAVE_EMMINTRIN_H)
