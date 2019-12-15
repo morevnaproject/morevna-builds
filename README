@@ -77,8 +77,13 @@ build virtual environment:
 installation done
 
 
+also you may download full backets build data made by us:
+    https://coolbug.org/downloads/morevna/builder-images/
+    https://coolbug.org/downloads/morevna/builder-images/builder-packets--YYYY-MM-DD.tar.gz
 
-Usage:
+
+
+Let's build something:
 
 
 now you may build packages by macro script:
