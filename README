@@ -5,7 +5,7 @@ run all commands from root (as superuser)
 
 install dependency packages:
     you need: bash sudo uuid-runtime aufs-tools fuse genisoimage
-    for apt based OS use comand:
+    for apt based OS use command:
         apt-get install bash sudo uuid-runtime aufs-tools fuse genisoimage
 
 
@@ -80,6 +80,8 @@ installation done
 also you may download full backets build data made by us:
     https://coolbug.org/downloads/morevna/builder-images/
     https://coolbug.org/downloads/morevna/builder-images/builder-packets--YYYY-MM-DD.tar.gz
+approximate 20Gb compressed and 75Gb after decompress
+NB: build data contains a lot of hardlinks so make sure that you unpack it properly (tar -xf)
 
 
 
