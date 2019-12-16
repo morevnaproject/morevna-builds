@@ -29,3 +29,6 @@ chrooter() {                               # configure chrooter command
 # OPENTOONZ_TESTING_TAG="test"             # uses in build-opentoonz-testing.sh for naming out packages
 # SYNFIGSTUDIO_TESTING_TAG="test"          # uses in build-synfigstudio.sh for naming out packages
 
+#export EMAIL_FAILED="e@mail.org"
+#export EMAIL_SUCCESS="$EMAIL_FAILED"
+#export EMAIL_SUBJECT="builder task finished"

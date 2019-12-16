@@ -4,9 +4,9 @@ run all commands from root (as superuser)
 
 
 install dependency packages:
-    you need: bash sudo uuid-runtime aufs-tools fuse genisoimage
+    you need: bash sudo uuid-runtime aufs-tools fuse genisoimage mutt
     for apt based OS use command:
-        apt-get install bash sudo uuid-runtime aufs-tools fuse genisoimage
+        apt-get install bash sudo uuid-runtime aufs-tools fuse genisoimage mutt
 
 
 create and edit config file:
@@ -20,6 +20,15 @@ create and edit config file:
             $BASE_DIR/chrooter/chrooter.sh $@
         }
         OPENTOONZ_TESTING_TAG="morevna"
+        export EMAIL_FAILED="e@mail.org"
+        export EMAIL_SUCCESS="$EMAIL_FAILED"
+        export EMAIL_SUBJECT="builder task finished"
+
+    for emails configure ~/.muttrc, for example:
+        set smtp_url=smtps://login:password@server.org
+        set from=e@mail.org
+        set record=
+    see "background tasks" below
 
 
 download virtual environment:
@@ -183,6 +192,15 @@ see also
     env-builder-data/build/script/common/manager.sh
 
 
+Background tasks:
+    to call task in background use:
+        backgrouns.sh some_command
+    command will run in background and result will be sent to email (see config.sh)
+    if you do not want to receive emai about success result (look only errors), call:
+        backgrouns.sh -q some_command
+    logs stored in log/background.log
+
+
 Troubles:
     sometimes virtual environmens does not unmounted properly
     to clear this you need to unmount all mounts for */chrooter-*
@@ -193,6 +211,10 @@ Troubles:
         umount "/some_path/chrooter-SOME_UUID"
     or with "force" option
         umount -f "/some_path/chrooter-SOME_UUID" 
+    or with "lazy" option
+        umount -l "/some_path/chrooter-SOME_UUID" 
+    and check againt with
+        mount
 
     after that remove the files
     you MUST do unmount before, if some dir are still mounted you can remove some system files
