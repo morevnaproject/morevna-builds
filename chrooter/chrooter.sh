@@ -6,24 +6,40 @@ OLDDIR=`pwd`
 BASE_DIR=$(cd `dirname "$0"`; pwd)
 cd "$OLDDIR"
 
-INSTANCE_NAME=`uuidgen`
-INSTANCE_NAME="chrooter-$INSTANCE_NAME"
+INSTANCE_ID=`uuidgen`
+INSTANCE_KEY=
 PRIVILEGED=
 COMMANDARCH=
 IMAGE_MOUNT_DIR=
 COMMAND_ERROR=
 PREFIX="$CHROOTER_PREFIX"
 if [ -z "$PREFIX" ]; then
-    PREFIX="/tmp"
+	PREFIX="/tmp"
 fi
+FULLPREFIX="$PREFIX/chrooter"
 
-trap 'image_unmount; exit 1' SIGINT
+trap 'raise_error terminated' SIGINT
+
+raise_error() {
+	echo "Error: $1"
+	rm -f "/$FULLPREFIX-$INSTANCE_ID.chroot.sh"
+	image_unmount
+	exit 1
+}
+
+check_runned() {
+	if [ ! -z "$INSTANCE_KEY" ]; then
+		if [ "0" != `mount | grep -c "$FULLPREFIX-$INSTANCE_KEY"` ]; then
+			raise_error "instance with key '$INSTANCE_KEY', is already running"
+		fi
+	fi
+}
 
 image_mount_add() {
 	echo "Mount: $1 -> $2"
 	sudo mkdir -p "$IMAGE_MOUNT_DIR/root$2"
 	sudo mount --bind "$1" "$IMAGE_MOUNT_DIR/root$2"
-	echo "umount -f \"$IMAGE_MOUNT_DIR/root$2\" || umount -l \"$IMAGE_MOUNT_DIR/root$2\"" >> "/$PREFIX/$INSTANCE_NAME.umount.sh"
+	echo "umount -f \"$IMAGE_MOUNT_DIR/root$2\" || umount -l \"$IMAGE_MOUNT_DIR/root$2\"" >> "$IMAGE_MOUNT_DIR/umount.sh"
 }
 
 image_mount() {
@@ -42,14 +58,14 @@ image_mount() {
 	local IMAGE_FILE="$BASE_DIR/image/$IMAGE_NAME.iso"
 	
 	echo "Prepare image: $1"
-	IMAGE_MOUNT_DIR="/$PREFIX/$INSTANCE_NAME"
+	IMAGE_MOUNT_DIR="/$FULLPREFIX-$INSTANCE_KEY-$INSTANCE_ID"
 	mkdir -p "$IMAGE_MOUNT_DIR/iso"
 	mkdir -p "$IMAGE_MOUNT_DIR/work"
 	mkdir -p "$IMAGE_MOUNT_DIR/root"
 	
 	echo "Add -.chroot.sh file"
-	sudo mv "/$PREFIX/$INSTANCE_NAME.chroot.sh" "$IMAGE_MOUNT_DIR/work/"
-	sudo chmod a+x "$IMAGE_MOUNT_DIR/work/$INSTANCE_NAME.chroot.sh"
+	sudo mv "/$FULLPREFIX-$INSTANCE_ID.chroot.sh" "$IMAGE_MOUNT_DIR/work/chroot-$INSTANCE_ID.sh"
+	sudo chmod a+x "$IMAGE_MOUNT_DIR/work/chroot-$INSTANCE_ID.sh"
 
 	echo "Mount root"
 	sudo mount -r "$IMAGE_FILE" "$IMAGE_MOUNT_DIR/iso"
@@ -57,8 +73,8 @@ image_mount() {
 
 	set -- "${@:2}"
 	echo "Mount subs: $@"
-	echo "#!/bin/bash" > "/$PREFIX/$INSTANCE_NAME.umount.sh"
-	chmod a+x "/$PREFIX/$INSTANCE_NAME.umount.sh"
+	echo "#!/bin/bash" > "$IMAGE_MOUNT_DIR/umount.sh"
+	chmod a+x "$IMAGE_MOUNT_DIR/umount.sh"
 	if [ ! -z "$PRIVILEGED" ]; then
 		echo "Mount /proc and /dev for priveleged feature"
 		image_mount_add /proc /proc
@@ -84,11 +100,11 @@ image_unmount() {
 	fi
 
 	echo "Unmount subs"
-	sudo "/$PREFIX/$INSTANCE_NAME.umount.sh"
-	sudo rm -f "/$PREFIX/$INSTANCE_NAME.umount.sh"
+	sudo "$IMAGE_MOUNT_DIR/umount.sh"
+	sudo rm -f "$IMAGE_MOUNT_DIR/umount.sh"
 
-	echo "Remove -.chroot.sh file"
-	sudo rm -f "$IMAGE_MOUNT_DIR/root/$INSTANCE_NAME.chroot.sh"
+	echo "Remove chroot-.sh file"
+	sudo rm -f "$IMAGE_MOUNT_DIR/root/chroot-$INSTANCE_ID.sh"
 
 	if [ ! -z $1 ]; then
 		echo "Save image: $1"
@@ -123,7 +139,7 @@ image_command() {
 		SETARCH=setarch
 	fi
 
-	if ! env -i /usr/bin/sudo -i $SETARCH $COMMANDARCH chroot "$IMAGE_MOUNT_DIR/root" "/$INSTANCE_NAME.chroot.sh" $@; then
+	if ! env -i /usr/bin/sudo -i $SETARCH $COMMANDARCH chroot "$IMAGE_MOUNT_DIR/root" "/chroot-$INSTANCE_ID.sh" $@; then
 		COMMAND_ERROR=1
 		echo "Command returned with error"
 	fi
@@ -139,17 +155,17 @@ image_copy() {
 }
 
 chroot_file_begin() {
-	echo "#!/bin/sh" > "/$PREFIX/$INSTANCE_NAME.chroot.sh"
-	echo "" >> "/$PREFIX/$INSTANCE_NAME.chroot.sh"
+	echo "#!/bin/sh" > "/$FULLPREFIX-$INSTANCE_ID.chroot.sh"
+	echo "" >> "/$FULLPREFIX-$INSTANCE_ID.chroot.sh"
 }
 
 chroot_file_env() {
 	echo "Set env: $1=\"$2\""
-	echo "export $1=\"$2\"" >> "/$PREFIX/$INSTANCE_NAME.chroot.sh"
+	echo "export $1=\"$2\"" >> "/$FULLPREFIX-$INSTANCE_ID.chroot.sh"
 }
 
 chroot_file_end() {
-	echo "\$@" >> "/$PREFIX/$INSTANCE_NAME.chroot.sh"
+	echo "\$@" >> "/$FULLPREFIX-$INSTANCE_ID.chroot.sh"
 }
 
 import() {
@@ -165,6 +181,8 @@ import() {
 
 
 	local IMAGE_NAME="$(echo $2 | tr "/:" "_")"
+	INSTANCE_KEY = IMAGE_NAME
+	check_runned
 	local IMAGE_FILE="$BASE_DIR/image/$IMAGE_NAME.iso"
 	local IMAGE_DIR=`dirname "$IMAGE_FILE"`
 	mkdir -p "$IMAGE_DIR"
@@ -224,9 +242,11 @@ build() {
 	chroot_file_end
 
 	if [ -z "$IMAGE_NAME" ]; then
-		echo "Image name was not set"
-		return 1
+		raise_error "image name was not set"
 	fi
+
+	INSTANCE_KEY="$(echo $IMAGE_NAME | tr "/:" "_")"
+	check_runned
 
 	local BUILDFILE="$WORK_DIR/Buildfile"
 	if [ ! -f "$BUILDFILE" ]; then
@@ -286,7 +306,8 @@ run() {
 				MODE=
 				continue
 			elif [ "$MODE" = "--name" ]; then
-				echo "Set name: $ARG (not uses)"
+				echo "Set instance key (name): $ARG"
+				INSTANCE_KEY="$ARG"
 				MODE=
 				continue
 			fi
@@ -318,9 +339,10 @@ run() {
 	echo "Set command: $COMMAND"
 
 	if [ -z "$COMMAND" ]; then
-		echo "Command was not set"
-		return 1
+		raise_error "command was not set"
 	fi
+
+	check_runned
 
 	image_mount "$IMAGE_NAME" $SUBMOUNT
 	image_command $COMMAND

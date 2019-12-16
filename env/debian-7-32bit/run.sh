@@ -21,10 +21,7 @@ fi
 if [ -z "$ARCH" ]; then
     export ARCH=$NATIVE_ARCH
 fi
-if [ -z "$TASK" ]; then
-    export TASK=builder-$NATIVE_PLATFORM
-fi
-export INSTANCE=$TASK-$PLATFORM$ARCH
+export INSTANCE=builder-$NATIVE_PLATFORM-$NATIVE_ARCH
 
 chrooter stop "$INSTANCE" || true
 chrooter rm "$INSTANCE" || true

@@ -14,16 +14,14 @@ fi
 mkdir -p $PACKET_BUILD_DIR
 
 export NATIVE_PLATFORM=debian
+export NATIVE_ARCH=64
 if [ -z "$PLATFORM" ]; then
     export PLATFORM=linux
 fi
 if [ -z "$ARCH" ]; then
     export ARCH=64
 fi
-if [ -z "$TASK" ]; then
-    export TASK=builder-$NATIVE_PLATFORM
-fi
-export INSTANCE=$TASK-$PLATFORM$ARCH
+export INSTANCE=builder-$NATIVE_PLATFORM-$NATIVE_ARCH
 
 chrooter stop "$INSTANCE" || true
 chrooter rm "$INSTANCE" || true
