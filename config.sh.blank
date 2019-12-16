@@ -32,3 +32,4 @@ chrooter() {                               # configure chrooter command
 #export EMAIL_FAILED="e@mail.org"
 #export EMAIL_SUCCESS="$EMAIL_FAILED"
 #export EMAIL_SUBJECT="builder task finished"
+#export EMAIL_BODY="any text"
