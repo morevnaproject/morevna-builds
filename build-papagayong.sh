@@ -60,6 +60,14 @@ run_nsis() {
         "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/papagayong-testing/unpack/version-papagayong-testing"
 }
 
-run_appimage linux 64
-run_appimage linux 32
-run_nsis win 32
+linux64() { run_appimage linux 64; }
+linux32() { run_appimage linux 32; }
+win32()   { run_nsis win 32; }
+
+COMMANDS="$@"
+if [ -z "$COMMANDS" ]; then COMMANDS="linux64 linux32 win32"; fi
+for COMMAND in $COMMANDS; do
+    echo "Command: $COMMAND"
+    $COMMAND
+done
+
