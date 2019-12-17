@@ -4,7 +4,7 @@ DEPS_NATIVE="nsis-2.50"
 PK_PYTHON_DIRNAME="python"
 PK_PYTHON_ARCHIVE="portable-python-3.2.5.1.zip"
 PK_PYTHON_URL="https://download.tuxfamily.org/synfig/packages/sources/$PK_PYTHON_ARCHIVE"
-
+PK_LICENSE_FILE="license-synfigstudio-master"
 
 pkfunc_register_file() {
     local FILE=$1
@@ -123,7 +123,7 @@ pkinstall_release() {
 !define PK_EXECUTABLE    "bin\\synfigstudio.exe"
 !define PK_ICON          "share\\pixmaps\\synfig_icon.ico"
 !define PK_DOCUMENT_ICON "share\\pixmaps\\sif_icon.ico"
-!define PK_LICENSE       ".\\license\\license-synfigstudio-master"
+!define PK_LICENSE       ".\\license\\${PK_LICENSE_FILE}"
 EOF
 
     # let's go

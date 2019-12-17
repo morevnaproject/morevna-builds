@@ -16,7 +16,7 @@ publish() {
     local VERSION=`cat "$VERSION_FILE" | cut -d'-' -f 1`
     local COMMIT=`cat "$VERSION_FILE" | cut -d'-' -f 2-`
     COMMIT="${COMMIT:0:5}"
-    local DATE=`date -u +%y.%m.%d`
+    local DATE=`date -u +%Y.%m.%d`
     if [ -z "$COMMIT" ]; then
         echo "Cannot find version, pheraps package not ready. Cancel."
         return 1
