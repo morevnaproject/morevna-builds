@@ -26,7 +26,7 @@ create and edit config file:
 
     for emails configure ~/.muttrc, for example:
         set smtp_url=smtps://login:password@server.org
-        set from=e@mail.org
+        set from="My Mail Bot <e@mail.org>"
         set record=
     see "background tasks" below
 

@@ -25,21 +25,26 @@ LOG_FILE="/tmp/withemail-`uuidgen`.log"
 touch "$LOG_FILE"
 
 
+print_email() {
+    local MESSAGE="$1"
+    echo "$EMAIL_BODY"
+    echo
+    echo "Command:"
+    echo "    $COMMAND"
+    echo "$MESSAGE"
+    echo
+    echo "log:"
+    echo "----------------------------------------"
+    cat "$LOG_FILE"
+}
+
 send_email() {
     local EMAIL="$1"
     local MESSAGE="$2"
-
     echo "$MESSAGE"
-
     if [ ! -z "$EMAIL" ]; then
-        mutt -s "$EMAIL_SUBJECT - $MESSAGE" -a "$LOG_FILE" -- "$EMAIL" << EOF
-$EMAIL_BODY
-
-Command:
-    $COMMAND
-
-$MESSAGE
-EOF
+        print_email "$MESSAGE" | mutt -s "$EMAIL_SUBJECT - $MESSAGE" "$EMAIL"
+        #print_email "$MESSAGE" | mutt -s "$EMAIL_SUBJECT - $MESSAGE" -a "$LOG_FILE" -- "$EMAIL"
         echo "email sent to $EMAIL"
     fi
     rm "$LOG_FILE"
