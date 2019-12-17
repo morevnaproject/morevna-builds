@@ -35,7 +35,7 @@ print_email() {
     echo
     echo "log:"
     echo "----------------------------------------"
-    cat "$LOG_FILE"
+    tail -n 100 "$LOG_FILE"
 }
 
 send_email() {
