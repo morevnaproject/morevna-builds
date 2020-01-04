@@ -1,16 +1,20 @@
 DEPS="synfigstudio-master"
 
 PK_PYTHON_DIRNAME="python"
-PK_PYTHON_ARCHIVE="portable-python-3.2.5.1.zip"
-PK_PYTHON_URL="https://download.tuxfamily.org/synfig/packages/sources/$PK_PYTHON_ARCHIVE"
+PK_PYTHON_ARCHIVE="python-3.6.4.zip"
+PK_PYTHON_URL="https://www.synfig.org/files/$PK_PYTHON_ARCHIVE"
+PK_PYTHON_LXML_ARCHIVE="python-3.6.4-lxml.zip"
+PK_PYTHON_LXML_URL="https://www.synfig.org/files/$PK_PYTHON_LXML_ARCHIVE"
 
 # download portable python and pass downloaded files through all build phases
 pkdownload() {
     wget -c --no-check-certificate "$PK_PYTHON_URL" -O "$PK_PYTHON_ARCHIVE" || return 1
+    wget -c --no-check-certificate "$PK_PYTHON_LXML_URL" -O "$PK_PYTHON_LXML_ARCHIVE" || return 1
 }
 
 pkunpack() {
     unzip "$DOWNLOAD_PACKET_DIR/$PK_PYTHON_ARCHIVE" || return 1
+    unzip "$DOWNLOAD_PACKET_DIR/$PK_PYTHON_LXML_ARCHIVE" || return 1
 }
 
 pkinstall() {
@@ -58,6 +62,8 @@ pkinstall_release() {
     
     # add portable python
     copy "$INSTALL_PACKET_DIR/$PK_PYTHON_DIRNAME" "./python" || return 1
+    copy "$INSTALL_PACKET_DIR/lxml" "./python/Lib/site-packages/lxml" || return 1
+    copy "$INSTALL_PACKET_DIR/lxml-4.4.2.dist-info" "./python/Lib/site-packages/lxml-4.4.2.dist-info" || return 1
     
     #config directory
     mkdir "./config"
