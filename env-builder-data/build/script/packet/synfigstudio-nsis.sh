@@ -39,8 +39,8 @@ pkfunc_register_file() {
 
 # download portable python and pass downloaded files through all build phases
 pkdownload() {
-    wget -c --no-check-certificate "$PK_PYTHON_URL" -O "$PK_PYTHON_ARCHIVE" || return 1
-    wget -c --no-check-certificate "$PK_PYTHON_LXML_URL" -O "$PK_PYTHON_LXML_ARCHIVE" || return 1
+    wget -c "$PK_PYTHON_URL" -O "$PK_PYTHON_ARCHIVE" || return 1
+    wget -c "$PK_PYTHON_LXML_URL" -O "$PK_PYTHON_LXML_ARCHIVE" || return 1
 }
 
 pkunpack() {
