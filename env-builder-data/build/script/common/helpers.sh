@@ -63,14 +63,17 @@ copy() {
         fi
         if [ "$(ls -A $1)" ]; then
             if ! cp --remove-destination -rlP $SRC/* "$DEST/"; then
+                echo "Error while copying directory [$SRC] -> [$DEST]"
                 return 1
             fi
         fi
     elif [ -f "$SRC" ]; then
         if ! (mkdir -p `dirname $DEST` && cp --remove-destination -l "$SRC" "$DEST"); then
+            echo "Error while copying file [$SRC] -> [$DEST]"
             return 1
         fi
     else
+        echo "Error while copying [$SRC] -> [$DEST/]: source does not exists"
         return 1
     fi
 }
