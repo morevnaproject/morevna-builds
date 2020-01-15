@@ -1,6 +1,5 @@
 #!/bin/bash
 
-OLDDIR=`pwd`
 cd `dirname "$0"`
 SCRIPT_DIR=`pwd`
 BASE_DIR=`dirname "$SCRIPT_DIR"`
@@ -10,14 +9,7 @@ export QT_XKB_CONFIG_ROOT=$QT_XKB_CONFIG_ROOT:/usr/local/share/X11/xkb:/usr/shar
 export FONTCONFIG_PATH=/etc/fonts
 
 if [ "$1" = "--appimage-exec" ]; then
-	if ! "${@:2}"; then
-		cd "$OLDDIR"
-		exit 1
-	fi
+	"${@:2}"
 else
-	if ! "./launch-opentoonz.sh.wrapper" "$@"; then
-		cd "$OLDDIR"
-		exit 1
-	fi
+	"./launch-opentoonz.sh.wrapper" "$@"
 fi
-cd "$OLDDIR"

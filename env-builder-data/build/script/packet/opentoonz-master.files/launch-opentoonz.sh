@@ -1,8 +1,6 @@
 #!/bin/sh
 
-OLDDIR=`pwd`
 SCRIPT_DIR=$(cd `dirname "$0"`; pwd)
-cd "$OLDDIR"
 BASE_DIR=`dirname "$SCRIPT_DIR"`
 
 export LD_LIBRARY_PATH="$BASE_DIR/lib:$BASE_DIR/lib/opentoonz:$BASE_DIR/lib64:$LD_LIBRARY_PATH"
@@ -95,8 +93,4 @@ else
 fi
 
 cd "$BASE_DIR/bin"
-if ! ./opentoonz "$@"; then
-	cd "$OLDDIR"
-	exit 1
-fi
-cd "$OLDDIR"
+./opentoonz "$@"
