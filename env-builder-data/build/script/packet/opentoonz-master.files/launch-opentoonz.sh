@@ -28,7 +28,7 @@ TOONZLIBRARY="$HOME/.config/OpenToonz/stuff/library"
 TOONZPROFILES="$HOME/.config/OpenToonz/stuff/profiles"
 TOONZPROJECTS="$HOME/.config/OpenToonz/stuff/projects"
 TOONZROOT="$HOME/.config/OpenToonz/stuff"
-TOONZSTUDIOPALETTE="$HOME/.config/OpenToonz/stuff/projects/studiopalette"
+TOONZSTUDIOPALETTE="$HOME/.config/OpenToonz/stuff/studiopalette"
 EOF
 
 else
@@ -36,6 +36,21 @@ else
     INI="$HOME/.config/OpenToonz/SystemVar.ini"
     if [ -e "$INI" ]; then
         [ -e "$INI.bak" ] || cp "$INI" "$INI.bak"
+
+        # fix path to studiopalette
+        FX_PATH_OLD="$CONFIG_DIR/stuff/projects/studiopalette"
+        FX_PATH_NEW="$CONFIG_DIR/stuff/studiopalette"
+        FX_LINE_OLD="TOONZFXPRESETS=\"$FX_PATH_OLD\""
+        FX_LINE_NEW="TOONZFXPRESETS=\"$FX_PATH_NEW\""
+        if [ ! -z "`grep "$FX_LINE_OLD" "$INI"`" ] \
+         && ( [ ! -d "$FX_PATH_OLD" ] || [ -z "`ls -A "$FX_PATH_OLD"`" ] ); then
+            echo "fix config: fix path to studiopalette"
+            cat "$INI" \
+              | sed "s|$FX_LINE_OLD|$FX_LINE_NEW|g" \
+              > "$INI.out"
+            cp "$INI.out" "$INI"
+            rm -f "$INI.out"
+        fi
 
         # fix path to fxs
         FX_PATH_OLD="$CONFIG_DIR/stuff/projects/fxs"
