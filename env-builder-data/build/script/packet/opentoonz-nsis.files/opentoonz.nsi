@@ -46,7 +46,7 @@ RequestExecutionLevel admin
 !define SHCNF_IDLIST 0
 
 !define PRODUCT_REG_KEY "Software\${PK_NAME}"
-!define PRODUCT_STUFF_KEY "${PRODUCT_REG_KEY}\${PK_NAME}\${PK_VERSION}"
+!define PRODUCT_STUFF_KEY "${PRODUCT_REG_KEY}\${PK_NAME}"
 !define PRODUCT_UNINSTALL_KEY  "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PK_NAME}"
 !define PRODUCT_UNINSTALL_KEY2 "Software\Microsoft\Windows\CurrentVersion\Uninstall\{D9A9B1A3-9370-4BE9-9C8F-7B52EEECB973}_is1"
 !define PRODUCT_UNINSTALL_EXE  "uninstall-${PK_NAME}.exe"
