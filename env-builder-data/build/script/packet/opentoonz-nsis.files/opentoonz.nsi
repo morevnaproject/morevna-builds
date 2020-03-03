@@ -61,7 +61,7 @@ RequestExecutionLevel admin
 !insertmacro MUI_PAGE_DIRECTORY
 
 Function InstDirPageLeave
-  StrCpy $STUFFDIR "C:\${PK_NAME} ${PK_VERSION} stuff"
+  StrCpy $STUFFDIR "C:\${PK_NAME} stuff"
 FunctionEnd
 
 !define MUI_DIRECTORYPAGE_VARIABLE $STUFFDIR
