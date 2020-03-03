@@ -143,7 +143,7 @@ Section "Uninstall"
   SetRegView ${PK_ARCH}
 
   ReadRegStr $INSTDIR HKLM "${PRODUCT_REG_KEY}" "Path"
-  ReadRegStr $STUFFDIR HKLM "${PRODUCT_REG_KEY}\${PK_NAME}\${PK_VERSION}" "TOONZROOT"
+  ReadRegStr $STUFFDIR HKLM "${PRODUCT_REG_KEY}\${PK_NAME}" "TOONZROOT"
 
   ; Remove registry keys
   DeleteRegKey HKLM "${PRODUCT_REG_KEY}"
