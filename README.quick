@@ -1,0 +1,4 @@
+= Example command for rebuilding one packet: =
+
+PLATFORM=win ARCH=32 ./env/run.sh clean_all adwaitaicontheme-3.24.0
+PLATFORM=win ARCH=32 ./env/run.sh install_release adwaitaicontheme-3.24.0
