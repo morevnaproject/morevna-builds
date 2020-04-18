@@ -8,3 +8,12 @@ PK_CONFIGURE_OPTIONS="--disable-gtk2-engine"
 PK_LICENSE_FILES="AUTHORS COPYING COPYING_CCBYSA3 COPYING_LGPL"
 
 source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh
+
+pkhook_postinstall() {
+    if [ "$PLATFORM" = "win" ]; then
+	# Fix color picker cursor issue
+	# https://github.com/synfig/synfig/issues/536
+	cd "$INSTALL_PACKET_DIR"
+        cp share/icons/Adwaita/cursors/cross.cur share/icons/Adwaita/cursors/color-picker.cur
+    fi
+}
