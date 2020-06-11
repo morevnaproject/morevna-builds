@@ -33,6 +33,10 @@ pkinstall_release() {
 	# clean boost
 	rm -f $APPDIR/usr/lib/libboost_* || return 1
 	
+	# fix crash on Ubuntu 20.04
+	# https://github.com/morevnaproject-org/opentoonz/issues/39
+	rm -f $APPDIR/usr/lib/libstdc* || return 1
+	
 	(cd "$INSTALL_RELEASE_PACKET_DIR" && tar -czf "$PK_APPDIR_NAME.tar.gz" "$PK_APPDIR_NAME.AppDir") || return 1
 	AppImageAssistant "$APPDIR" "$INSTALL_RELEASE_PACKET_DIR/$PK_APPDIR_NAME.appimage" || return 1
 	rm -rf "$APPDIR"
