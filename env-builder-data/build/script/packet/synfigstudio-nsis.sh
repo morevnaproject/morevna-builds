@@ -106,6 +106,16 @@ pkinstall_release() {
     local LOCAL_VERSION=$(echo "$LOCAL_VERSION_FULL" | cut -d - -f 1)
     local LOCAL_VERSION2=$(echo "$LOCAL_VERSION" | cut -d . -f -2)
     local LOCAL_COMMIT=$(echo "$LOCAL_VERSION_FULL" | cut -d - -f 2)
+    
+    # QuickHack: convert symlinks to regular files
+    [ ! -f "${LOCAL_INSTALLER_DIR}/../tmp.zip" ] || rm -rf "${LOCAL_INSTALLER_DIR}/../tmp.zip"
+    zip -r "${LOCAL_INSTALLER_DIR}/../tmp.zip" ./ || return 1
+    cd "${LOCAL_INSTALLER_DIR}/.." || return 1
+    rm -rf "${LOCAL_INSTALLER_DIR}" || return 1
+    mkdir "${LOCAL_INSTALLER_DIR}" || return 1
+    cd "${LOCAL_INSTALLER_DIR}"  || return 1
+    unzip "${LOCAL_INSTALLER_DIR}/../tmp.zip" || return 1
+    rm -rf "${LOCAL_INSTALLER_DIR}/../tmp.zip" || return 1
 
     # create file lists
     echo "create file lists"
