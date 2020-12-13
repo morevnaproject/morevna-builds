@@ -65,7 +65,17 @@ pkinstall_release() {
     copy "$ENVDEPS_RELEASE_PACKET_DIR/bin/lib/" "./bin/lib/" || return 1
     copy "$ENVDEPS_RELEASE_PACKET_DIR/bin/share/" "./bin/share/" || return 1
     cp -rf "$ENVDEPS_RELEASE_PACKET_DIR/bin/"*.dll "./bin/" || return 1
-    for FILE in ffmpeg ffprobe gdk-pixbuf-csource gdk-pixbuf-pixdata gdk-pixbuf-query-loaders gio-querymodules melt sox synfig synfigstudio; do
+    for FILE in \
+            ffmpeg \
+            ffprobe \
+            gdk-pixbuf-csource \
+            gdk-pixbuf-pixdata \
+            gdk-pixbuf-query-loaders \
+            gio-querymodules \
+            melt \
+            sox \
+            synfig \
+            synfigstudio; do
         cp -rf "$ENVDEPS_RELEASE_PACKET_DIR/bin/${FILE}.exe" "./bin/" || return 1
     done
     copy "$ENVDEPS_RELEASE_PACKET_DIR/etc/" "./etc/" || return 1
