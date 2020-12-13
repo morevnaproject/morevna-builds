@@ -32,17 +32,17 @@ pkinstall_release() {
     copy "$ENVDEPS_RELEASE_PACKET_DIR/bin/share/" "./bin/share/" || return 1
     cp -rf "$ENVDEPS_RELEASE_PACKET_DIR/bin/"*.dll "./bin/" || return 1
     for FILE in \
-            ffmpeg \
-            ffprobe \
-            gdk-pixbuf-csource \
-            gdk-pixbuf-pixdata \
-            gdk-pixbuf-query-loaders \
-            gio-querymodules \
-            melt \
-            sox \
-            synfig \
-            synfigstudio; do
-        cp -rf "$ENVDEPS_RELEASE_PACKET_DIR/bin/${FILE}.exe" "./bin/" || return 1
+            ffmpeg.exe \
+            ffprobe.exe \
+            gdk-pixbuf-csource.exe \
+            gdk-pixbuf-pixdata.exe \
+            gdk-pixbuf-query-loaders.exe \
+            gio-querymodules.exe \
+            melt.exe \
+            sox.exe \
+            synfig.exe \
+            synfigstudio.exe; do
+        cp -rf "$ENVDEPS_RELEASE_PACKET_DIR/bin/${FILE}" "./bin/" || return 1
     done
     copy "$ENVDEPS_RELEASE_PACKET_DIR/etc/" "./etc/" || return 1
     [ -d "./lib/gdk-pixbuf-2.0/2.10.0/loaders" ] || mkdir -p "./lib/gdk-pixbuf-2.0/2.10.0/loaders"
