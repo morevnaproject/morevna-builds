@@ -77,7 +77,7 @@ pkinstall_release() {
             sox.exe \
             synfig.exe \
             synfigstudio.exe; do
-        cp -rf "$ENVDEPS_RELEASE_PACKET_DIR/bin/${FILE}" "./bin/" || return 1
+        cp -rf "$ENVDEPS_RELEASE_PACKET_DIR/bin/"${FILE} "./bin/" || return 1
     done
     copy "$ENVDEPS_RELEASE_PACKET_DIR/etc/" "./etc/" || return 1
     [ -d "./lib/gdk-pixbuf-2.0/2.10.0/loaders" ] || mkdir -p "./lib/gdk-pixbuf-2.0/2.10.0/loaders"
