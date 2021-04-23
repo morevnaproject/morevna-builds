@@ -1,4 +1,4 @@
-DEPS=""
+DEPS="glibmm-2.50.0"
 DEPS_NATIVE="libtool-2.4.6"
 
 PK_DIRNAME="synfig"
