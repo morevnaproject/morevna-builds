@@ -52,16 +52,16 @@ pkinstall_release() {
     cp "$ENVDEPS_RELEASE_PACKET_DIR/lib/libboost_system."*          "$APPDIR/usr/lib/" || return 1
 
     # fix FONTCONFIG errors
-    TARGET_DIR=../../../share/fontconfig/conf.avail
-    pushd . >/dev/null 2>&1
-    cd $APPDIR/usr/etc/fonts/conf.d
-    rm -f ./*.conf
+    #TARGET_DIR=../../../share/fontconfig/conf.avail
+    #pushd . >/dev/null 2>&1
+    #cd $APPDIR/usr/etc/fonts/conf.d
+    #rm -f ./*.conf
 
-    for f in $TARGET_DIR/*.conf
-    do
-      ln -s -f $TARGET_DIR/${f##*/} ./${f##*/}
-    done
-    popd >/dev/null 2>&1
+    #for f in $TARGET_DIR/*.conf
+    #do
+    #  ln -s -f $TARGET_DIR/${f##*/} ./${f##*/}
+    #done
+    #popd >/dev/null 2>&1
 
     # clean examples
     rm -rf "$APPDIR/share/synfig/examples" || return 1
