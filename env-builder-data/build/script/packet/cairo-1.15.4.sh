@@ -1,4 +1,10 @@
-DEPS="png-1.6.26 pixman-0.34.0 fontconfig-2.11.0 glib-2.50.0"
+DEPS="png-1.6.26 pixman-0.34.0 glib-2.50.0"
+if [ "$PLATFORM" = "linux" ]; then
+    DEPS_NATIVE="$DEPS_NATIVE fontconfig-2.11.0"
+else
+    DEPS="$DEPS fontconfig-2.11.0"
+fi
+
 
 PK_DIRNAME="cairo-1.15.4"
 PK_ARCHIVE="$PK_DIRNAME.tar.xz"
