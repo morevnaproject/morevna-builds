@@ -1,8 +1,8 @@
 DEPS="png-1.6.26 pixman-0.34.0 glib-2.50.0"
 if [ "$PLATFORM" = "linux" ]; then
-    DEPS_NATIVE="$DEPS_NATIVE fontconfig-2.11.0"
+    DEPS_NATIVE="$DEPS_NATIVE fontconfig-2.12.6"
 else
-    DEPS="$DEPS fontconfig-2.11.0"
+    DEPS="$DEPS fontconfig-2.12.6"
 fi
 
 
