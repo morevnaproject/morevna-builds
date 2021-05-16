@@ -6,7 +6,8 @@ fi
 
 PK_DIRNAME="qt-everywhere-opensource-src-5.9.2"
 PK_ARCHIVE="$PK_DIRNAME.tar.xz"
-PK_URL="http://download.qt.io/official_releases/qt/5.9/5.9.2/single/$PK_ARCHIVE"
+PK_URL="https://download.qt.io/archive/qt/5.9/5.9.2/single/$PK_ARCHIVE"
+
 PK_LICENSE_FILES="LICENSE.LGPLv21"
 
 source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh
