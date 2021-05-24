@@ -31,9 +31,14 @@ pkinstall_release() {
     copy "$ENVDEPS_RELEASE_PACKET_DIR" "$APPDIR/usr" || return 1
     
     mkdir -p "$APPDIR/usr/share/icons/default/128x128/apps/"
-    cp "$ENVDEPS_RELEASE_PACKET_DIR/share/pixmaps/synfig_icon.png" "$APPDIR/usr/share/icons/default/128x128/apps/synfigstudio.png" || return 1
     mkdir -p "$APPDIR/usr/share/icons/default/128x128/mimetypes/"
-    cp "$ENVDEPS_RELEASE_PACKET_DIR/share/pixmaps/sif_icon.png" "$APPDIR/usr/share/icons/default/128x128/mimetypes/application-x-sif.png" || return 1
+    if [ -d "$ENVDEPS_RELEASE_PACKET_DIR/share/synfig/icons/classic/" ]; then
+        cp "$ENVDEPS_RELEASE_PACKET_DIR/share/synfig/icons/classic/synfig_icon.png" "$APPDIR/usr/share/icons/default/128x128/apps/synfigstudio.png" || return 1
+        cp "$ENVDEPS_RELEASE_PACKET_DIR/share/synfig/icons/classic/sif_icon.png" "$APPDIR/usr/share/icons/default/128x128/mimetypes/application-x-sif.png" || return 1
+    else
+        cp "$ENVDEPS_RELEASE_PACKET_DIR/share/pixmaps/synfig_icon.png" "$APPDIR/usr/share/icons/default/128x128/apps/synfigstudio.png" || return 1
+        cp "$ENVDEPS_RELEASE_PACKET_DIR/share/pixmaps/sif_icon.png" "$APPDIR/usr/share/icons/default/128x128/mimetypes/application-x-sif.png" || return 1
+    fi
 
     # clean bin
     #rm -f "$APPDIR/usr/bin/"* || return 1

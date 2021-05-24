@@ -1,8 +1,8 @@
 DEPS="glib-2.50.0"
 if [ "$PLATFORM" = "linux" ]; then
-    DEPS_NATIVE="$DEPS_NATIVE fontconfig-2.11.0"
+    DEPS_NATIVE="$DEPS_NATIVE fontconfig-2.12.6"
 else
-    DEPS="$DEPS fontconfig-2.11.0"
+    DEPS="$DEPS fontconfig-2.12.6"
 fi
 
 PK_DIRNAME="harfbuzz-1.3.2"
