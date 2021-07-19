@@ -38,8 +38,6 @@ InstallDir "$PROGRAMFILES${PK_ARCH}\${PK_DIR_NAME}"
 ; Request application privileges for Windows Vista
 RequestExecutionLevel admin
 
-!insertmacro MUI_LANGUAGE "English"
-
 !define MUI_ABORTWARNING
 
 !define SHCNE_ASSOCCHANGED 0x8000000
@@ -60,6 +58,8 @@ RequestExecutionLevel admin
 
 !insertmacro MUI_UNPAGE_CONFIRM
 !insertmacro MUI_UNPAGE_INSTFILES
+
+!insertmacro MUI_LANGUAGE "English"
 
 ;--------------------------------
 ; Installer
