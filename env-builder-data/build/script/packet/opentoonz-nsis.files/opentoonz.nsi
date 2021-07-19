@@ -38,8 +38,6 @@ Var STUFFDIR
 ; Request application privileges for Windows Vista
 RequestExecutionLevel admin
 
-!insertmacro MUI_LANGUAGE "English"
-
 !define MUI_ABORTWARNING
 
 !define SHCNE_ASSOCCHANGED 0x8000000
@@ -72,6 +70,8 @@ FunctionEnd
 
 !insertmacro MUI_UNPAGE_CONFIRM
 !insertmacro MUI_UNPAGE_INSTFILES
+
+!insertmacro MUI_LANGUAGE "English"
 
 ;--------------------------------
 ; Installer
