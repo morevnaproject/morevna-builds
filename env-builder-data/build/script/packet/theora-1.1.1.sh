@@ -2,7 +2,7 @@ DEPS="ogg-1.3.2"
 
 PK_DIRNAME="libtheora-1.1.1"
 PK_ARCHIVE="$PK_DIRNAME.tar.bz2"
-PK_URL="https://downloads.xiph.org/releases/theora/$PK_ARCHIVE"
+PK_URL="http://ftp.osuosl.org/pub/xiph/releases/theora/$PK_ARCHIVE"
 
 PK_CONFIGURE_OPTIONS="--disable-examples"
 
