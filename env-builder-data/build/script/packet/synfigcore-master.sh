@@ -51,6 +51,8 @@
 #   sdl          - not used in core - ffmpeg, mlt
 # +	fftw
 # +	boost
+# + fribidi
+# + harfbuzz
 # . m4           - from autoconf 
 # . autoconf     - from automake
 # . automake     - from intltool 
@@ -63,6 +65,7 @@ DEPS=" \
  jpeg-9b tiff-4.0.6 fftw-3.3.5 imagemagick-6.8.7 \
  ffmpeg-3.1.5 mlt-6.6.0 \
  boost-1.61.0 cairo-1.15.4 pango-1.40.3 \
+ fribidi-0.19.7 harfbuzz-1.3.2 \
  glibmm-2.50.0 xmlpp-2.40.1 "
 DEPS_NATIVE="libtool-2.4.6"
 
