@@ -19,7 +19,7 @@ pkinstall() {
     cp --remove-destination "$FILES_PACKET_DIR/ufraw.png" "$APPDIR/" || return 1
     cp --remove-destination "$FILES_PACKET_DIR/launch.sh" "$APPDIR/usr/bin/" || return 1
 
-    cp --remove-destination "/lib/x86_64-linux-gnu/libselinux.so.1" "$APPDIR/usr/lib/" || return 1
+    copy_system_lib libselinux "$APPDIR/usr/lib/" || return 1
 }
 
 pkinstall_release() {
