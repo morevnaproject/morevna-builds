@@ -9,5 +9,5 @@ source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh
 
 pkhook_prebuild() {
     rm -rf test
-    ln -s src test
+    cp -rf --remove-destination src test
 }

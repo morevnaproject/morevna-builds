@@ -16,7 +16,7 @@
 # check options
 
 if [ -z "$NATIVE_PLATFORM" ]; then
-    NATIVE_PLATFORM="default"
+    NATIVE_PLATFORM="linux"
 fi
 
 if [ -z "$NATIVE_ARCH" ]; then

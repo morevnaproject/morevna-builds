@@ -1,5 +1,5 @@
 DEPS="png-1.6.26"
-DEPS_NATIVE="cmake-3.6.2"
+DEPS_NATIVE="cmake-3.12.4"
 
 PK_DIRNAME="AppImageKit"
 PK_URL="https://github.com/probonopd/$PK_DIRNAME.git"
