@@ -4,4 +4,4 @@ DIRNAME=`dirname "$0"`
 cd $DIRNAME
 DIRNAME=`pwd`
 
-sudo docker build -t morevnaproject/builds-32 ./
+docker build -t morevnaproject/builds-32 ./
