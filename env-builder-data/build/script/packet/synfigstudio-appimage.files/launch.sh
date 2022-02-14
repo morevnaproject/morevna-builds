@@ -57,7 +57,7 @@ if [ "$1" = "--appimage-exec" ]; then
 	fi
 elif [ -z "$2" ]; then
 	if [ -x /usr/bin/zenity ] ; then
-	  "$BASE_DIR/bin/fc-cache" |tee >(LD_LIBRARY_PATH="" zenity --progress --pulsate --title="Fontconfig" --no-cancel --auto-close --text="Please wait, generating font cache...")
+	  "$BASE_DIR/bin/fc-cache" |tee >(LD_LIBRARY_PATH="" FONTCONFIG_PATH="" /usr/bin/zenity --progress --pulsate --title="Fontconfig" --no-cancel --auto-close --text="Please wait, generating font cache...")
 	fi
 	if ! "$BASE_DIR/bin/synfigstudio.wrapper" "$@"; then
 		exit 1
