@@ -56,8 +56,23 @@ if [ "$1" = "--appimage-exec" ]; then
 		exit 1
 	fi
 elif [ -z "$2" ]; then
-	if [ -x /usr/bin/zenity ] ; then
-	  "$BASE_DIR/bin/fc-cache" |tee >(LD_LIBRARY_PATH="" FONTCONFIG_PATH="" /usr/bin/zenity --progress --pulsate --title="Fontconfig" --no-cancel --auto-close --text="Please wait, generating font cache...")
+	if ( which zenity >/dev/null ) ; then
+	  "$BASE_DIR/bin/fc-cache" |tee >(LD_LIBRARY_PATH="" FONTCONFIG_PATH="" zenity --progress --pulsate --title="Fontconfig" --no-cancel --auto-close --text="Please wait, generating font cache...")
+	elif ( which kdialog >/dev/null ) && ( which qdbus >/dev/null ) ; then
+	  export dbusRef=$(LD_LIBRARY_PATH="" FONTCONFIG_PATH="" kdialog --title="Fontconfig" --progressbar "Please wait, generating font cache..." )
+	  LD_LIBRARY_PATH="" FONTCONFIG_PATH="" qdbus $dbusRef Set "" value 10
+	  "$BASE_DIR/bin/fc-cache"
+	  LD_LIBRARY_PATH="" FONTCONFIG_PATH="" qdbus $dbusRef close
+	elif ( which wish >/dev/null ) ; then
+	  LD_LIBRARY_PATH="" FONTCONFIG_PATH="" wish "$BASE_DIR/bin/fontconfig-warning.tcl"  &
+	  DIALOG_PID=$!
+	  "$BASE_DIR/bin/fc-cache"
+	  kill $DIALOG_PID >/dev/null 2>&1 || true
+	elif ( which xmessage >/dev/null ) ; then
+	  LD_LIBRARY_PATH="" FONTCONFIG_PATH="" xmessage "Please wait, generating font cache..."  &
+	  DIALOG_PID=$!
+	  "$BASE_DIR/bin/fc-cache"
+	  kill $DIALOG_PID >/dev/null 2>&1 || true
 	fi
 	if ! "$BASE_DIR/bin/synfigstudio.wrapper" "$@"; then
 		exit 1
