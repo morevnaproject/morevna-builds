@@ -30,7 +30,7 @@ if [[ "$PLATFORM" == "linux" ]] && [[ "$ARCH" == "32" ]]; then
     SETARCH="setarch i686"
 else
     #DOCKER_IMAGE="multiarch/crossbuild"
-    # sudo docker build -t morevnaproject/builds-64 .
+    # docker build -t morevnaproject/builds-64 .
     DOCKER_IMAGE="morevnaproject/builds-64"
     # ATTENTION! The NATIVE_PLATFORM should not be equal to PLATFORM ("linux"), otherwise bad things happen.
     NATIVE_PLATFORM="debian"
@@ -40,10 +40,9 @@ fi
 
 $SCRIPT_DIR/docker/linux-$NATIVE_ARCH/build.sh
 
+# FUSE required for AppImage
 docker run --rm \
-    --privileged \
-    --device /dev/fuse \
-    --cap-add SYS_ADMIN \
+    --device /dev/fuse --cap-add SYS_ADMIN --security-opt apparmor:unconfined \
     -v $(pwd):/workdir \
     -v "$PACKET_BUILD_DIR:/build/packet" \
     -v "$SCRIPT_BUILD_DIR:/build/script" \
