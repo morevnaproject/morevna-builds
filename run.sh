@@ -42,6 +42,7 @@ $SCRIPT_DIR/docker/linux-$NATIVE_ARCH/build.sh
 
 # FUSE required for AppImage
 docker run --rm \
+    -t -i \
     --device /dev/fuse --cap-add SYS_ADMIN --security-opt apparmor:unconfined \
     -v $(pwd):/workdir \
     -v "$PACKET_BUILD_DIR:/build/packet" \
