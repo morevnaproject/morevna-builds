@@ -145,7 +145,13 @@ sha512dir() {
     fi
         
     if [ -d "$DIR" ]; then
-        (foreachfile "$DIR" "${FUNCNAME[0]}" info | sha512sum -b | cut -c1-128) || return 1
+        if [ -d "$DIR/.git" ]; then
+            pushd "$DIR" >/dev/null
+            (git rev-parse HEAD && git status -s && git diff) | sha256sum -b | cut -c1-128 || return 1
+            popd >/dev/null
+        else
+            (foreachfile "$DIR" "${FUNCNAME[0]}" info | sha512sum -b | cut -c1-128) || return 1
+        fi
     elif [ -L "$DIR" ]; then
         (readlink "$DIR" | sha512sum -b | cut -c1-128) || return 1
     else
