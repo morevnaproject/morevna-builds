@@ -18,6 +18,7 @@ pkinstall() {
     cp --remove-destination "$FILES_PACKET_DIR/synfigstudio.desktop" "$APPDIR/" || return 1
     cp --remove-destination "$FILES_PACKET_DIR/synfigstudio.png" "$APPDIR/" || return 1
     cp --remove-destination "$FILES_PACKET_DIR/launch.sh" "$APPDIR/usr/bin/" || return 1
+    cp --remove-destination "$FILES_PACKET_DIR/fontconfig-warning.tcl" "$APPDIR/usr/bin/" || return 1
 }
 
 pkinstall_release() {
