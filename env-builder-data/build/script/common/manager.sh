@@ -1093,8 +1093,8 @@ chain() {
         fi
         CNT=$((CNT+1))
     done
-    if ! "${@:0:CNT}"; then return 1; fi
-    if ! "${@:CNT}"; then return 1; fi
+    if ! "${@:0:CNT}"; then exit 1; fi
+    if ! "${@:CNT}"; then exit 1; fi
 }
 
 with_envvar() {
