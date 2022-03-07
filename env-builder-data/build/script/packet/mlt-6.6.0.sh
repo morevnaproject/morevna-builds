@@ -34,9 +34,36 @@ if [ "$PLATFORM" = "win" ]; then
     else
         PK_CONFIGURE_OPTIONS="$PK_CONFIGURE_OPTIONS --target-arch=x86_$ARCH"
     fi
+    PK_CFLAGS="-I/usr/$HOST/include/"
+    PK_CPPFLAGS="-I/usr/$HOST/include/"
+    PK_LDFLAGS="-L/usr/$HOST/lib"
+    PK_CC=$HOST-gcc
+    PK_CXX=$HOST-g++
 fi
 
 source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh
+
+pkbuild() {
+    cd "$BUILD_PACKET_DIR/$PK_DIRNAME" || return 1
+    
+    if ! pkhook_prebuild; then
+        return 1
+    fi
+
+    if ! check_packet_function $NAME build.configure; then
+        CFLAGS="$PK_CFLAGS $CFLAGS" CPPFLAGS="$PK_CPPFLAGS $CPPFLAGS" LDFLAGS="$PK_LDFLAGS $LDFLAGS" \
+        ./configure \
+            $PK_CONFIGURE_OPTIONS_DEFAULT \
+            $PK_CONFIGURE_OPTIONS \
+         || return 1
+        set_done $NAME build.configure
+    fi
+    
+    if ! CFLAGS="$PK_CFLAGS $CFLAGS" CPPFLAGS="$PK_CPPFLAGS $CPPFLAGS" LDFLAGS="$PK_LDFLAGS $LDFLAGS" \
+     CC="$PK_CC" CXX="$PK_CXX" make -j${THREADS}; then
+        return 1
+    fi
+}
 
 pkhook_postinstall() {
     if [ "$PLATFORM" = "win" ]; then

@@ -42,7 +42,7 @@ SHARED_MODE=0
 #LOC = -DZLIB_DEBUG -g
 
 PREFIX =
-#CC = $(PREFIX)gcc
+CC = x86_64-w64-mingw32-gcc
 CFLAGS = $(LOC) -O3 -Wall
 
 AS = $(CC)
@@ -54,10 +54,10 @@ LDFLAGS = $(LOC)
 #AR = $(PREFIX)ar
 ARFLAGS = rcs
 
-#RC = $(PREFIX)windres
+RC = x86_64-w64-mingw32-windres
 RCFLAGS = --define GCC_WINDRES
 
-#STRIP = $(PREFIX)strip
+STRIP = x86_64-w64-mingw32-strip
 
 CP = cp -fp
 # If GNU install is available, replace $(CP) with install.

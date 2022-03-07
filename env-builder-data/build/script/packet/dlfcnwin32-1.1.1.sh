@@ -10,10 +10,11 @@ pkbuild() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME" || return 1
 
     if ! check_packet_function $NAME build.configure; then
-        cc="$CC" ./configure \
+        ./configure \
             --prefix="$INSTALL_PACKET_DIR" \
             --disable-static \
             --enable-shared \
+            --cross-prefix=$HOST- \
          || return 1
         set_done $NAME build.configure
     fi
