@@ -1,5 +1,5 @@
 DEPS="opentoonz-master"
-DEPS_NATIVE="nsis-2.50"
+DEPS_NATIVE="nsis-3.08"
 
 pkfunc_register_file() {
     local FILE=$1

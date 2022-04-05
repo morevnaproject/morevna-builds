@@ -1,6 +1,0 @@
-95a96,97
-> makensis_env.Append(LINKFLAGS = ['-static-libgcc'])
-> makensis_env.Append(LINKFLAGS = ['-static-libstdc++'])
-119a120,121
-> plugin_env.Append(LINKFLAGS = ['-static-libgcc'])
-> plugin_env.Append(LINKFLAGS = ['-static-libstdc++'])
