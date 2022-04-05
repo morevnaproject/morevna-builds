@@ -1,6 +1,6 @@
 if [ "$PLATFORM" = "win" ]; then
     DEPS=
-    DEPS_NATIVE="nsis-2.50"
+    DEPS_NATIVE="nsis-3.08"
 else
     DEPS="wxphoenix-master python3pyaudio-master"
 fi

@@ -1,14 +1,14 @@
 DEPS="zlib-1.2.11"
 DEPS_NATIVE="scons-3.0.1"
 
-PK_DIRNAME="nsis-3.02.1-src"
+PK_DIRNAME="nsis-3.08-src"
 PK_ARCHIVE="$PK_DIRNAME.tar.bz2"
 PK_URL="http://prdownloads.sourceforge.net/nsis/$PK_ARCHIVE"
 
 #TODO: hardcoded path to mingw binaries
 #TODO: untracked dependency for zlib win32
 
-PK_PATH="/usr/local/i686-w64-mingw32/sys-root/bin:$PATH"
+PK_PATH="/usr/i686-w64-mingw32/bin/:$PATH"
 PK_ZLIB_W32="$PACKET_BUILD_DIR/win-32/zlib-1.2.11/env"
 PK_NSIS_MAX_STRLEN=131072
 

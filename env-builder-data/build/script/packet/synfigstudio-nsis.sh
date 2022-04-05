@@ -1,5 +1,5 @@
 DEPS="synfigstudio-master"
-DEPS_NATIVE="nsis-2.50"
+DEPS_NATIVE="nsis-3.08"
 
 PK_PYTHON_DIRNAME="python"
 PK_PYTHON_ARCHIVE="python-3.6.4.zip"
