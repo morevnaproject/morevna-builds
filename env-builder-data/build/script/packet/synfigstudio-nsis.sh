@@ -72,7 +72,7 @@ pkinstall_release() {
             gdk-pixbuf-pixdata.exe \
             gdk-pixbuf-query-loaders.exe \
             gio-querymodules.exe \
-            gspawn-win*-helper-* \
+            gspawn-win*-helper* \
             melt.exe \
             sox.exe \
             synfig.exe \
