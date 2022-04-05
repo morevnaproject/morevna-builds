@@ -74,7 +74,6 @@ pkinstall_release() {
             gio-querymodules.exe \
             gspawn-win*-helper* \
             melt.exe \
-            sox.exe \
             synfig.exe \
             synfigstudio.exe; do
         cp -rf "$ENVDEPS_RELEASE_PACKET_DIR/bin/"${FILE} "./bin/" || return 1
