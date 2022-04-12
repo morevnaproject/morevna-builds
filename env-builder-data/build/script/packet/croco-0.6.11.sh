@@ -1,4 +1,4 @@
-DEPS="glib-2.50.0 xml-2.9.4"
+DEPS="glib-2.69.3 xml-2.9.4"
 
 PK_DIRNAME="libcroco-0.6.11"
 PK_ARCHIVE="$PK_DIRNAME.tar.xz"

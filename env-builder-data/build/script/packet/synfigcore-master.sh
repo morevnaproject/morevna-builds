@@ -66,7 +66,7 @@ DEPS=" \
  ffmpeg-3.1.5 mlt-6.6.0 \
  boost-1.61.0 cairo-1.15.4 pango-1.40.3 \
  fribidi-0.19.7 harfbuzz-1.3.2 \
- glibmm-2.50.0 xmlpp-2.40.1 "
+ glibmm-2.58.1 xmlpp-2.40.1 "
 DEPS_NATIVE="libtool-2.4.6"
 
 PK_DIRNAME="synfig"

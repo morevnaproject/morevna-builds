@@ -1,4 +1,4 @@
-DEPS="glib-2.50.0"
+DEPS="glib-2.69.3"
 
 PK_DIRNAME="gobject-introspection-1.50.0"
 PK_ARCHIVE="$PK_DIRNAME.tar.xz"

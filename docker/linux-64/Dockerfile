@@ -64,6 +64,15 @@ RUN update-alternatives --set i686-w64-mingw32-gcc /usr/bin/i686-w64-mingw32-gcc
     update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32-gcc-posix && \
     update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
 
+RUN apt-get update && \
+DEBIAN_FRONTEND=noninteractive apt-get install -y -q \
+python3-pip ninja-build
+RUN pip3 install meson
+#RUN apt-get install -y -q  libpcre3-dev
+RUN apt-get install -y -q wine64 wine32:i386
+RUN apt-get install -y -q doxygen
+RUN apt-get install -y -q graphviz
+
 # Image metadata
 ENTRYPOINT ["/usr/bin/crossbuild"]
 CMD ["/bin/bash"]

@@ -78,5 +78,12 @@ unzip \
 zip \
 && apt-get clean
 
+RUN apt-get update && \
+DEBIAN_FRONTEND=noninteractive apt-get install -y -q \
+python3-pip ninja-build
+RUN pip3 install meson
+RUN apt-get install -y -q doxygen
+RUN apt-get install -y -q graphviz
+
 CMD ["/bin/bash"]
 WORKDIR /workdir

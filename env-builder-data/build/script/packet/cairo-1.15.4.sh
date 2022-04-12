@@ -1,4 +1,4 @@
-DEPS="png-1.6.26 pixman-0.34.0 glib-2.50.0 fontconfig-2.12.6"
+DEPS="png-1.6.26 pixman-0.34.0 glib-2.69.3 fontconfig-2.12.6"
 
 
 PK_DIRNAME="cairo-1.15.4"

@@ -1,4 +1,4 @@
-DEPS="glib-2.50.0"
+DEPS="glib-2.69.3"
 #DEPS_NATIVE="gobjectintrospection-1.50.0"
 
 PK_DIRNAME="atk-2.22.0"
