@@ -4,4 +4,5 @@
 !/log/.placeholder
 .directory
 nohup.out
+env-builder-data/build/download
 env-builder-data/build/packet
