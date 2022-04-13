@@ -26,11 +26,13 @@ pkinstall() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME"
     local LOCAL_BIN="$BUILD_PACKET_DIR/$PK_DIRNAME/gtk"
     local LOCAL_BIN_NATIVE="$ENVDEPS_NATIVE_PACKET_DIR/bin"
-    if [ "$PLATFORM" = "win" ] && [ ! -f "$LOCAL_BIN/gtk-query-immodules-3.0.exe.orig" ]; then
-         mv "$LOCAL_BIN/gtk-query-immodules-3.0.exe" "$LOCAL_BIN/gtk-query-immodules-3.0.exe.orig" || return 1
-         cp "$LOCAL_BIN_NATIVE/gtk-query-immodules-3.0" "$LOCAL_BIN/gtk-query-immodules-3.0.exe"
-         mv "$LOCAL_BIN/gtk-update-icon-cache.exe" "$LOCAL_BIN/gtk-update-icon-cache.exe.orig"
-         cp "$LOCAL_BIN_NATIVE/gtk-update-icon-cache" "$LOCAL_BIN/gtk-update-icon-cache.exe"
+    if [ "$PLATFORM" = "win" ]; then
+        [ -f "$LOCAL_BIN/gtk-query-immodules-3.0.exe.orig" ] || \
+            mv "$LOCAL_BIN/gtk-query-immodules-3.0.exe" "$LOCAL_BIN/gtk-query-immodules-3.0.exe.orig" || return 1
+        cp "$LOCAL_BIN_NATIVE/gtk-query-immodules-3.0" "$LOCAL_BIN/gtk-query-immodules-3.0.exe"
+        [ -f "$LOCAL_BIN/gtk-update-icon-cache.exe.orig" ] || \
+            mv "$LOCAL_BIN/gtk-update-icon-cache.exe" "$LOCAL_BIN/gtk-update-icon-cache.exe.orig"
+        cp "$LOCAL_BIN_NATIVE/gtk-update-icon-cache" "$LOCAL_BIN/gtk-update-icon-cache.exe"
     fi
     make install || return 1
     if [ "$PLATFORM" = "win" ]; then
