@@ -2,7 +2,7 @@ DEPS=""
 
 PK_DIRNAME="zlib-1.2.11"
 PK_ARCHIVE="$PK_DIRNAME.tar.gz"
-PK_URL="http://zlib.net/$PK_ARCHIVE"
+PK_URL="https://altushost-swe.dl.sourceforge.net/project/libpng/zlib/1.2.11/$PK_ARCHIVE"
 
 PK_CONFIGURE_OPTIONS_DEFAULT="--prefix=$INSTALL_PACKET_DIR --shared"
 PK_LICENSE_FILES="README"
