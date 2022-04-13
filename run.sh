@@ -45,8 +45,7 @@ docker run --rm \
     -t -i \
     --device /dev/fuse --cap-add SYS_ADMIN --security-opt apparmor:unconfined \
     -v $(pwd):/workdir \
-    -v "$PACKET_BUILD_DIR:/build/packet" \
-    -v "$SCRIPT_BUILD_DIR:/build/script" \
+    -v "$BUILD_DIR:/build" \
     --env PLATFORM="$PLATFORM" \
     --env ARCH="$ARCH" \
     --env NATIVE_PLATFORM="$NATIVE_PLATFORM" \

@@ -62,6 +62,7 @@ export PACKET_SCRIPT_DIR=$SCRIPT_DIR/packet
 if [ -z "$PACKET_BUILD_DIR" ]; then
 	export PACKET_BUILD_DIR=$ROOT_DIR/packet
 fi
+export DOWNLOAD_DIR=$PACKET_BUILD_DIR/../download
 export PACKET_DIR=$PACKET_BUILD_DIR/$PLATFORM-$ARCH
 export NATIVE_PACKET_DIR=$PACKET_BUILD_DIR/$NATIVE_PLATFORM-$NATIVE_ARCH-native
 
@@ -177,7 +178,7 @@ set_done() {
     local FUNC=$2
 	local COMPLETION_KEY="$PLATFORM:$ARCH:$PACKET:$FUNC"
 	if [ -z "$DRY_RUN" ]; then
-		touch "$PACKET_DIR/$PACKET/$FUNC.done"
+		touch `get_done_path "$PACKET_DIR" "$PACKET" "$FUNC"`
 	fi
 	COMPLETION_STATUS[$COMPLETION_KEY]=complete
 }
@@ -187,8 +188,8 @@ set_undone_silent() {
     local FUNC=$2
 	local COMPLETION_KEY="$PLATFORM:$ARCH:$PACKET:$FUNC"
 	if [ -z "$DRY_RUN" ]; then
-    	rm -f $PACKET_DIR/$PACKET/$FUNC.*.done
-		rm -f "$PACKET_DIR/$PACKET/$FUNC.done"
+    	#rm -f $PACKET_DIR/$PACKET/$FUNC.*.done
+		rm -f `get_done_path "$PACKET_DIR" "$PACKET" "$FUNC"`
 	fi
 	COMPLETION_STATUS[$COMPLETION_KEY]=incomplete
 }
@@ -221,7 +222,7 @@ check_packet_function() {
 	if [ ! -z "$FORCE" ]; then
 		return 1
 	fi
-    if [ ! -f "$PACKET_DIR/$PACKET/$FUNC.done" ]; then
+    if [ ! -f `get_done_path "$PACKET_DIR" "$PACKET" "$FUNC"` ]; then
         return 1
     fi
 }
@@ -275,7 +276,7 @@ set_environment_vars() {
 
     export CURRENT_PACKET_DIR="$PACKET_DIR/$NAME"
 	export FILES_PACKET_DIR="$PACKET_SCRIPT_DIR/$NAME.files"
-    export DOWNLOAD_PACKET_DIR="$CURRENT_PACKET_DIR/download"
+    export DOWNLOAD_PACKET_DIR="$DOWNLOAD_DIR/$NAME"
     export UNPACK_PACKET_DIR="$CURRENT_PACKET_DIR/unpack"
     export ENVDEPS_PACKET_DIR="$CURRENT_PACKET_DIR/envdeps"
     export ENVDEPS_NATIVE_PACKET_DIR="$CURRENT_PACKET_DIR/envdeps_native"
@@ -329,7 +330,11 @@ call_packet_function() {
     set_environment_vars $NAME
 
     local FUNC_NAME=pk$FUNC
-    local FUNC_CURRENT_PACKET_DIR=$CURRENT_PACKET_DIR/$FUNC
+    if [[ $FUNC == "download" ]]; then
+        local FUNC_CURRENT_PACKET_DIR=$DOWNLOAD_PACKET_DIR
+    else
+        local FUNC_CURRENT_PACKET_DIR=$CURRENT_PACKET_DIR/$FUNC
+    fi
 
     message "$NAME $FUNC"
     try_do_nothing $NAME $FUNC && return 0
@@ -457,6 +462,17 @@ set_toolchain() {
     fi
 }
 
+get_done_path() {
+    local F_PACKET_DIR=$1
+    local F_PACKET_NAME=$2
+    local F_FUNCTION_NAME=$3
+    if [[ $F_FUNCTION_NAME == "download" ]]; then
+        echo "$DOWNLOAD_DIR/$F_PACKET_NAME.done"
+    else
+        echo "$F_PACKET_DIR/$F_PACKET_NAME/$F_FUNCTION_NAME.done"
+    fi
+}
+
 is_complete() {
     local NAME=$1
     local FUNC=$2
@@ -521,7 +537,7 @@ is_complete() {
                             FAIL=1
                             break
                         fi
-                        if [ "$WAS_PACKET_DIR/$NAME/$FUNC.done" -ot "$PACKET_DIR/$DEP_LOCAL/$SUBFUNC_LOCAL.done" ]; then
+                        if [ `get_done_path "$WAS_PACKET_DIR" "$NAME" "$FUNC"` -ot `get_done_path  "$PACKET_DIR" "$DEP_LOCAL" "$SUBFUNC_LOCAL"` ]; then
                             FAIL=1
                             break
                         fi
@@ -545,7 +561,7 @@ is_complete() {
                     if ! is_complete $DEP_LOCAL $SUBFUNC_LOCAL; then
                         return 1
                     fi
-                  if [ "$PACKET_DIR/$NAME/$FUNC.done" -ot "$PACKET_DIR/$DEP_LOCAL/$SUBFUNC_LOCAL.done" ]; then
+                  if [ `get_done_path "$PACKET_DIR" "$NAME" "$FUNC"` -ot `get_done_path "$PACKET_DIR" "$DEP_LOCAL" "$SUBFUNC_LOCAL"` ]; then
                       return 1
                   fi
                 fi
@@ -554,7 +570,7 @@ is_complete() {
             if ! is_complete $NAME $SUBFUNC_LOCAL; then
                 return 1
             fi
-            if [ "$PACKET_DIR/$NAME/$FUNC.done" -ot "$PACKET_DIR/$NAME/$SUBFUNC_LOCAL.done" ]; then
+            if [ `get_done_path "$PACKET_DIR" "$NAME" "$FUNC"` -ot `get_done_path "$PACKET_DIR" "$NAME" "$SUBFUNC_LOCAL"` ]; then
                 return 1
             fi
        fi
