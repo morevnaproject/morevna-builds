@@ -1,4 +1,4 @@
-DEPS="jpeg-9b png-1.6.26 tiff-4.0.6 glib-2.50.0"
+DEPS="jpeg-9b png-1.6.26 tiff-4.0.6 glib-2.69.3"
 #DEPS_NATIVE="gobjectintrospection-1.50.0"
 
 PK_DIRNAME="gdk-pixbuf-2.36.0"

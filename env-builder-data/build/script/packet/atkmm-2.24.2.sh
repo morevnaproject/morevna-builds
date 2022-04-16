@@ -1,4 +1,4 @@
-DEPS="atk-2.22.0 glibmm-2.50.0"
+DEPS="atk-2.22.0 glibmm-2.58.1"
 
 PK_DIRNAME="atkmm-2.24.2"
 PK_ARCHIVE="$PK_DIRNAME.tar.xz"

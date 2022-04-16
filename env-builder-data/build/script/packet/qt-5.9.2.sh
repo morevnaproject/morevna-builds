@@ -1,4 +1,4 @@
-DEPS="png-1.6.26 glib-2.50.0"
+DEPS="png-1.6.26 glib-2.69.3"
 
 if [ "$PLATFORM" = "linux" ]; then
     DEPS="$DEPS pulseaudio-11.1"

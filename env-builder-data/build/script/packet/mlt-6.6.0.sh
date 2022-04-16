@@ -7,7 +7,7 @@
 # + jack
 # + glib
 
-DEPS="ffmpeg-3.1.5 xml-2.9.4 fftw-3.3.5 samplerate-0.1.9 sdl-1.2.15 sox-14.4.2 glib-2.50.0"
+DEPS="ffmpeg-3.1.5 xml-2.9.4 fftw-3.3.5 samplerate-0.1.9 sdl-1.2.15 sox-14.4.2 glib-2.69.3"
 
 PK_DIRNAME="mlt-6.6.0"
 PK_ARCHIVE="v6.6.0.tar.gz"

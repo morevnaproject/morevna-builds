@@ -1,4 +1,4 @@
-DEPS="jsonc-0.12.1 glib-2.50.0"
+DEPS="jsonc-0.12.1 glib-2.69.3"
 DEPS_NATIVE="automake-1.15"
 
 PK_DIRNAME="libmypaint"

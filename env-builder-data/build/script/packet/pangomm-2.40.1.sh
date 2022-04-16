@@ -1,4 +1,4 @@
-DEPS="pango-1.40.3 glibmm-2.50.0 cairomm-1.12.0"
+DEPS="pango-1.40.3 glibmm-2.58.1 cairomm-1.12.0"
 
 PK_DIRNAME="pangomm-2.40.1"
 PK_ARCHIVE="$PK_DIRNAME.tar.xz"

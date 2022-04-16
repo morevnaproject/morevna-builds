@@ -1,4 +1,4 @@
-DEPS="glib-2.50.0 fontconfig-2.12.6"
+DEPS="glib-2.69.3 fontconfig-2.12.6"
 
 PK_DIRNAME="harfbuzz-1.3.2"
 PK_ARCHIVE="$PK_DIRNAME.tar.bz2"
