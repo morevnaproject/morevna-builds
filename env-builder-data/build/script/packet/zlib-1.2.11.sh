@@ -13,6 +13,9 @@ if [ "$PLATFORM" = "win" ]; then
 pkbuild() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME" || return 1
     cp "$FILES_PACKET_DIR/Makefile.mingw" .
+    if [[ $PLATFORM == "win" ]] && [[ $ARCH == "32" ]]; then
+        sed -i 's|x86_64-w64-mingw32|i686-w64-mingw32|g'  Makefile.mingw
+    fi
     make -fMakefile.mingw SHARED_MODE=1 -j${THREADS} || return 1
 }
 pkinstall() {
