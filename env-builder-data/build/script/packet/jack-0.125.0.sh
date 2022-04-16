@@ -7,6 +7,8 @@ PK_LICENSE_FILES="AUTHORS COPYING COPYING.GPL COPYING.LGPL"
 
 source $INCLUDE_SCRIPT_DIR/inc-pkall-git.sh
 
+PK_CONFIGURE_OPTIONS="--enable-force-install"
+
 pkhook_prebuild() {
     ./autogen.sh
 }
