@@ -18,10 +18,12 @@
 #   gnomethemes                   | gtk, rsvg
 
 DEPS="synfigcore-master gtkmm-3.22.0"
-DEPS_NATIVE="libtool-2.4.6 synfigcore-master"
+DEPS_NATIVE="libtool-2.4.6"
 
 if [ "$PLATFORM" = "linux" ]; then
     DEPS="$DEPS jack-0.125.0"
+else
+    DEPS_NATIVE="synfigcore-master $DEPS_NATIVE"
 fi
 
 PK_DIRNAME="synfig"
