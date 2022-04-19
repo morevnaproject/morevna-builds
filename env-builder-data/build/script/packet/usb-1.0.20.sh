@@ -9,11 +9,11 @@ source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh
 pkbuild() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME"
     
-	if ! check_packet_function $NAME build.cunfigure; then
+	if ! check_packet_function $NAME build.configure; then
     	if ! ./configure --prefix=$INSTALL_PACKET_DIR; then
     		return 1
     	fi
-		set_done $NAME build.cunfigure
+		set_done $NAME build.configure
     fi
     
     if ! make; then

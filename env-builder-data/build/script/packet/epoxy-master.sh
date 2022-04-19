@@ -8,9 +8,9 @@ source $INCLUDE_SCRIPT_DIR/inc-pkall-git.sh
 
 pkbuild() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME" || return 1
-	if ! check_packet_function $NAME build.cunfigure; then
+	if ! check_packet_function $NAME build.configure; then
     	./autogen.sh --host=$HOST --prefix=$INSTALL_PACKET_DIR || return 1
-		set_done $NAME build.cunfigure
+		set_done $NAME build.configure
     fi
 	make -j${THREADS} || return 1
 }
