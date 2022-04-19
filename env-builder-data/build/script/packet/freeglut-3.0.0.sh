@@ -9,7 +9,7 @@ source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh
 pkbuild() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME"
     
-	if ! check_packet_function $NAME build.cunfigure; then
+	if ! check_packet_function $NAME build.configure; then
         local LOCAL_OPTIONS=
         if [ ! -z "$HOST" ]; then
             LOCAL_OPTIONS="$LOCAL_OPTIONS -DGNU_HOST=$HOST"
@@ -21,7 +21,7 @@ pkbuild() {
     	   -DCMAKE_INSTALL_PREFIX=$INSTALL_PACKET_DIR \
     	   $LOCAL_OPTIONS . \
     	 || return 1
-		set_done $NAME build.cunfigure
+		set_done $NAME build.configure
     fi
     
     make -j${THREADS} || return 1

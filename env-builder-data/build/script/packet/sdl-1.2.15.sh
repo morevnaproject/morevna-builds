@@ -10,7 +10,7 @@ source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh
 
 pkbuild() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME" || return 1
-    if ! check_packet_function $NAME build.cunfigure; then
+    if ! check_packet_function $NAME build.configure; then
         if [[ "$PLATFORM" != "win" ]]; then
             cp --remove-destination "$UNPACK_PACKET_DIR/$PK_DIRNAME/src/video/x11/SDL_x11sym.h" "src/video/x11" || return 1
             patch "src/video/x11/SDL_x11sym.h" "$FILES_PACKET_DIR/SDL_x11sym.h.patch" || return 1
@@ -20,7 +20,7 @@ pkbuild() {
          $PK_CONFIGURE_OPTIONS_DEFAULT \
          $PK_CONFIGURE_OPTIONS \
          || return 1
-        set_done $NAME build.cunfigure
+        set_done $NAME build.configure
     fi
     if ! CFLAGS="$PK_CFLAGS $CFLAGS" CPPFLAGS="$PK_CPPFLAGS $CPPFLAGS" \
      make -j${THREADS}; then
