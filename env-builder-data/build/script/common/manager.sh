@@ -188,7 +188,7 @@ set_undone_silent() {
     local FUNC=$2
 	local COMPLETION_KEY="$PLATFORM:$ARCH:$PACKET:$FUNC"
 	if [ -z "$DRY_RUN" ]; then
-    	#rm -f $PACKET_DIR/$PACKET/$FUNC.*.done
+    	rm -f $PACKET_DIR/$PACKET/$FUNC.*.done   # build.configure.done
 		rm -f `get_done_path "$PACKET_DIR" "$PACKET" "$FUNC"`
 	fi
 	COMPLETION_STATUS[$COMPLETION_KEY]=incomplete
