@@ -6,7 +6,7 @@ ar = '/usr/bin/x86_64-w64-mingw32-ar'
 strip = '/usr/bin/x86_64-w64-mingw32-strip'
 pkgconfig = '/usr/bin/pkg-config'
 windres = '/usr/bin/x86_64-w64-mingw32-windres'
-exe_wrapper = 'wine64'
+exe_wrapper = '/build/script/common/run-cross.sh'
 need_exe_wrapper = 'false'
 cmake = '/usr/bin/cmake'
 

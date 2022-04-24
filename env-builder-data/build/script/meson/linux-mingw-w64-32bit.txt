@@ -6,7 +6,7 @@ ar = '/usr/bin/i686-w64-mingw32-ar'
 strip = '/usr/bin/i686-w64-mingw32-strip'
 pkgconfig = '/usr/bin/pkg-config'
 windres = '/usr/bin/i686-w64-mingw32-windres'
-exe_wrapper = 'wine'
+exe_wrapper = '/build/script/common/run-cross.sh'
 ld = '/usr/bin/i686-w64-mingw32-ld'
 cmake = '/usr/bin/cmake'
 

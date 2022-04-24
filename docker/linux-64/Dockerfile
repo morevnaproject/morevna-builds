@@ -69,7 +69,7 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y -q \
 python3-pip ninja-build
 RUN pip3 install meson
 #RUN apt-get install -y -q  libpcre3-dev
-RUN apt-get install -y -q wine64 wine32:i386
+#RUN apt-get install -y -q wine64 wine32:i386
 RUN apt-get install -y -q doxygen
 RUN apt-get install -y -q graphviz
 
