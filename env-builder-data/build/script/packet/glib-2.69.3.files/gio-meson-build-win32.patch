@@ -1,0 +1,20 @@
+--- a/glib-2.69.3/gio/tests/meson.build.orig	2022-04-26 19:48:37.518664505 +0700
++++ b/glib-2.69.3/gio/tests/meson.build	2022-04-26 19:48:46.430623063 +0700
+@@ -724,11 +724,16 @@
+                  '-o','@OUTPUT@'])
+ 
+     # Rename symbol to match the one in the C file
++    if cc.get_id() == 'gcc' and host_system == 'windows'
++      underscore = '_'
++    else
++      underscore = ''
++    endif
+     test_resources_binary2 = custom_target('test_resources2.o',
+       input : test_resources_binary,
+       output : 'test_resources2.o',
+       command : [objcopy,
+-                 '--add-symbol','_g_binary_test1_resource_data=.data:0',
++                 '--add-symbol', underscore + '_g_binary_test1_resource_data=.data:0',
+                  '@INPUT@',
+                  '@OUTPUT@'])
+ 

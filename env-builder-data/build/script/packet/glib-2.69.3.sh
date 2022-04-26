@@ -18,6 +18,7 @@ pkbuild() {
     if [[ $TC_HOST == "i686-w64-mingw32" ]]; then
         export WINEPATH="$ENVDEPS_PACKET_DIR/bin/"
         export CROSS_FILE="--cross-file /build/script/meson/linux-mingw-w64-32bit.txt"
+        patch "gio/tests/meson.build" "$FILES_PACKET_DIR/gio-meson-build-win32.patch" || return 1
     elif [[ $TC_HOST == "x86_64-w64-mingw32" ]]; then
         export WINEPATH="$ENVDEPS_PACKET_DIR/bin/"
         export CROSS_FILE="--cross-file /build/script/meson/linux-mingw-w64-64bit.txt"
