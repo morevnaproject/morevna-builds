@@ -1,4 +1,4 @@
-DEPS="zlib-1.2.11 bzip2-1.0.6"
+DEPS="zlib-1.2.12 bzip2-1.0.6"
 
 PK_DIRNAME="boost_1_61_0"
 PK_ARCHIVE="$PK_DIRNAME.tar.bz2"

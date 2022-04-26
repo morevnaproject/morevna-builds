@@ -1,4 +1,4 @@
-DEPS="zlib-1.2.11"
+DEPS="zlib-1.2.12"
 
 PK_DIRNAME="libpng-1.6.26"
 PK_ARCHIVE="$PK_DIRNAME.tar.gz"
