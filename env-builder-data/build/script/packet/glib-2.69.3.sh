@@ -1,4 +1,4 @@
-DEPS="zlib-1.2.11 ffi-3.2.1 pcre-8.37"
+DEPS="zlib-1.2.12 ffi-3.2.1 pcre-8.37"
 if [ "$PLATFORM" != "linux" ]; then
     DEPS_NATIVE="glib-2.69.3"
 fi
