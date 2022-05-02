@@ -1,4 +1,4 @@
-DEPS="zlib-1.2.11 bzip2-1.0.6 jpeg-9b jasper-1.900.13 png-1.6.26 tiff-4.0.6 exiv2-0.25 lensfun-0.3.95 lcms2-2.12 gtk-2.20.1 gtkimageview-1.6.4"
+DEPS="zlib-1.2.12 bzip2-1.0.6 jpeg-9b jasper-1.900.13 png-1.6.26 tiff-4.0.6 exiv2-0.25 lensfun-0.3.95 lcms2-2.12 gtk-2.20.1 gtkimageview-1.6.4"
 
 PK_DIRNAME="ufraw-0.22"
 PK_ARCHIVE="$PK_DIRNAME.tar.gz"
