@@ -69,9 +69,12 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y -q \
 python3-pip ninja-build
 RUN pip3 install meson
 #RUN apt-get install -y -q  libpcre3-dev
-RUN apt-get install -y -q wine64 wine32:i386
+#RUN apt-get install -y -q wine64 wine32:i386
 RUN apt-get install -y -q doxygen
 RUN apt-get install -y -q graphviz
+RUN wget -qO - https://dl.winehq.org/wine-builds/winehq.key | apt-key add - && \
+apt-add-repository https://dl.winehq.org/wine-builds/debian/ && \
+apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install --install-recommends winehq-stable -y
 
 # Image metadata
 ENTRYPOINT ["/usr/bin/crossbuild"]
