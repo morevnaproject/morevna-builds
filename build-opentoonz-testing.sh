@@ -17,7 +17,7 @@ if [ -f $CONFIG_FILE ]; then
 	source $CONFIG_FILE
 fi
 
-SCRIPT="$BASE_DIR/env/run.sh"
+SCRIPT="$BASE_DIR/run.sh"
 
 run_appimage() {
     export PLATFORM="$1"
