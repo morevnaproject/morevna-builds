@@ -2,10 +2,10 @@ DEPS="synfigstudio-master"
 DEPS_NATIVE="nsis-3.08"
 
 PK_PYTHON_DIRNAME="python"
-PK_PYTHON_ARCHIVE="python-3.6.4.zip"
-PK_PYTHON_URL="https://www.synfig.org/files/$PK_PYTHON_ARCHIVE"
-PK_PYTHON_LXML_ARCHIVE="python-3.6.4-lxml.zip"
-PK_PYTHON_LXML_URL="https://www.synfig.org/files/$PK_PYTHON_LXML_ARCHIVE"
+PK_PYTHON_ARCHIVE="python-3.8.10-embed-win32.zip"
+PK_PYTHON_URL="https://www.python.org/ftp/python/3.8.10/$PK_PYTHON_ARCHIVE"
+PK_PYTHON_LXML_ARCHIVE="lxml-4.8.0-cp38-cp38-win32.whl"
+PK_PYTHON_LXML_URL="https://files.pythonhosted.org/packages/fd/d0/5cde325b208c6da1618ad083bc0015aaa942e01324418b4d9a5ede287351/$PK_PYTHON_LXML_ARCHIVE"
 PK_LICENSE_FILE="license-synfigstudio-master"
 
 pkfunc_register_file() {
@@ -44,7 +44,10 @@ pkdownload() {
 }
 
 pkunpack() {
+    [ -d "$PK_PYTHON_DIRNAME" ] || mkdir "$PK_PYTHON_DIRNAME"
+    cd "$PK_PYTHON_DIRNAME"
     unzip "$DOWNLOAD_PACKET_DIR/$PK_PYTHON_ARCHIVE" || return 1
+    cd ..
     unzip "$DOWNLOAD_PACKET_DIR/$PK_PYTHON_LXML_ARCHIVE" || return 1
 }
 
@@ -106,8 +109,10 @@ pkinstall_release() {
 
     # add portable python
     copy "$INSTALL_PACKET_DIR/$PK_PYTHON_DIRNAME" "$LOCAL_INSTALLER_DIR/python" || return 1
+    sed -i 's|#import site|import site|g' "$LOCAL_INSTALLER_DIR/python/"python*._pth || return 1
+    mkdir -p "$LOCAL_INSTALLER_DIR/python/Lib/site-packages/" || return 1
     copy "$INSTALL_PACKET_DIR/lxml" "$LOCAL_INSTALLER_DIR/python/Lib/site-packages/lxml" || return 1
-    copy "$INSTALL_PACKET_DIR/lxml-4.4.2.dist-info" "$LOCAL_INSTALLER_DIR/python/Lib/site-packages/lxml-4.4.2.dist-info" || return 1
+    copy "$INSTALL_PACKET_DIR/"lxml-*.dist-info "$LOCAL_INSTALLER_DIR/python/Lib/site-packages/" || return 1
 
     cd "$LOCAL_INSTALLER_DIR" || return 1
 
