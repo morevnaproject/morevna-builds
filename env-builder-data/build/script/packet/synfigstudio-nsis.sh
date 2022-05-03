@@ -2,10 +2,30 @@ DEPS="synfigstudio-master"
 DEPS_NATIVE="nsis-3.08"
 
 PK_PYTHON_DIRNAME="python"
-PK_PYTHON_ARCHIVE="python-3.8.10-embed-win32.zip"
-PK_PYTHON_URL="https://www.python.org/ftp/python/3.8.10/$PK_PYTHON_ARCHIVE"
-PK_PYTHON_LXML_ARCHIVE="lxml-4.8.0-cp38-cp38-win32.whl"
-PK_PYTHON_LXML_URL="https://files.pythonhosted.org/packages/fd/d0/5cde325b208c6da1618ad083bc0015aaa942e01324418b4d9a5ede287351/$PK_PYTHON_LXML_ARCHIVE"
+
+
+PK_PYTHON_ARCHIVE_32="python-3.8.10-embed-win32.zip"
+PK_PYTHON_URL_32="https://www.python.org/ftp/python/3.8.10/$PK_PYTHON_ARCHIVE_32"
+PK_PYTHON_LXML_ARCHIVE_32="lxml-4.8.0-cp38-cp38-win32.whl"
+PK_PYTHON_LXML_URL_32="https://files.pythonhosted.org/packages/fd/d0/5cde325b208c6da1618ad083bc0015aaa942e01324418b4d9a5ede287351/$PK_PYTHON_LXML_ARCHIVE_32"
+
+PK_PYTHON_ARCHIVE_64="python-3.8.10-embed-amd64.zip"
+PK_PYTHON_URL_64="https://www.python.org/ftp/python/3.8.10/$PK_PYTHON_ARCHIVE_64"
+PK_PYTHON_LXML_ARCHIVE_64="lxml-4.8.0-cp38-cp38-win_amd64.whl"
+PK_PYTHON_LXML_URL_64="https://files.pythonhosted.org/packages/e5/21/e21acad8935d260e313bce95b586ae07d8bea853b11f8e9942b330260804/$PK_PYTHON_LXML_ARCHIVE_64"
+
+if [[ $ARCH == 32 ]]; then
+    PK_PYTHON_ARCHIVE=$PK_PYTHON_ARCHIVE_32
+    PK_PYTHON_URL=$PK_PYTHON_URL_32
+    PK_PYTHON_LXML_ARCHIVE=$PK_PYTHON_LXML_ARCHIVE_32
+    PK_PYTHON_LXML_URL=$PK_PYTHON_LXML_URL_32
+else
+    PK_PYTHON_ARCHIVE=$PK_PYTHON_ARCHIVE_64
+    PK_PYTHON_URL=$PK_PYTHON_URL_64
+    PK_PYTHON_LXML_ARCHIVE=$PK_PYTHON_LXML_ARCHIVE_64
+    PK_PYTHON_LXML_URL=$PK_PYTHON_LXML_URL_64
+fi
+
 PK_LICENSE_FILE="license-synfigstudio-master"
 
 pkfunc_register_file() {
@@ -39,8 +59,10 @@ pkfunc_register_file() {
 
 # download portable python and pass downloaded files through all build phases
 pkdownload() {
-    wget -c "$PK_PYTHON_URL" -O "$PK_PYTHON_ARCHIVE" || return 1
-    wget -c "$PK_PYTHON_LXML_URL" -O "$PK_PYTHON_LXML_ARCHIVE" || return 1
+    wget -c "$PK_PYTHON_URL_32" -O "$PK_PYTHON_ARCHIVE_32" || return 1
+    wget -c "$PK_PYTHON_URL_64" -O "$PK_PYTHON_ARCHIVE_64" || return 1
+    wget -c "$PK_PYTHON_LXML_URL_32" -O "$PK_PYTHON_LXML_ARCHIVE_32" || return 1
+    wget -c "$PK_PYTHON_LXML_URL_64" -O "$PK_PYTHON_LXML_ARCHIVE_64" || return 1
 }
 
 pkunpack() {
