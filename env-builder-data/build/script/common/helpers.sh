@@ -162,14 +162,18 @@ sha512dir() {
 copy_system_lib() {
     local SRC_NAME=$1
     local DST_PATH=$2
-    cp --remove-destination /lib/x86_64-linux-gnu/$SRC_NAME* "$DST_PATH" &> /dev/null
-    cp --remove-destination /lib/i386-linux-gnu/$SRC_NAME* "$DST_PATH" &> /dev/null
-    cp --remove-destination /usr/lib/x86_64-linux-gnu/$SRC_NAME* "$DST_PATH" &> /dev/null
-    cp --remove-destination /usr/lib/i386-linux-gnu/$SRC_NAME* "$DST_PATH" &> /dev/null
-    cp --remove-destination /usr/local/lib/$SRC_NAME* "$DST_PATH" &> /dev/null
-    cp --remove-destination /usr/local/lib64/$SRC_NAME* "$DST_PATH" &> /dev/null
-    cp --remove-destination /usr/local/lib/x86_64-linux-gnu/$SRC_NAME* "$DST_PATH" &> /dev/null
-    cp --remove-destination /usr/local/lib/i386-linux-gnu/$SRC_NAME* "$DST_PATH" &> /dev/null
+    
+    if [[ $ARCH == 32 ]]; then
+        cp --remove-destination /lib/i386-linux-gnu/$SRC_NAME* "$DST_PATH" &> /dev/null
+        cp --remove-destination /usr/lib/i386-linux-gnu/$SRC_NAME* "$DST_PATH" &> /dev/null
+        cp --remove-destination /usr/local/lib/$SRC_NAME* "$DST_PATH" &> /dev/null
+        cp --remove-destination /usr/local/lib/i386-linux-gnu/$SRC_NAME* "$DST_PATH" &> /dev/null
+    else
+        cp --remove-destination /lib/x86_64-linux-gnu/$SRC_NAME* "$DST_PATH" &> /dev/null
+        cp --remove-destination /usr/lib/x86_64-linux-gnu/$SRC_NAME* "$DST_PATH" &> /dev/null
+        cp --remove-destination /usr/local/lib64/$SRC_NAME* "$DST_PATH" &> /dev/null
+        cp --remove-destination /usr/local/lib/x86_64-linux-gnu/$SRC_NAME* "$DST_PATH" &> /dev/null
+    fi
     if ! (ls "$DST_PATH/$SRC_NAME"* &> /dev/null); then
         echo "$SRC_NAME not found in system libraries"
         return 1
