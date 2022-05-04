@@ -40,9 +40,17 @@ fi
 
 $SCRIPT_DIR/docker/linux-$NATIVE_ARCH/build.sh
 
+if [[ $- == *i* ]]
+then
+    INTERACTIVE_FLAGS="-t -i"
+else
+    INTERACTIVE_FLAGS=""
+fi
+
+
 # FUSE required for AppImage
 docker run --rm \
-    -t -i \
+    $INTERACTIVE_FLAGS \
     --device /dev/fuse --cap-add SYS_ADMIN --security-opt apparmor:unconfined \
     -v $(pwd):/workdir \
     -v "$BUILD_DIR:/build" \
