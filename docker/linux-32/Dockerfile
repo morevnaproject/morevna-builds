@@ -84,6 +84,7 @@ python3-pip ninja-build
 RUN pip3 install meson
 RUN apt-get install -y -q doxygen
 RUN apt-get install -y -q graphviz
+RUN apt-get install -y -q gfortran
 
 CMD ["/bin/bash"]
 WORKDIR /workdir

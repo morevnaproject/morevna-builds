@@ -75,6 +75,7 @@ RUN apt-get install -y -q graphviz
 RUN wget -qO - https://dl.winehq.org/wine-builds/winehq.key | apt-key add - && \
 apt-add-repository https://dl.winehq.org/wine-builds/debian/ && \
 apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install --install-recommends winehq-stable -y
+RUN apt-get install -y -q gfortran
 
 # Image metadata
 ENTRYPOINT ["/usr/bin/crossbuild"]
