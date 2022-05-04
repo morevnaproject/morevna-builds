@@ -40,7 +40,7 @@ fi
 
 $SCRIPT_DIR/docker/linux-$NATIVE_ARCH/build.sh
 
-if [[ $- == *i* ]]
+if [ -t 0 ]
 then
     INTERACTIVE_FLAGS="-t -i"
 else
