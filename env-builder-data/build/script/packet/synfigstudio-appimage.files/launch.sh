@@ -57,7 +57,7 @@ if [ "$1" = "--appimage-exec" ]; then
 	fi
 elif [ -z "$2" ]; then
 	if ( which zenity >/dev/null ) ; then
-	  "$BASE_DIR/bin/fc-cache" |tee >(LD_LIBRARY_PATH="" FONTCONFIG_PATH="" zenity --progress --pulsate --title="Fontconfig" --no-cancel --auto-close --text="Please wait, generating font cache...")
+	  "$BASE_DIR/bin/fc-cache" |tee >(LD_LIBRARY_PATH="" FONTCONFIG_PATH="" zenity --progress --pulsate --title="Synfig Studio" --no-cancel --auto-close --text="Please wait, generating font cache...")
 	elif ( which kdialog >/dev/null ) && ( which qdbus >/dev/null ) ; then
 	  export dbusRef=$(LD_LIBRARY_PATH="" FONTCONFIG_PATH="" kdialog --title="Fontconfig" --progressbar "Please wait, generating font cache..." )
 	  LD_LIBRARY_PATH="" FONTCONFIG_PATH="" qdbus $dbusRef Set "" value 10
