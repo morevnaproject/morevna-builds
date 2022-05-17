@@ -33,7 +33,10 @@ pkinstall_release() {
     
     mkdir -p "$APPDIR/usr/share/icons/default/128x128/apps/"
     mkdir -p "$APPDIR/usr/share/icons/default/128x128/mimetypes/"
-    if [ -d "$ENVDEPS_RELEASE_PACKET_DIR/share/synfig/icons/classic/" ]; then
+    if [ -d "$ENVDEPS_RELEASE_PACKET_DIR/share/synfig/icons/classic/128x128/" ]; then
+        cp "$ENVDEPS_RELEASE_PACKET_DIR/share/synfig/icons/classic/128x128/synfig_icon.png" "$APPDIR/usr/share/icons/default/128x128/apps/synfigstudio.png" || return 1
+        cp "$ENVDEPS_RELEASE_PACKET_DIR/share/synfig/icons/classic/128x128/sif_icon.png" "$APPDIR/usr/share/icons/default/128x128/mimetypes/application-x-sif.png" || return 1
+    elif [ -d "$ENVDEPS_RELEASE_PACKET_DIR/share/synfig/icons/classic/" ]; then
         cp "$ENVDEPS_RELEASE_PACKET_DIR/share/synfig/icons/classic/synfig_icon.png" "$APPDIR/usr/share/icons/default/128x128/apps/synfigstudio.png" || return 1
         cp "$ENVDEPS_RELEASE_PACKET_DIR/share/synfig/icons/classic/sif_icon.png" "$APPDIR/usr/share/icons/default/128x128/mimetypes/application-x-sif.png" || return 1
     else
