@@ -56,6 +56,12 @@ if [ "$1" = "--appimage-exec" ]; then
 		exit 1
 	fi
 elif [ -z "$2" ]; then
+	HINTFILE=${HOME}/.cache/fontconfig/synfigstudio-appimage-1
+	if [ ! -f ${HINTFILE} ]; then
+		rm -rf ${HOME}/.cache/fontconfig || true
+		mkdir -p ${HOME}/.cache/fontconfig || true
+		touch ${HINTFILE}
+	fi
 	if ( which zenity >/dev/null ) ; then
 	  "$BASE_DIR/bin/fc-cache" |tee >(LD_LIBRARY_PATH="" FONTCONFIG_PATH="" zenity --progress --pulsate --title="Synfig Studio" --no-cancel --auto-close --text="Please wait, generating font cache...")
 	elif ( which kdialog >/dev/null ) && ( which qdbus >/dev/null ) ; then
