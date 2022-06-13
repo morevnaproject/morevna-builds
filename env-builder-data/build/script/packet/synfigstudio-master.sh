@@ -95,7 +95,7 @@ pkinstall() {
         local LOCAL_DIR="/usr/$HOST/bin/"
         cp "$LOCAL_DIR"/libgettextlib*.dll "$TARGET" || return 1
         cp "$LOCAL_DIR"/libintl*.dll       "$TARGET" || return 1
-        cp "$LOCAL_DIR"/iconv*.dll      "$TARGET" || return 1
+        cp "$LOCAL_DIR"/libiconv*.dll      "$TARGET" || return 1
     else
         local TARGET="$INSTALL_PACKET_DIR/lib/"
         copy_system_gcc_libs               "$TARGET" || return 1
@@ -116,7 +116,7 @@ pkhook_postlicense() {
         copy_system_license gcc                    "$TARGET" || return 1
         copy_system_license mingw-w64              "$TARGET" || return 1
         copy_system_license gettext                "$TARGET" || return 1
-        copy_system_license win-iconv-mingw-w64-dev "$TARGET" || return 1
+        copy_system_license iconv                  "$TARGET" || return 1
     else
         copy_system_license gcc                    "$TARGET" || return 1
         copy_system_license libudev                "$TARGET" || return 1

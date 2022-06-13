@@ -7,7 +7,8 @@ DIR_ICONV="libiconv-$VER_ICONV"
 ARH_ICONV="$DIR_ICONV.tar.gz"
 URL_ICONV="https://ftp.gnu.org/pub/gnu/libiconv/$ARH_ICONV"
 
-VER_GETTEXT="0.19.7"
+#VER_GETTEXT="0.19.7"
+VER_GETTEXT="0.20.2"
 DIR_GETTEXT="gettext-$VER_GETTEXT"
 ARH_GETTEXT="$DIR_GETTEXT.tar.gz"
 URL_GETTEXT="https://ftp.gnu.org/pub/gnu/gettext/$ARH_GETTEXT"
@@ -39,6 +40,8 @@ install_iconv() {
             --prefix="/usr/$ARCH"
     make -j$THREADS
     make install
+    [ -d "/usr/share/licenses/iconv/" ] || mkdir -p "/usr/share/licenses/iconv/"
+    cp -f ../../download/$DIR_ICONV/COPYING* "/usr/share/licenses/iconv/"
 }
 
 install_gettext() {
@@ -61,12 +64,14 @@ install_gettext() {
             --prefix="/usr/$ARCH"
     make -j$THREADS
     make install
+    [ -d "/usr/share/licenses/gettext/" ] || mkdir -p "/usr/share/licenses/gettext/"
+    cp -f ../../download/$DIR_GETTEXT/COPYING* "/usr/share/licenses/gettext/"
 }
 
 
 install() {
     local ARCH="$1"
-    #install_iconv "$ARCH"
+    install_iconv "$ARCH"
     install_gettext "$ARCH"
 }
 
