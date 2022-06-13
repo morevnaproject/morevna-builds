@@ -49,8 +49,6 @@ xutils-dev \
 unzip \
 # for portable versions \
 zip \
-# migw tools \
-win-iconv-mingw-w64-dev \
 # fix ca-certificates issue - https://github.com/multiarch/crossbuild/issues/63
 libssl1.0.2 openssl libgnutls30 \
 && apt-get clean
