@@ -8,6 +8,7 @@ PK_LICENSE_FILES="AUTHORS COPYING COPYING-LGPL-2.1 COPYING-MPL-1.1"
 
 source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh
 
-if [ "$PLATFORM" = "linux" ] || [ ! -z "$IS_NATIVE" ]; then
-    DEPS="$DEPS xcbfull-1.12"
-fi
+# not needed for debian >= stretch
+#if [ "$PLATFORM" = "linux" ] || ( [ ! -z "$IS_NATIVE" ] && [[ "$NATIVE_PLATFORM" != "mingw" ]] ); then
+#    DEPS="$DEPS xcbfull-1.12"
+#fi

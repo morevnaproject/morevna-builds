@@ -99,4 +99,13 @@ pkinstall() {
     if ! make install; then
         return 1
     fi
+# We do not use Wine, because it is a way too slow
+#    if [ "$PLATFORM" = "win" ]; then
+#        cat <<EOT >>  "${INSTALL_PACKET_DIR}/bin/synfig"
+##!/bin/bash
+#
+#wine ${INSTALL_PACKET_DIR}/bin/synfig.exe "\$@"
+#EOT
+#        chmod +x "${INSTALL_PACKET_DIR}/bin/synfig"
+#    fi
 }

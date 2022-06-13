@@ -68,6 +68,12 @@ pkbuild() {
     
     CFLAGS="$PK_CFLAGS $CFLAGS" CPPFLAGS="$PK_CPPFLAGS $CPPFLAGS" LDFLAGS="$PK_LDFLAGS $LDFLAGS" \
      CC="$HOST-gcc" CXX="$HOST-g++" make -j${THREADS} || return 1
+
+    # This fix is required when we migrated from Debian 9 stretch to version 11 bullseye
+    # In this version we use newer MinGW, which adds ".exe" at the end of all binary filenames
+    # MLT tries to compile "src/melt/melt", but mingw produces "src/melt/melt.exe". This results in error.
+    # I believe this is fixed in newer versions of MLT, but leaving this like this for now.
+    [ -f src/melt/melt ] || mv src/melt/melt.exe src/melt/melt || return 1
 }
 
 pkhook_postinstall() {

@@ -23,22 +23,30 @@ fi
 if [[ "$PLATFORM" == "linux" ]] && [[ "$ARCH" == "32" ]]; then
     # see https://github.com/multiarch/crossbuild/issues/7
     #DOCKER_IMAGE="kohanyirobert/crossbuild-i386-linux-gnu"
-    DOCKER_IMAGE="morevnaproject/builds-32"
+    DOCKER_IMAGE="morevnaproject/builds-linux32"
     # ATTENTION! The NATIVE_PLATFORM should not be equal to PLATFORM ("linux"), otherwise bad things happen.
     NATIVE_PLATFORM="debian"
     NATIVE_ARCH="32"
     SETARCH="setarch i686"
+    $SCRIPT_DIR/docker/linux-$NATIVE_ARCH/build.sh || exit 1
+elif [[ "$PLATFORM" == "win" ]]; then
+    DOCKER_IMAGE="morevnaproject/builds-mingw"
+    NATIVE_PLATFORM="mingw"
+    NATIVE_ARCH="64"
+    SETARCH=""
+    $SCRIPT_DIR/docker/mingw/build.sh || exit 1
 else
     #DOCKER_IMAGE="multiarch/crossbuild"
     # docker build -t morevnaproject/builds-64 .
-    DOCKER_IMAGE="morevnaproject/builds-64"
+    DOCKER_IMAGE="morevnaproject/builds-linux64"
     # ATTENTION! The NATIVE_PLATFORM should not be equal to PLATFORM ("linux"), otherwise bad things happen.
     NATIVE_PLATFORM="debian"
     NATIVE_ARCH="64"
     SETARCH=""
+    $SCRIPT_DIR/docker/linux-$NATIVE_ARCH/build.sh || exit 1
 fi
 
-$SCRIPT_DIR/docker/linux-$NATIVE_ARCH/build.sh
+
 
 if [ -t 0 ]
 then
