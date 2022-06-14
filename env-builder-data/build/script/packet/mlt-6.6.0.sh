@@ -45,6 +45,10 @@ pkbuild() {
         return 1
     fi
 
+    PK_CFLAGS="-I/usr/$HOST/include/"
+    PK_CPPFLAGS="-I/usr/$HOST/include/"
+    PK_LDFLAGS="-L/usr/$HOST/lib"
+
     if ! check_packet_function $NAME build.configure; then
         CFLAGS="$PK_CFLAGS $CFLAGS" CPPFLAGS="$PK_CPPFLAGS $CPPFLAGS" LDFLAGS="$PK_LDFLAGS $LDFLAGS" \
         ./configure \
@@ -62,14 +66,8 @@ pkbuild() {
         fi
     fi
     
-    PK_CFLAGS="-I/usr/$HOST/include/"
-    PK_CPPFLAGS="-I/usr/$HOST/include/"
-    PK_LDFLAGS="-L/usr/$HOST/lib"
-    PK_CC=$HOST-gcc
-    PK_CXX=$HOST-g++
-    
     CFLAGS="$PK_CFLAGS $CFLAGS" CPPFLAGS="$PK_CPPFLAGS $CPPFLAGS" LDFLAGS="$PK_LDFLAGS $LDFLAGS" \
-     CC="$PK_CC" CXX="$PK_CXX" make -j${THREADS} || return 1
+     CC="$HOST-gcc" CXX="$HOST-g++" make -j${THREADS} || return 1
 }
 
 pkhook_postinstall() {
