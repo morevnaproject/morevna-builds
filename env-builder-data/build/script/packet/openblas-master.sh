@@ -29,7 +29,7 @@ CC                         = ${CC:-gcc}
 FC                         = ${FORTRAN:-gfortran}
 TARGET                     = generic
 ${LOCAL_BINARY_OPTION}
-HOSTCC                     = PATH=${INITIAL_PATH} /usr/bin/gcc
+HOSTCC                     = PATH=${INITIAL_PATH} /usr/local/bin/gcc
 USE_THREAD                 = 1
 NUM_THREADS                = 24
 BUILD_LAPACK_DEPRECATED    = 1

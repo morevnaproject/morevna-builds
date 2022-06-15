@@ -29,6 +29,17 @@ libxml2-dev \
 lzma-dev \
 openssl \
 libssl-dev \
+&& apt-get clean
+
+# upgrade gcc
+RUN DEBIAN_FRONTEND=noninteractive apt-get -yq install libgmp-dev libmpfr-dev libmpc-dev && apt-get clean
+COPY files/install-gcc.sh /
+RUN setarch i686 /install-gcc.sh
+
+RUN apt-get remove -y -q gcc g++-6 gcc-6-multilib clang
+
+RUN apt-get update && \
+DEBIAN_FRONTEND=noninteractive apt-get install -y -q \
 pkg-config \
 csh \
 xsltproc \

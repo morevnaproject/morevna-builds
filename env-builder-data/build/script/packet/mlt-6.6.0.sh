@@ -66,8 +66,16 @@ pkbuild() {
         fi
     fi
     
+    if [ $PLATFORM != "linux" ]; then
+        PK_CC="$HOST-gcc"
+        PK_CXX="$HOST-g++"
+    else
+        PK_CC="gcc"
+        PK_CXX="g++"
+    fi
+    
     CFLAGS="$PK_CFLAGS $CFLAGS" CPPFLAGS="$PK_CPPFLAGS $CPPFLAGS" LDFLAGS="$PK_LDFLAGS $LDFLAGS" \
-     CC="$HOST-gcc" CXX="$HOST-g++" make -j${THREADS} || return 1
+     CC="$PK_CC" CXX="$PK_CXX" make -j${THREADS} || return 1
 
     # This fix is required when we migrated from Debian 9 stretch to version 11 bullseye
     # In this version we use newer MinGW, which adds ".exe" at the end of all binary filenames

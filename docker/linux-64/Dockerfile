@@ -30,6 +30,11 @@ RUN set -x; apt-get update                                     \
         openssl                                        \
         libssl-dev                                     \
  && apt-get clean
+ 
+# upgrade gcc
+RUN DEBIAN_FRONTEND=noninteractive apt-get -yq install libgmp-dev libmpfr-dev libmpc-dev gcc-multilib && apt-get clean
+COPY files/install-gcc.sh /
+RUN /install-gcc.sh
 
 RUN apt-get update && \
 DEBIAN_FRONTEND=noninteractive apt-get install -y -q \
@@ -87,6 +92,8 @@ RUN apt-get update && \
 DEBIAN_FRONTEND=noninteractive apt-get install -y -q \
 python3-pip ninja-build
 RUN pip3 install meson
+
+RUN apt-get remove -y -q gcc g++-6 gcc-6-multilib clang
 
 CMD ["/bin/bash"]
 WORKDIR /workdir
