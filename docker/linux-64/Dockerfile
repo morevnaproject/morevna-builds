@@ -1,4 +1,35 @@
-FROM multiarch/crossbuild
+FROM buildpack-deps:stretch-curl
+
+RUN set -x; apt-get update                                     \
+ && apt-get install -y -q                              \
+        autoconf                                       \
+        automake                                       \
+        autotools-dev                                  \
+        bc                                             \
+#        binfmt-support                                 \
+        build-essential                                \
+        ccache                                         \
+        clang                                          \
+        curl                                           \
+        devscripts                                     \
+        gdb                                            \
+        git-core                                       \
+        libtool                                        \
+        llvm                                           \
+#        mercurial                                      \
+#        multistrap                                     \
+        patch                                          \
+        software-properties-common                     \
+        subversion                                     \
+        wget                                           \
+        xz-utils                                       \
+        cmake                                          \
+#        qemu-user-static                               \
+        libxml2-dev                                    \
+        lzma-dev                                       \
+        openssl                                        \
+        libssl-dev                                     \
+ && apt-get clean
 
 RUN apt-get update && \
 DEBIAN_FRONTEND=noninteractive apt-get install -y -q \
@@ -62,7 +93,5 @@ RUN apt-get install -y -q doxygen
 RUN apt-get install -y -q graphviz
 RUN apt-get install -y -q gfortran
 
-# Image metadata
-ENTRYPOINT ["/usr/bin/crossbuild"]
 CMD ["/bin/bash"]
 WORKDIR /workdir
