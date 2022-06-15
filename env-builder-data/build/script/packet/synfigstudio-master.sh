@@ -43,6 +43,7 @@ pkhook_version() {
 }
 
 pkbuild() {
+    #export WINEPATH="${ENVDEPS_PACKET_DIR}/bin/;$WINEPATH_BASE"
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME/synfig-studio" || return 1
     if ! check_packet_function $NAME build.configure; then
         ./bootstrap.sh || return 1
@@ -54,7 +55,7 @@ pkbuild() {
          || return 1
         set_done $NAME build.configure
     fi
-    make -j${THREADS} || make || make || return 1
+    make -j${THREADS} || make || return 1
 }
 
 pkinstall() {
@@ -67,8 +68,10 @@ pkinstall() {
 
     # configuration
     if [ "$PLATFORM" = "win" ]; then
-        mv "share/pixmaps/synfigstudio/"* "share/pixmaps/"
-        mkdir -p "share/gtk-3.0"
+        if [ -d "share/pixmaps/synfigstudio/" ]; then
+            mv "share/pixmaps/synfigstudio/"* "share/pixmaps/" || return 1
+        fi
+        mkdir -p "share/gtk-3.0" || return 1
         cp "$BUILD_PACKET_DIR/$PK_DIRNAME/autobuild/gtk-3.0/settings.ini" "share/gtk-3.0/" || return 1
         mkdir -p "lib/gdk-pixbuf-2.0/2.10.0"
         cp "$FILES_PACKET_DIR/loaders.cache" "lib/gdk-pixbuf-2.0/2.10.0/"  || return 1
@@ -82,7 +85,8 @@ pkinstall() {
         local TARGET="$INSTALL_PACKET_DIR/bin/"
 
         #local LOCAL_DIR="/usr/local/$HOST/sys-root/$HOST/lib/"
-        local LOCAL_DIR="/usr/lib/gcc/$HOST/6.3-posix/"
+        #local LOCAL_DIR="/usr/lib/gcc/$HOST/6.3-posix/"
+        local LOCAL_DIR="/usr/lib/gcc/$HOST/10-posix/"
         cp "$LOCAL_DIR"/libgcc*.dll        "$TARGET" || return 1
         cp "$LOCAL_DIR"/libstdc*.dll       "$TARGET" || return 1
         cp "$LOCAL_DIR"/libquadmath*.dll   "$TARGET" || return 1
@@ -112,7 +116,6 @@ pkinstall() {
 pkhook_postlicense() {
     local TARGET="$LICENSE_PACKET_DIR"
     if [ "$PLATFORM" = "win" ]; then
-        local LOCAL_DIR="/usr/$HOST/sys-root/mingw/bin/"
         copy_system_license gcc                    "$TARGET" || return 1
         copy_system_license mingw-w64              "$TARGET" || return 1
         copy_system_license gettext                "$TARGET" || return 1

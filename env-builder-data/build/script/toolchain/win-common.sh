@@ -8,7 +8,10 @@ export CROSS_ROOT="/usr/${CROSS_TRIPLE}"
 #export TC_PATH="${CROSS_ROOT}/bin:$INITIAL_PATH"
 export TC_LD_LIBRARY_PATH="$CROSS_ROOT/lib:$INITIAL_LD_LIBRARY_PATH"
 
-export TC_LDFLAGS=" -L${CROSS_ROOT}/lib -L/usr/lib/gcc/${CROSS_TRIPLE}/6.3-posix/ $INITIAL_LDFLAGS"
+export TC_LDFLAGS=" -L${CROSS_ROOT}/lib -L/usr/lib/gcc/${CROSS_TRIPLE}/10-posix/ -L/usr/lib/gcc/${CROSS_TRIPLE}/6.3-posix/ $INITIAL_LDFLAGS"
+
+export WINEPATH_BASE="/usr/${CROSS_TRIPLE}/bin/;/usr/lib/gcc/${CROSS_TRIPLE}/10-posix;/usr/${CROSS_TRIPLE}/lib/"
+export WINEPATH="$WINEPATH_BASE"
 
 # Optional c/c++ flags from Fedora MinGW:
 #   -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions --param=ssp-buffer-size=4
