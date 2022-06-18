@@ -28,7 +28,9 @@ qemu-user-static \
 libxml2-dev \
 lzma-dev \
 openssl \
-libssl-dev \
+# libssl-dev replaced with libssl1.0-dev because of QT build error
+# see here for details - https://forum.qt.io/topic/83279/qt-5-9-1-static-build-linux
+libssl1.0-dev \
 pkg-config \
 csh \
 xsltproc \
