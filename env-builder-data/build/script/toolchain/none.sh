@@ -19,6 +19,6 @@ export TC_LD_LIBRARY_PATH="$CROSS_ROOT/lib:/usr/local/lib:/usr/local/lib64:$INIT
 
 export TC_LDFLAGS=" -L$CROSS_ROOT/lib $INITIAL_LDFLAGS"
 export TC_PKG_CONFIG_PATH="/usr/lib/${CROSS_TRIPLE}/pkgconfig/:/usr/share/pkgconfig/"
-
+export TC_ACLOCAL_PATH="/usr/share/aclocal"
 
 
