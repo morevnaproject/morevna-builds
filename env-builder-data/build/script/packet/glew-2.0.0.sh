@@ -13,8 +13,8 @@ pkbuild() {
 cat > "config/Makefile.mingw-$PLATFORM-$ARCH" << EOF
 NAME          := glew32
 HOST          := $HOST
-CC            := $CC
-LD            := $LD
+CC            := $HOST-gcc
+LD            := $HOST-ld
 LN            :=
 STRIP         :=
 LDFLAGS.GL     = -lopengl32 -lgdi32 -luser32 -lkernel32 $LDFLAGS
@@ -29,9 +29,8 @@ LIB.STATIC     = lib\$(NAME).a
 LDFLAGS.SO     = -shared -soname \$(LIB.SONAME) --out-implib lib/\$(LIB.DEVLNK)
 EOF
         
-        if ! GLEW_PREFIX=$INSTALL_PACKET_DIR GLEW_DEST=$INSTALL_PACKET_DIR SYSTEM=mingw-$PLATFORM-$ARCH make -j${THREADS}; then
-            return 1
-        fi
+        GLEW_PREFIX=$INSTALL_PACKET_DIR GLEW_DEST=$INSTALL_PACKET_DIR SYSTEM=mingw-$PLATFORM-$ARCH make -j${THREADS} || return 1
+
     else
         if ! GLEW_PREFIX=$INSTALL_PACKET_DIR GLEW_DEST=$INSTALL_PACKET_DIR make -j${THREADS}; then
             return 1
