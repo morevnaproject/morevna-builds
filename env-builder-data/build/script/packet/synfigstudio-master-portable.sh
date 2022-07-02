@@ -112,7 +112,11 @@ pkinstall_release() {
     local LOCAL_COMMIT=$(echo "$LOCAL_VERSION_FULL" | cut -d - -f 2)
 
     # copy NSIS configuration
-    cp "$FILES_PACKET_DIR/synfigstudio.bat" "./" || return 1
+    cat <<EOT >> ./synfigstudio.bat
+cd "%~dp0\"
+set SYNFIG_USER_SETTINGS=%~dp0\config
+start "" "%~dp0\bin\synfigstudio.exe"
+EOT
 
     # let's go
     zip -r "../synfigstudio-${LOCAL_VERSION}-${LOCAL_COMMIT:0:5}.zip" ./ || return 1

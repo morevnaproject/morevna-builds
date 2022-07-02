@@ -31,15 +31,15 @@ run_appimage() {
             chain update synfigetl-master \
             chain update synfigcore-master \
             chain update synfigstudio-master \
-            chain clean_before_do install_release synfigstudio-appimage
+            chain clean_before_do install_release synfigstudio-master-appimage
 
     local TEMPLATE=`gen_name_template "SynfigStudio" "$SYNFIGSTUDIO_TESTING_TAG" "$PLATFORM" "$ARCH" ".appimage"`
     "$PUBLISH_DIR/publish.sh" \
         "synfigstudio" \
         "$TEMPLATE" \
-        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/synfigstudio-appimage/install_release" \
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/synfigstudio-master-appimage/install_release" \
         "*.appimage" \
-        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/synfigstudio-appimage/envdeps_release/version-synfigstudio-master"
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/synfigstudio-master-appimage/envdeps_release/version-synfigstudio-master"
 }
 
 run_nsis() {
@@ -54,25 +54,25 @@ run_nsis() {
             chain update synfigetl-master \
             chain update synfigcore-master \
             chain update synfigstudio-master \
-            chain clean_before_do install_release synfigstudio-nsis \
-            chain clean_before_do install_release synfigstudio-portable
+            chain clean_before_do install_release synfigstudio-master-nsis \
+            chain clean_before_do install_release synfigstudio-master-portable
 
 
     local TEMPLATE=`gen_name_template "SynfigStudio" "$SYNFIGSTUDIO_TESTING_TAG" "$PLATFORM" "$ARCH" ".exe"`
     "$PUBLISH_DIR/publish.sh" \
         "synfigstudio" \
         "$TEMPLATE" \
-        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/synfigstudio-nsis/install_release" \
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/synfigstudio-master-nsis/install_release" \
         "*.exe" \
-        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/synfigstudio-nsis/envdeps_release/version-synfigstudio-master"
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/synfigstudio-master-nsis/envdeps_release/version-synfigstudio-master"
 
     local TEMPLATE=`gen_name_template "SynfigStudio" "$SYNFIGSTUDIO_TESTING_TAG" "$PLATFORM" "$ARCH" ".zip"`
     "$PUBLISH_DIR/publish.sh" \
         "synfigstudio" \
         "$TEMPLATE" \
-        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/synfigstudio-portable/install_release" \
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/synfigstudio-master-portable/install_release" \
         "*.zip" \
-        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/synfigstudio-portable/envdeps_release/version-synfigstudio-master"
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/synfigstudio-master-portable/envdeps_release/version-synfigstudio-master"
 }
 
 linux64() { run_appimage linux 64; }
