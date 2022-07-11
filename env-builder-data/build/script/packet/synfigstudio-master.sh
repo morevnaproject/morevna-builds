@@ -17,7 +17,7 @@
 #   adwaitaicons                  | gtk, rsvg
 #   gnomethemes                   | gtk, rsvg
 
-DEPS="synfigcore-master gtkmm-3.22.0"
+DEPS="synfigcore-master gtkmm-3.22.2"
 DEPS_NATIVE="libtool-2.4.6"
 
 if [ "$PLATFORM" = "linux" ]; then

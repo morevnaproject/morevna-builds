@@ -1,13 +1,13 @@
 DEPS="epoxy-master rsvg-2.40.16 atk-2.22.0 gdkpixbuf-2.36.0 cairo-1.15.4 pango-1.40.3"
 if [ "$PLATFORM" != "linux" ]; then
-    DEPS_NATIVE="glib-2.69.3 gtk-3.22.12"
+    DEPS_NATIVE="glib-2.69.3 gtk-3.22.30"
 fi
 
 if [ "$PLATFORM" = "linux" ] || [ ! -z "$IS_NATIVE" ]; then
     DEPS="$DEPS atspi2atk-2.22.0"
 fi
 
-PK_DIRNAME="gtk+-3.22.12"
+PK_DIRNAME="gtk+-3.22.30"
 PK_ARCHIVE="$PK_DIRNAME.tar.xz"
 PK_URL="https://download.gnome.org/sources/gtk+/3.22/$PK_ARCHIVE"
 

@@ -1,4 +1,4 @@
-DEPS="rsvg-2.40.16 gtk-3.22.12"
+DEPS="rsvg-2.40.16 gtk-3.22.30"
 
 PK_DIRNAME="gnome-themes-standard-3.22.3"
 PK_ARCHIVE="$PK_DIRNAME.tar.xz"

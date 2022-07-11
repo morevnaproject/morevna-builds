@@ -1,4 +1,4 @@
-DEPS="rsvg-2.40.16 gtk-3.22.12"
+DEPS="rsvg-2.40.16 gtk-3.22.30"
 
 PK_DIRNAME="adwaita-icon-theme-3.24.0"
 PK_ARCHIVE="$PK_DIRNAME.tar.xz"
