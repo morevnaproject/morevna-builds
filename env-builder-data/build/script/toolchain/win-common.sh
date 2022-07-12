@@ -24,7 +24,7 @@ export WINEPATH="$WINEPATH_BASE"
 #                       - may be better, but work fine without it, will added when any problem raised
 #
 # So no extra options for now
-export TC_EXTRA_CPP_OPTIONS=""
+export TC_EXTRA_CPP_OPTIONS="-fcommon"
 export TC_CFLAGS=" $TC_EXTRA_CPP_OPTIONS $INITIAL_CFLAGS"
 export TC_CPPFLAGS=" $TC_EXTRA_CPP_OPTIONS $INITIAL_CPPFLAGS"
 export TC_CXXFLAGS=" $TC_EXTRA_CPP_OPTIONS $INITIAL_CXXFLAGS"
