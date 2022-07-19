@@ -1,3 +1,3 @@
 source "$PACKET_SCRIPT_DIR/opentoonz-master-appimage.sh"
 
-DEPS="opentoonz-testing"
+DEPS=`echo "$DEPS" | sed "s|opentoonz-master|opentoonz-me|g"`

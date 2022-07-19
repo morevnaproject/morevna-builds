@@ -26,16 +26,16 @@ run_appimage() {
     echo ""
     echo "Update and build opentoonz for $PLATFORM-$ARCH"
     echo ""
-    $SCRIPT chain update opentoonz-testing \
-            chain clean_before_do install_release opentoonz-testingappimage
+    $SCRIPT chain update opentoonz-me \
+            chain clean_before_do install_release opentoonz-me-appimage
 
     local TEMPLATE=`gen_name_template "OpenToonz" "$OPENTOONZ_TESTING_TAG" "$PLATFORM" "$ARCH" ".appimage"`
     "$PUBLISH_DIR/publish.sh" \
-        "opentoonz-testing" \
+        "opentoonz-me" \
         "$TEMPLATE" \
-        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-testingappimage/install_release" \
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-me-appimage/install_release" \
         "*.appimage" \
-        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-testingappimage/envdeps_release/version-opentoonz-testing"
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-me-appimage/envdeps_release/version-opentoonz-testing"
 }
 
 run_nsis() {
@@ -46,25 +46,25 @@ run_nsis() {
     echo "Update and build opentoonz for $PLATFORM-$ARCH"
     echo ""
     PLATFORM=win ARCH=32 $SCRIPT clean_before_do env zlib-1.2.12 # for NSIS
-    $SCRIPT chain update opentoonz-testing \
-            chain clean_before_do install_release opentoonz-testingnsis \
-            chain clean_before_do install_release opentoonz-testingportable
+    $SCRIPT chain update opentoonz-me \
+            chain clean_before_do install_release opentoonz-me-nsis \
+            chain clean_before_do install_release opentoonz-me-portable
 
     local TEMPLATE=`gen_name_template "OpenToonz" "$OPENTOONZ_TESTING_TAG" "$PLATFORM" "$ARCH" ".exe"`
     "$PUBLISH_DIR/publish.sh" \
-        "opentoonz-testing" \
+        "opentoonz-me" \
         "$TEMPLATE" \
-        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-testingnsis/install_release" \
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-me-nsis/install_release" \
         "*.exe" \
-        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-testingnsis/envdeps_release/version-opentoonz-testing"
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-me-nsis/envdeps_release/version-opentoonz-testing"
 
     local TEMPLATE=`gen_name_template "OpenToonz" "$OPENTOONZ_TESTING_TAG" "$PLATFORM" "$ARCH" ".zip"`
     "$PUBLISH_DIR/publish.sh" \
-        "opentoonz-testing" \
+        "opentoonz-me" \
         "$TEMPLATE" \
-        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-testingportable/install_release" \
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-me-portable/install_release" \
         "*.zip" \
-        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-testingportable/envdeps_release/version-opentoonz-testing"
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-me-portable/envdeps_release/version-opentoonz-testing"
 }
 
 linux64() { run_appimage linux 64; }
