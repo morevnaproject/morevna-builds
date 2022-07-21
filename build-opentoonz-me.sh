@@ -35,7 +35,7 @@ run_appimage() {
         "$TEMPLATE" \
         "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-me-appimage/install_release" \
         "*.appimage" \
-        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-me-appimage/envdeps_release/version-opentoonz-testing"
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-me-appimage/envdeps_release/version-opentoonz-me"
 }
 
 run_nsis() {
@@ -56,7 +56,7 @@ run_nsis() {
         "$TEMPLATE" \
         "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-me-nsis/install_release" \
         "*.exe" \
-        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-me-nsis/envdeps_release/version-opentoonz-testing"
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-me-nsis/envdeps_release/version-opentoonz-me"
 
     local TEMPLATE=`gen_name_template "OpenToonz" "$OPENTOONZ_TESTING_TAG" "$PLATFORM" "$ARCH" ".zip"`
     "$PUBLISH_DIR/publish.sh" \
@@ -64,7 +64,7 @@ run_nsis() {
         "$TEMPLATE" \
         "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-me-portable/install_release" \
         "*.zip" \
-        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-me-portable/envdeps_release/version-opentoonz-testing"
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-me-portable/envdeps_release/version-opentoonz-me"
 }
 
 linux64() { run_appimage linux 64; }
