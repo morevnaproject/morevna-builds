@@ -15,6 +15,8 @@ source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh
 
 if [ "$PLATFORM" = "win" ]; then
     PK_CONFIGURE_OPTIONS="--enable-introspection=no"
+    PK_CFLAGS="-fcommon"
+    PK_CPPFLAGS="-fcommon"
 fi
 
 pkhook_prebuild() {
