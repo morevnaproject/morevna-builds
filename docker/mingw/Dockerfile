@@ -146,5 +146,12 @@ RUN dpkg --add-architecture i386 \
     && apt-get clean
 
 
+RUN apt-get install -y -q \
+gfortran-mingw-w64-x86-64 \
+gfortran-mingw-w64-i686 \
+&& apt-get clean
+RUN update-alternatives --set i686-w64-mingw32-gfortran /usr/bin/i686-w64-mingw32-gfortran-posix && \
+    update-alternatives --set x86_64-w64-mingw32-gfortran /usr/bin/x86_64-w64-mingw32-gfortran-posix
+
 CMD ["/bin/bash"]
 WORKDIR /workdir

@@ -8,11 +8,16 @@ source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh
 
 pkbuild() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME"
+    if [ "$PLATFORM" = "win" ]; then
+		FORTRAN=${HOST}-gfortran
+	else
+		FORTRAN=gfortran
+	fi
 
 rm -f make.inc
 cat > make.inc << EOF
 SHELL     = /bin/sh
-FORTRAN   = ${FORTRAN:-gfortran}
+FORTRAN   = ${FORTRAN}
 OPTS      = -O3
 DRVOPTS   = \$(OPTS)
 NOOPT     =
