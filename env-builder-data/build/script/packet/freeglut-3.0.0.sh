@@ -15,9 +15,9 @@ pkbuild() {
             LOCAL_OPTIONS="$LOCAL_OPTIONS -DGNU_HOST=$HOST"
         fi
         if [ "$PLATFORM" = "win" ]; then
-            LOCAL_OPTIONS="$LOCAL_OPTIONS -DCMAKE_TOOLCHAIN_FILE=mingw_cross_toolchain.cmake"
+            LOCAL_OPTIONS="$LOCAL_OPTIONS -DCMAKE_C_COMPILER=$HOST-gcc -DCMAKE_CXX_COMPILER=$HOST-g++ -DCMAKE_TOOLCHAIN_FILE=mingw_cross_toolchain.cmake"
         fi
-    	cmake \
+        CFLAGS="-fcommon $PK_CFLAGS" cmake \
     	   -DCMAKE_INSTALL_PREFIX=$INSTALL_PACKET_DIR \
     	   $LOCAL_OPTIONS . \
     	 || return 1
