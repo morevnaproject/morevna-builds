@@ -1,11 +1,12 @@
 DEPS=""
 
-PK_DIRNAME="OpenBLAS"
-PK_URL="https://github.com/xianyi/$PK_DIRNAME.git"
-PK_GIT_CHECKOUT="tags/v0.2.19"
+PK_VERSION="0.3.3"
+PK_DIRNAME="OpenBLAS-$PK_VERSION"
+PK_ARCHIVE="$PK_DIRNAME.tar.gz"
+PK_URL="https://github.com/xianyi/OpenBLAS/archive/refs/tags/v$PK_VERSION.tar.gz"
 PK_LICENSE_FILES="LICENSE CONTRIBUTORS.md BACKERS.md"
 
-source $INCLUDE_SCRIPT_DIR/inc-pkall-git.sh
+source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh
 
 pkbuild() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME"
@@ -20,12 +21,20 @@ pkbuild() {
     if [ "$ARCH" = "32" ]; then
         LOCAL_BINARY_OPTION="BINARY=$ARCH"
     fi
+    
+    if [ "$PLATFORM" = "win" ]; then
+		export FORTRAN=${HOST}-gfortran
+		export PK_CC=${HOST}-gcc
+	else
+		export FORTRAN=gfortran
+		export PK_CC=gcc
+	fi
 
 rm -f Makefile.rule
 cat > Makefile.rule << EOF
 PREFIX                     = ${INSTALL_PACKET_DIR}
-VERSION                    = 0.2.20.dev
-CC                         = ${CC:-gcc}
+VERSION                    = 0.3.3.dev
+CC                         = ${PK_CC}
 FC                         = ${FORTRAN:-gfortran}
 TARGET                     = generic
 ${LOCAL_BINARY_OPTION}
@@ -36,6 +45,7 @@ BUILD_LAPACK_DEPRECATED    = 1
 NO_WARMUP                  = 1
 NO_AFFINITY                = 1
 COMMON_PROF                = -pg
+DYNAMIC_ARCH = 1
 EOF
 
     make -j${THREADS} libs netlib shared || return 1
