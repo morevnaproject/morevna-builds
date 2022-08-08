@@ -11,7 +11,9 @@ source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh
 pkbuild() {
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME"
 
-    pkhelper_patch . getarch.c
+    if [ "$PLATFORM" = "linux" ]; then
+        pkhelper_patch . getarch.c
+    fi
     if [ "$PLATFORM" = "win" ]; then
         pkhelper_patch kernel/x86    KERNEL.generic
         pkhelper_patch kernel/x86_64 KERNEL.generic
