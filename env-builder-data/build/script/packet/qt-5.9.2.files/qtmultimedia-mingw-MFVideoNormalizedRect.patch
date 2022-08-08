@@ -1,0 +1,18 @@
+--- a/qtmultimedia/src/plugins/common/evr/evrdefs.h	2017-09-25 23:55:25.000000000 +0700
++++ b/qtmultimedia/src/plugins/common/evr/evrdefs.h	2022-08-08 12:29:50.271235181 +0700
+@@ -84,6 +84,7 @@
+ #endif
+ 
+ #ifdef __GNUC__
++#ifndef _MFVideoNormalizedRect_
+ typedef struct MFVideoNormalizedRect {
+     float left;
+     float top;
+@@ -91,6 +92,7 @@
+     float bottom;
+ } MFVideoNormalizedRect;
++#endif
+ #endif
+ 
+ #include <initguid.h>
+ 

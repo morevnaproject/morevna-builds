@@ -37,6 +37,21 @@ pkbuild() {
             patch "$UNPACK_PACKET_DIR/$PK_DIRNAME/qtbase/src/plugins/platforms/direct2d/direct2d.pro" \
              -i "$FILES_PACKET_DIR/direct2d.pro.patch" -o - \
              > "qtbase/src/plugins/platforms/direct2d/direct2d.pro"
+            
+            rm -f "qtdeclarative/src/plugins/scenegraph/scenegraph.pro" || return 1
+            patch "$UNPACK_PACKET_DIR/$PK_DIRNAME/qtdeclarative/src/plugins/scenegraph/scenegraph.pro" \
+             -i "$FILES_PACKET_DIR/Disable-d3d12-requiring-fxc.exe.patch" -o - \
+             > "qtdeclarative/src/plugins/scenegraph/scenegraph.pro" || return 1
+             
+            rm -f "qtmultimedia/src/plugins/common/evr/evrdefs.h" || return 1
+            patch "$UNPACK_PACKET_DIR/$PK_DIRNAME/qtmultimedia/src/plugins/common/evr/evrdefs.h" \
+             -i "$FILES_PACKET_DIR/qtmultimedia-mingw-MFVideoNormalizedRect.patch" -o - \
+             > "qtmultimedia/src/plugins/common/evr/evrdefs.h" || return 1
+            
+            rm -f "qtmultimedia/src/plugins/directshow/directshow.pro" || return 1
+            patch "$UNPACK_PACKET_DIR/$PK_DIRNAME/qtmultimedia/src/plugins/directshow/directshow.pro" \
+             -i "$FILES_PACKET_DIR/qtmultimedia.git-bc03bfdbcf63a81f7261637378e2447e76dc7e97.patch" -o - \
+             > "qtmultimedia/src/plugins/directshow/directshow.pro" || return 1
 
             #rm -f "qtlocation/src/3rdparty/mapbox-gl-native/src/mbgl/gl/gl.hpp" || return 1
             #patch "$UNPACK_PACKET_DIR/$PK_DIRNAME/qtlocation/src/3rdparty/mapbox-gl-native/src/mbgl/gl/gl.hpp" \
