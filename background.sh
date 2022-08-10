@@ -9,6 +9,9 @@ if [ -f "$CONFIG_FILE" ]; then
     source "$CONFIG_FILE"
 fi
 
+cd $BASE_DIR
+git fetch morevnaproject
+git reset --hard morevnaproject/master
 
 LOG_FILE="$BASE_DIR/log/background.log"
 
