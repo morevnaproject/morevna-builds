@@ -6,3 +6,12 @@ PK_ARCHIVE="$PK_DIRNAME.tar.xz"
 PK_URL="https://download.gnome.org/sources/pango/1.40/$PK_ARCHIVE"
 
 source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh
+
+pkhook_prebuild() {
+    if [ "$PLATFORM" = "win" ]; then
+        cp --remove-destination "$UNPACK_PACKET_DIR/$PK_DIRNAME/pango/Makefile.am" "pango/Makefile.am" || return 1
+        cp --remove-destination "$UNPACK_PACKET_DIR/$PK_DIRNAME/pangowin32.pc.in" "pangowin32.pc.in" || return 1
+        patch -p1 -i "$FILES_PACKET_DIR/win7-compatibility.patch" || return 1
+        autoreconf -fi
+    fi
+}
