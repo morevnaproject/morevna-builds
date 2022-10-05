@@ -153,5 +153,8 @@ gfortran-mingw-w64-i686 \
 RUN update-alternatives --set i686-w64-mingw32-gfortran /usr/bin/i686-w64-mingw32-gfortran-posix && \
     update-alternatives --set x86_64-w64-mingw32-gfortran /usr/bin/x86_64-w64-mingw32-gfortran-posix
 
+# Required by pango-1.40.3 - patch for win 7
+RUN apt-get install -y -q gtk-doc-tools
+
 CMD ["/bin/bash"]
 WORKDIR /workdir
