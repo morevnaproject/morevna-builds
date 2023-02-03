@@ -91,6 +91,7 @@ pkinstall() {
         cp "$LOCAL_DIR"/libstdc*.dll       "$TARGET" || return 1
         cp "$LOCAL_DIR"/libquadmath*.dll   "$TARGET" || return 1
         cp "$LOCAL_DIR"/libgfortran*.dll   "$TARGET" || return 1
+        cp "$LOCAL_DIR"/libgomp*.dll       "$TARGET" || return 1
 
         #local LOCAL_DIR="/usr/local/$HOST/sys-root/bin/"
         local LOCAL_DIR="/usr/$HOST/lib/"
