@@ -138,14 +138,6 @@ RUN cd /tmp \
   && dpkg -i automake-1.15_1.15.1-5_all.deb \
   && rm -f automake-1.15_1.15.1-5_all.deb
 
-RUN dpkg --add-architecture i386 \
-    && wget -qO - https://dl.winehq.org/wine-builds/winehq.key | apt-key add - \
-    && apt-add-repository https://dl.winehq.org/wine-builds/debian/ \
-    && apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get install --install-recommends winehq-stable -y \
-    && apt-get clean
-
-
 RUN apt-get install -y -q \
 gfortran-mingw-w64-x86-64 \
 gfortran-mingw-w64-i686 \
@@ -155,6 +147,15 @@ RUN update-alternatives --set i686-w64-mingw32-gfortran /usr/bin/i686-w64-mingw3
 
 # Required by pango-1.40.3 - patch for win 7
 RUN apt-get install -y -q gtk-doc-tools
+
+# installing older Wine version (because v8 fails to run Glib tests)
+RUN dpkg --add-architecture i386 \
+    && wget -qO - https://dl.winehq.org/wine-builds/winehq.key | apt-key add - \
+    && apt-add-repository https://dl.winehq.org/wine-builds/debian/ \
+    && apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install --install-recommends winehq-stable=7.* wine-stable=7.* wine-stable-i386=7.* wine-stable-amd64=7.* -y \
+    && apt-get clean
+
 
 CMD ["/bin/bash"]
 WORKDIR /workdir
