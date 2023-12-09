@@ -73,6 +73,7 @@ PK_DIRNAME="synfig"
 PK_URL="https://github.com/synfig/$PK_DIRNAME.git"
 PK_GIT_CHECKOUT="origin/testing"
 PK_LICENSE_FILES="synfig-core/AUTHORS synfig-core/README"
+PK_CPPFLAGS="-DWINVER=0x0600" # required for `GetUserDefaultLocaleName` function
 
 source $INCLUDE_SCRIPT_DIR/inc-pkall-git.sh
 
