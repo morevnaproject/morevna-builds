@@ -1,5 +1,12 @@
 FROM buildpack-deps:stretch-curl
 
+RUN rm -f /etc/apt/sources.list
+RUN echo "deb https://archive.debian.org/debian/ stretch main" >> /etc/apt/sources.list
+RUN echo "deb-src https://archive.debian.org/debian/ stretch main" >> /etc/apt/sources.list
+RUN echo "deb https://archive.debian.org/debian/ stretch-backports main" >> /etc/apt/sources.list
+RUN echo "deb https://archive.debian.org/debian-security/ stretch/updates main" >> /etc/apt/sources.list
+RUN echo "deb-src https://archive.debian.org/debian-security/ stretch/updates main" >> /etc/apt/sources.list
+
 RUN set -x; apt-get update                                     \
  && apt-get install -y -q                              \
         autoconf                                       \
