@@ -1,4 +1,4 @@
-DEPS="zlib-1.2.12"
+DEPS="zlib-1.2.13"
 DEPS_NATIVE="scons-3.0.1"
 
 PK_DIRNAME="nsis-3.08-src"
@@ -7,14 +7,14 @@ PK_URL="http://prdownloads.sourceforge.net/nsis/$PK_ARCHIVE"
 
 #TODO: hardcoded path to mingw binaries
 PK_PATH="/usr/i686-w64-mingw32/bin/:$PATH"
-PK_ZLIB_W32="$PACKET_BUILD_DIR/win-32/zlib-1.2.12/install"
+PK_ZLIB_W32="$PACKET_BUILD_DIR/win-32/zlib-1.2.13/install"
 PK_NSIS_MAX_STRLEN=131072
 
 source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh
 
 pkbuild() {
 
-    PLATFORM=win ARCH=32 /build/script/common/manager.sh install_release zlib-1.2.12
+    PLATFORM=win ARCH=32 /build/script/common/manager.sh install_release zlib-1.2.13
 
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME" || return 1
     PATH="$PK_PATH" scons \
