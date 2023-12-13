@@ -42,5 +42,6 @@ pkinstall() {
 #EOT
 #        chmod +x ${INSTALL_PACKET_DIR}/bin/glib-compile-resources
         sed -i 's|glib_compile_resources=.*|glib_compile_resources=glib-compile-resources|g' ${INSTALL_PACKET_DIR}/lib/pkgconfig/gio-2.0.pc
+        sed -i 's|glib_compile_schemas=.*|glib_compile_schemas=glib-compile-schemas|g' ${INSTALL_PACKET_DIR}/lib/pkgconfig/gio-2.0.pc
     fi
 }
