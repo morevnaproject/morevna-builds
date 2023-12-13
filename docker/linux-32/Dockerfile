@@ -1,11 +1,13 @@
 FROM i386/debian:stretch
 
 RUN rm -f /etc/apt/sources.list
-RUN echo "deb https://archive.debian.org/debian/ stretch main" >> /etc/apt/sources.list
-RUN echo "deb-src https://archive.debian.org/debian/ stretch main" >> /etc/apt/sources.list
-RUN echo "deb https://archive.debian.org/debian/ stretch-backports main" >> /etc/apt/sources.list
-RUN echo "deb https://archive.debian.org/debian-security/ stretch/updates main" >> /etc/apt/sources.list
-RUN echo "deb-src https://archive.debian.org/debian-security/ stretch/updates main" >> /etc/apt/sources.list
+RUN echo "deb http://archive.debian.org/debian/ stretch main" >> /etc/apt/sources.list
+RUN echo "deb-src http://archive.debian.org/debian/ stretch main" >> /etc/apt/sources.list
+RUN echo "deb http://archive.debian.org/debian/ stretch-backports main" >> /etc/apt/sources.list
+RUN echo "deb http://archive.debian.org/debian-security/ stretch/updates main" >> /etc/apt/sources.list
+RUN echo "deb-src http://archive.debian.org/debian-security/ stretch/updates main" >> /etc/apt/sources.list
+
+
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
 libssl1.0.2 openssl libgnutls30 \
