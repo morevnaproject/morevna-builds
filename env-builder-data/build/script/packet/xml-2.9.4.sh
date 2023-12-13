@@ -2,7 +2,7 @@ DEPS=""
 
 PK_DIRNAME="libxml2-2.9.4"
 PK_ARCHIVE="$PK_DIRNAME.tar.gz"
-PK_URL="http://xmlsoft.org/sources/$PK_ARCHIVE"
+PK_URL="https://software.morevnaproject.org/builder/src/libxml2/$PK_ARCHIVE"
 
 source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh
 
