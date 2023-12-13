@@ -1,4 +1,4 @@
-DEPS="zlib-1.2.12 ffi-3.2.1 pcre-8.37"
+DEPS="zlib-1.2.13 ffi-3.2.1 pcre-8.37"
 
 PK_DIRNAME="glib-2.69.3"
 PK_ARCHIVE="$PK_DIRNAME.tar.xz"

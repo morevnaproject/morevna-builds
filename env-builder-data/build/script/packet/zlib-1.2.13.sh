@@ -1,8 +1,8 @@
 DEPS=""
 
-PK_DIRNAME="zlib-1.2.12"
+PK_DIRNAME="zlib-1.2.13"
 PK_ARCHIVE="$PK_DIRNAME.tar.gz"
-PK_URL="http://zlib.net/$PK_ARCHIVE"
+PK_URL="https://software.morevnaproject.org/builder/src/zlib/$PK_ARCHIVE"
 
 PK_CONFIGURE_OPTIONS_DEFAULT="--prefix=$INSTALL_PACKET_DIR --shared"
 PK_LICENSE_FILES="README"

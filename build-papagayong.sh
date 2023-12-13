@@ -45,7 +45,7 @@ run_nsis() {
     echo "Update and build papagayong for $PLATFORM-$ARCH"
     echo ""
     # QUICK HACK:
-    PLATFORM=win ARCH=32 $SCRIPT clean_before_do env zlib-1.2.12 # for NSIS
+    PLATFORM=win ARCH=32 $SCRIPT clean_before_do env zlib-1.2.13 # for NSIS
     $SCRIPT chain update papagayong-testing \
             chain clean_before_do unpack papagayong-testing \
             chain clean_before_do envdeps_native papagayong-testing \

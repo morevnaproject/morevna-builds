@@ -1,4 +1,4 @@
-DEPS="zlib-1.2.12 jpeg-9b tiff-4.0.6"
+DEPS="zlib-1.2.13 jpeg-9b tiff-4.0.6"
 
 PK_DIRNAME="lcms2-2.12"
 PK_ARCHIVE="$PK_DIRNAME.tar.gz"
