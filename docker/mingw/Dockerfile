@@ -133,10 +133,10 @@ RUN update-alternatives --set i686-w64-mingw32-gcc /usr/bin/i686-w64-mingw32-gcc
 
 RUN pip3 install meson
 
-RUN cd /tmp \
-  && wget http://ftp.us.debian.org/debian/pool/main/a/automake-1.15/automake-1.15_1.15.1-5_all.deb \
-  && dpkg -i automake-1.15_1.15.1-5_all.deb \
-  && rm -f automake-1.15_1.15.1-5_all.deb
+#RUN cd /tmp \
+#  && wget http://ftp.us.debian.org/debian/pool/main/a/automake-1.15/automake-1.15_1.15.1-5_all.deb \
+#  && dpkg -i automake-1.15_1.15.1-5_all.deb \
+#  && rm -f automake-1.15_1.15.1-5_all.deb
 
 RUN apt-get install -y -q \
 gfortran-mingw-w64-x86-64 \
