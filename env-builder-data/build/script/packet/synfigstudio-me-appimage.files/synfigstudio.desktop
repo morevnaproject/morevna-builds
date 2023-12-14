@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Synfig Studio (Morevna Edition)
+Exec=launch.sh
+Icon=synfigstudio
+Categories=Graphics;
+MimeType=application/x-sif;
