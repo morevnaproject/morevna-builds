@@ -1,5 +1,5 @@
 DEPS="freetype-2.8.1 expat-2.2.5"
-DEPS_NATIVE="gperf-3.1"
+DEPS_NATIVE="gperf-3.1 automake-1.15"
 
 PK_DIRNAME="fontconfig-2.12.6"
 PK_ARCHIVE="$PK_DIRNAME.tar.gz"
