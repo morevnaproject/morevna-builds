@@ -13,6 +13,10 @@ pkbuild() {
         return 1
     fi
 
+    if [ "$PLATFORM" = "win" ]; then
+        export WINEPATH="$ENVDEPS_PACKET_DIR/bin/;$WINEPATH_BASE"
+    fi
+
     if ! check_packet_function $NAME build.configure; then
         CFLAGS="$PK_CFLAGS $CFLAGS" CPPFLAGS="$PK_CPPFLAGS $CPPFLAGS" LDFLAGS="$PK_LDFLAGS $LDFLAGS" \
         ./configure \
