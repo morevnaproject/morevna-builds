@@ -58,7 +58,7 @@ run_nsis() {
             chain clean_before_do install_release synfigstudio-me-portable
 
 
-    local TEMPLATE=`gen_name_template "SynfigStudio" "$SYNFIGSTUDIO_TESTING_TAG" "$PLATFORM" "$ARCH" ".exe"`
+    local TEMPLATE=`gen_name_template "SynfigStudio-ME" "$SYNFIGSTUDIO_TESTING_TAG" "$PLATFORM" "$ARCH" ".exe"`
     "$PUBLISH_DIR/publish.sh" \
         "synfigstudio" \
         "$TEMPLATE" \
