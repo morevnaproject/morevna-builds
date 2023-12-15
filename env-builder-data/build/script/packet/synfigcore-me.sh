@@ -71,7 +71,7 @@ DEPS_NATIVE="libtool-2.4.6"
 
 PK_DIRNAME="synfig"
 PK_URL="https://tvoygit.ru/morevnaproject/$PK_DIRNAME"
-PK_URL="https://tvoygit.ru/konstantin_dmitriev/$PK_DIRNAME"
+#PK_URL="https://tvoygit.ru/konstantin_dmitriev/$PK_DIRNAME"
 PK_GIT_CHECKOUT="origin/main"
 PK_LICENSE_FILES="synfig-core/AUTHORS synfig-core/README"
 PK_CPPFLAGS="-DWINVER=0x0600" # required for `GetUserDefaultLocaleName` function
