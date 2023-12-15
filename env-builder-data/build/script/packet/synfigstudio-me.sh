@@ -28,7 +28,7 @@ fi
 
 PK_DIRNAME="synfig"
 PK_URL="https://tvoygit.ru/morevnaproject/$PK_DIRNAME"
-PK_URL="https://tvoygit.ru/konstantin_dmitriev/$PK_DIRNAME"
+#PK_URL="https://tvoygit.ru/konstantin_dmitriev/$PK_DIRNAME"
 PK_GIT_CHECKOUT="origin/main"
 PK_CPPFLAGS="-std=c++11"
 
