@@ -35,15 +35,15 @@ pkbuild() {
         LOCAL_GLUT_LIB="libfreeglut.dll.a"
     fi
 
-    if ! check_packet_function $NAME build.libtiff; then
+    if ! check_packet_function $NAME libtiff.build; then
         cd "$BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/tiff-4.0.3"
-        if ! check_packet_function $NAME build.libtiff.configure; then
+        if ! check_packet_function $NAME libtiff.build.configure; then
             CFLAGS="$CFLAGS -fPIC" ./configure $LOCAL_OPTIONS || return 1
-           set_done $NAME build.libtiff.configure
+           set_done $NAME libtiff.build.configure
         fi
         make clean
         make -j${THREADS} || return 1
-        set_done $NAME build.libtiff
+        set_done $NAME libtiff.build
     fi
 
     rm -rf "$BUILD_PACKET_DIR/$PK_DIRNAME/toonz/build"
