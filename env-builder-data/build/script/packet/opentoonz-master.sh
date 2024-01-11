@@ -30,7 +30,7 @@ pkbuild() {
         LOCAL_OPTIONS="--host=$HOST"
     fi
     if [ "$PLATFORM" = "win" ]; then
-        LOCAL_CMAKE_OPTIONS="$LOCAL_CMAKE_OPTIONS -DCMAKE_SYSTEM_NAME=Windows"
+        LOCAL_CMAKE_OPTIONS="$LOCAL_CMAKE_OPTIONS -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_C_COMPILER=${HOST}-gcc -DCMAKE_CXX_COMPILER=${HOST}-g++"
         LOCAL_PNG_LIB="libpng16.dll.a"
         LOCAL_GLUT_LIB="libfreeglut.dll.a"
     fi
