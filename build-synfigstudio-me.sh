@@ -66,7 +66,7 @@ run_nsis() {
         "*.exe" \
         "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/synfigstudio-me-nsis/envdeps_release/version-synfigstudio-me"
 
-    local TEMPLATE=`gen_name_template "SynfigStudio" "$SYNFIGSTUDIO_TESTING_TAG" "$PLATFORM" "$ARCH" ".zip"`
+    local TEMPLATE=`gen_name_template "SynfigStudio-ME" "$SYNFIGSTUDIO_TESTING_TAG" "$PLATFORM" "$ARCH" ".zip"`
     "$PUBLISH_DIR/publish.sh" \
         "synfigstudio" \
         "$TEMPLATE" \
