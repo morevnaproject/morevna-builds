@@ -10,5 +10,5 @@ gen_name_template() {
         TAG="-$TAG"
     fi
 
-    echo "$NAME-%VERSION%$TAG-%DATE%-$PLATFORM$ARCH-%COMMIT%$SUFFIX"
+    echo "$NAME-%VERSION%-%DATE%-$PLATFORM$ARCH-%COMMIT%$SUFFIX"
 }
