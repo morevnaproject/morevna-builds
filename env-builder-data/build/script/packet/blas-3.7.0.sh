@@ -2,7 +2,8 @@ DEPS=""
 
 PK_DIRNAME="BLAS-3.7.0"
 PK_ARCHIVE="blas-3.7.0.tgz"
-PK_URL="http://www.netlib.org/blas/$PK_ARCHIVE"
+#PK_URL="http://www.netlib.org/blas/$PK_ARCHIVE"
+PK_URL="https://software.morevnaproject.org/builder/src/blas/$PK_ARCHIVE"
 
 source $INCLUDE_SCRIPT_DIR/inc-pkall-default.sh
 
