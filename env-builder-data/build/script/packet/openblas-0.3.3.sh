@@ -19,10 +19,7 @@ pkbuild() {
         pkhelper_patch kernel/x86_64 KERNEL.generic
     fi
 
-    local LOCAL_BINARY_OPTION=
-    if [ "$ARCH" = "32" ]; then
-        LOCAL_BINARY_OPTION="BINARY=$ARCH"
-    fi
+    LOCAL_BINARY_OPTION="BINARY=$ARCH"
     
     if [ "$PLATFORM" = "win" ]; then
 		export FORTRAN=${HOST}-gfortran
@@ -35,10 +32,10 @@ pkbuild() {
 rm -f Makefile.rule
 cat > Makefile.rule << EOF
 PREFIX                     = ${INSTALL_PACKET_DIR}
-VERSION                    = 0.3.3.dev
+VERSION                    = 0.3.3
 CC                         = ${PK_CC}
 FC                         = ${FORTRAN:-gfortran}
-TARGET                     = generic
+TARGET                     = P2
 ${LOCAL_BINARY_OPTION}
 HOSTCC                     = PATH=${INITIAL_PATH} /usr/bin/gcc
 USE_THREAD                 = 1
