@@ -1,0 +1,7 @@
+--- a/qtdeclarative/src/plugins/scenegraph/scenegraph.pro
++++ b/qtdeclarative/src/plugins/scenegraph/scenegraph.pro
+@@ -1,5 +1,4 @@
+ TEMPLATE = subdirs
+ QT_FOR_CONFIG += quick
+-qtConfig(d3d12): SUBDIRS += d3d12
+ qtConfig(openvg): SUBDIRS += openvg
