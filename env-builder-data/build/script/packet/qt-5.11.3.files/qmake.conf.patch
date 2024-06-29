@@ -1,0 +1,7 @@
+53,56c53
+< equals(QMAKE_HOST.os, Windows) {
+<     QMAKE_LINK_OBJECT_MAX = 10
+<     QMAKE_LINK_OBJECT_SCRIPT = object_script
+< }
+---
+> QMAKE_LINK_OBJECT_MAX   = 1

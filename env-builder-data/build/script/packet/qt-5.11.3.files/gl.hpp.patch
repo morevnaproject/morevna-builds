@@ -1,0 +1,5 @@
+25,26c25
+< #elif __QT__ && QT_VERSION >= 0x050000
+<     #define GL_GLEXT_PROTOTYPES
+---
+> #elif defined(__QT__)

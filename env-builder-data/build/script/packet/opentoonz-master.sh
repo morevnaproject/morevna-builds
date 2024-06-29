@@ -1,4 +1,4 @@
-DEPS="jpeg-9b png-1.6.26 lz4-master lzo-2.10 lzma-5.2.3 glew-2.0.0 freeglut-3.0.0 superlu-5.2.1 openblas-0.3.3 boost-1.61.0 qt-5.9.2 mypaintlib-master"
+DEPS="jpeg-9b png-1.6.26 libjpeg-turbo-3.0.3 opencv-4.2.0 lz4-master lzo-2.10 lzma-5.2.3 glew-2.0.0 freeglut-3.0.0 superlu-5.2.1 openblas-0.3.3 boost-1.61.0 qt-5.11.3 mypaintlib-master"
 DEPS_NATIVE="cmake-3.12.4"
 
 PK_DIRNAME="opentoonz"
@@ -16,7 +16,7 @@ fi
 pkhook_version() {
     local LOCAL_FILENAME="$PK_DIRNAME/toonz/sources/include/tversion.h"
     LANG=C LC_NUMERIC=C printf "%0.1f.%g\\n" \
-      `cat "$LOCAL_FILENAME" | grep applicationVersion -m1 | cut -d "=" -f 2 | cut -d ";" -f 1` \
+      `cat "$LOCAL_FILENAME" | grep applicationVersion -m1 | cut -d "=" -f 2 | cut -d ";" -f 1 | cut -d "f" -f 1` \
       `cat "$LOCAL_FILENAME" | grep applicationRevision -m1 | cut -d "=" -f 2 | cut -d ";" -f 1` \
     || return 1
 }
@@ -35,22 +35,16 @@ pkbuild() {
         LOCAL_GLUT_LIB="libfreeglut.dll.a"
     fi
 
-    if ! check_packet_function $NAME libtiff.build; then
-        cd "$BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/tiff-4.0.3"
-        if ! check_packet_function $NAME libtiff.build.configure; then
-            CFLAGS="$CFLAGS -fPIC" ./configure $LOCAL_OPTIONS || return 1
-           set_done $NAME libtiff.build.configure
-        fi
-        make clean
-        make -j${THREADS} || return 1
-        set_done $NAME libtiff.build
-    fi
+    cd "$BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/tiff-4.0.3"
+    CFLAGS="$CFLAGS -fPIC" CXXFLAGS="$CXXFLAGS -fPIC" ./configure --disable-jbig $LOCAL_OPTIONS || return 1 
+    make clean
+    make -j${THREADS} || return 1
 
     rm -rf "$BUILD_PACKET_DIR/$PK_DIRNAME/toonz/build"
     mkdir -p "$BUILD_PACKET_DIR/$PK_DIRNAME/toonz/build"
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME/toonz/build"
     if ! check_packet_function $NAME build.configure; then
-        if ! cmake \
+        if ! CFLAGS="$CFLAGS -fpermissive" CXXFLAGS="$CXXFLAGS -fpermissive" cmake \
               -DCMAKE_PREFIX_PATH="$ENVDEPS_PACKET_DIR" \
               -DCMAKE_MODULE_PATH="$ENVDEPS_NATIVE_PACKET_DIR/share/cmake-3.6.2/Modules" \
               -DCMAKE_INSTALL_PREFIX="$INSTALL_PACKET_DIR" \
@@ -103,6 +97,9 @@ pkinstall() {
         local TARGET="$INSTALL_PACKET_DIR/lib/"
         copy_system_gcc_libs               "$TARGET" || return 1
         copy_system_lib libudev            "$TARGET" || return 1
+        copy_system_lib libicui18n         "$TARGET" || return 1
+        copy_system_lib libicuuc           "$TARGET" || return 1
+        copy_system_lib libicudata         "$TARGET" || return 1
     fi
 }
 
