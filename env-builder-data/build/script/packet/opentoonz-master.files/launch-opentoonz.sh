@@ -93,4 +93,4 @@ else
 fi
 
 cd "$BASE_DIR/bin"
-./opentoonz "$@"
+./OpenToonz "$@"

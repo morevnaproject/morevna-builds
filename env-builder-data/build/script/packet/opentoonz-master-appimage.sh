@@ -12,12 +12,12 @@ pkinstall() {
 	mkdir -p "$APPDIR/usr/bin"
 	mkdir -p "$APPDIR/usr/lib"
 	cp --remove-destination "$ENVDEPS_NATIVE_PACKET_DIR/bin/AppRun" "$APPDIR/" || return 1
-	cp --remove-destination "$ENVDEPS_NATIVE_PACKET_DIR/bin/desktopintegration" "$APPDIR/usr/bin/launch-opentoonz.sh.wrapper" || return 1
-    cp --remove-destination "$FILES_PACKET_DIR/launch-opentoonz-appimage.sh" "$APPDIR/usr/bin" || return 1
-    cp --remove-destination "$FILES_PACKET_DIR/opentoonz.desktop" "$APPDIR/" || return 1
-    cp --remove-destination "$FILES_PACKET_DIR/opentoonz.png" "$APPDIR/" || return 1
-    mkdir -p "$APPDIR/usr/share/icons/default/128x128/apps/"
-    cp --remove-destination "$FILES_PACKET_DIR/opentoonz.png" "$APPDIR/usr/share/icons/default/128x128/apps/opentoonz.png" || return 1
+	#cp --remove-destination "$ENVDEPS_NATIVE_PACKET_DIR/bin/desktopintegration" "$APPDIR/usr/bin/launch-opentoonz.sh.wrapper" || return 1
+	cp --remove-destination "$FILES_PACKET_DIR/launch-opentoonz-appimage.sh" "$APPDIR/usr/bin/opentoonz-launch-appimage.sh" || return 1
+	cp --remove-destination "$FILES_PACKET_DIR/opentoonz.desktop" "$APPDIR/" || return 1
+	cp --remove-destination "$FILES_PACKET_DIR/opentoonz.png" "$APPDIR/" || return 1
+	mkdir -p "$APPDIR/usr/share/icons/default/128x128/apps/"
+	cp --remove-destination "$FILES_PACKET_DIR/opentoonz.png" "$APPDIR/usr/share/icons/default/128x128/apps/opentoonz.png" || return 1
 }
 
 pkinstall_release() {

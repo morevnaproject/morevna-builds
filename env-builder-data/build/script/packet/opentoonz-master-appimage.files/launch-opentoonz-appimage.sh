@@ -11,5 +11,5 @@ export FONTCONFIG_PATH=/etc/fonts
 if [ "$1" = "--appimage-exec" ]; then
 	"${@:2}"
 else
-	"./launch-opentoonz.sh.wrapper" "$@"
+	"./opentoonz" "$@"
 fi
