@@ -99,6 +99,8 @@ EOF
     if [ ! $? -eq 0 ]; then
         return 1
     fi
+    mkdir -p "$INSTALL_PACKET_DIR/plugins/printsupport"
+    mkdir -p "$INSTALL_PACKET_DIR/plugins/texttospeech"
 }
 
 pkhook_postinstall_release() {
