@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
 Name=OpenToonz
-Exec=launch-opentoonz-appimage.sh
+Exec=opentoonz-launch-appimage.sh
 Icon=opentoonz
 Categories=Graphics;

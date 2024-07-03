@@ -43,8 +43,13 @@ pkbuild() {
     rm -rf "$BUILD_PACKET_DIR/$PK_DIRNAME/toonz/build"
     mkdir -p "$BUILD_PACKET_DIR/$PK_DIRNAME/toonz/build"
     cd "$BUILD_PACKET_DIR/$PK_DIRNAME/toonz/build"
+    
+    if [ "$PLATFORM" = "linux" ]; then
+        LOCAL_CFLAGS=" -fpermissive"
+    fi
+    
     if ! check_packet_function $NAME build.configure; then
-        if ! CFLAGS="$CFLAGS -fpermissive" CXXFLAGS="$CXXFLAGS -fpermissive" cmake \
+        if ! CFLAGS="$CFLAGS $LOCAL_CFLAGS" CXXFLAGS="$CXXFLAGS $LOCAL_CFLAGS" cmake \
               -DCMAKE_PREFIX_PATH="$ENVDEPS_PACKET_DIR" \
               -DCMAKE_MODULE_PATH="$ENVDEPS_NATIVE_PACKET_DIR/share/cmake-3.6.2/Modules" \
               -DCMAKE_INSTALL_PREFIX="$INSTALL_PACKET_DIR" \
@@ -71,7 +76,7 @@ pkinstall() {
         #cp --remove-destination "$BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/tiff-4.0.3/libtiff/.libs/libtiff-5.dll" "$INSTALL_PACKET_DIR/bin/" || return 1
         #cp --remove-destination "$BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/tiff-4.0.3/libtiff/.libs/libtiffxx-5.dll" "$INSTALL_PACKET_DIR/bin/" || return 1
     else
-        cp --remove-destination "$FILES_PACKET_DIR/launch-opentoonz.sh" "$INSTALL_PACKET_DIR/bin" || return 1
+        cp --remove-destination "$FILES_PACKET_DIR/launch-opentoonz.sh" "$INSTALL_PACKET_DIR/bin/opentoonz" || return 1
         cp --remove-destination $BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/tiff-4.0.3/libtiff/.libs/libtiff.so* "$INSTALL_PACKET_DIR/lib" || return 1
         cp --remove-destination $BUILD_PACKET_DIR/$PK_DIRNAME/thirdparty/tiff-4.0.3/libtiff/.libs/libtiffxx.so* "$INSTALL_PACKET_DIR/lib" || return 1
     fi
