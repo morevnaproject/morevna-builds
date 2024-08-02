@@ -1,9 +1,22 @@
 DEPS="glibmm-2.58.1"
 DEPS_NATIVE="libtool-2.4.6"
 
+if [ -z "$REPO_URL" ] && [ -z "$BRANCH" ]; then
 PK_DIRNAME="synfig"
+else
+PK_DIRNAME="synfig.ci"
+fi
+if [ -z "$REPO_URL" ]; then
 PK_URL="https://github.com/synfig/$PK_DIRNAME.git"
+else
+PK_URL="$REPO_URL"
+fi
+if [ -z "$BRANCH" ]; then
 PK_GIT_CHECKOUT="origin/testing"
+else
+PK_GIT_CHECKOUT="origin/$BRANCH"
+fi
+
 PK_LICENSE_FILES="ETL/AUTHORS ETL/README"
 
 source $INCLUDE_SCRIPT_DIR/inc-pkall-git.sh

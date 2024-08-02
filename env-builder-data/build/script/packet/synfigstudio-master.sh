@@ -26,9 +26,22 @@ else
     DEPS_NATIVE="synfigcore-master $DEPS_NATIVE"
 fi
 
+if [ -z "$REPO_URL" ] && [ -z "$BRANCH" ]; then
 PK_DIRNAME="synfig"
+else
+PK_DIRNAME="synfig.ci"
+fi
+if [ -z "$REPO_URL" ]; then
 PK_URL="https://github.com/synfig/$PK_DIRNAME.git"
+else
+PK_URL="$REPO_URL"
+fi
+if [ -z "$BRANCH" ]; then
 PK_GIT_CHECKOUT="origin/testing"
+else
+PK_GIT_CHECKOUT="origin/$BRANCH"
+fi
+
 PK_CPPFLAGS="-std=c++11"
 
 # put COPYING to front for license agreement page of NSIS installer

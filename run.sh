@@ -66,5 +66,7 @@ docker run --rm \
     --env ARCH="$ARCH" \
     --env NATIVE_PLATFORM="$NATIVE_PLATFORM" \
     --env NATIVE_ARCH="$NATIVE_ARCH" \
+    --env REPO_URL="$REPO_URL" \
+    --env BRANCH="$BRANCH" \
     ${DOCKER_IMAGE} \
     ${SETARCH} /build/script/common/manager.sh "$@"
