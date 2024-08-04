@@ -56,7 +56,7 @@ if [ "$1" = "--appimage-exec" ]; then
 		exit 1
 	fi
 elif [ -z "$2" ]; then
-	HINTFILE=${HOME}/.cache/fontconfig/synfigstudio-appimage-1
+	HINTFILE=${HOME}/.cache/fontconfig/synfigstudio-appimage-2
 	if [ ! -f ${HINTFILE} ]; then
 		rm -rf ${HOME}/.cache/fontconfig || true
 		mkdir -p ${HOME}/.cache/fontconfig || true
