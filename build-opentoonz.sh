@@ -26,15 +26,15 @@ run_appimage() {
     echo "Update and build opentoonz for $PLATFORM-$ARCH"
     echo ""
     $SCRIPT chain update opentoonz-master \
-            chain clean_before_do install_release opentoonz-appimage
+            chain clean_before_do install_release opentoonz-master-appimage
 
     local TEMPLATE=`gen_name_template "OpenToonz" "" "$PLATFORM" "$ARCH" ".appimage"`
     "$PUBLISH_DIR/publish.sh" \
         "opentoonz" \
         "$TEMPLATE" \
-        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-appimage/install_release" \
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-master-appimage/install_release" \
         "*.appimage" \
-        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-appimage/envdeps_release/version-opentoonz-master"
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-master-appimage/envdeps_release/version-opentoonz-master"
 }
 
 run_nsis() {
