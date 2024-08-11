@@ -41,19 +41,26 @@ pkinstall_release() {
 	
 	#rm -f $APPDIR/bin/gdbus || return 1
 	#mkdir -p $APPDIR/usr/plugins/texttospeech
-	
-	if [ ! -f linuxdeploy-x86_64.AppImage ]; then
-	wget -q -c 'https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage'
+
+	if [[ $ARCH == 64 ]]; then
+		HOST_ARCH="x86_64"
+		HOST="x86_64-linux-gnu"
+	else
+		HOST_ARCH="i386"
+		HOST="i686-linux-gnu"
 	fi
-	if [ ! -f linuxdeploy-plugin-qt-x86_64.AppImage ]; then
-        wget -q -c 'https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage'
+	if [ ! -f linuxdeploy-${HOST_ARCH}.AppImage ]; then
+	wget -q -c 'https://github.com/linuxdeploy/linuxdeploy/releases/download/1-alpha-20240109-1/'linuxdeploy-${HOST_ARCH}.AppImage
 	fi
-	if [ ! -f linuxdeploy-plugin-appimage-x86_64.AppImage ]; then
-        wget -q -c 'https://github.com/linuxdeploy/linuxdeploy-plugin-appimage/releases/download/continuous/linuxdeploy-plugin-appimage-x86_64.AppImage'
+	if [ ! -f linuxdeploy-plugin-qt-${HOST_ARCH}.AppImage ]; then
+	wget -q -c 'https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/1-alpha-20240109-1/'linuxdeploy-plugin-qt-${HOST_ARCH}.AppImage
 	fi
-        chmod 755 linuxdeploy-x86_64.AppImage
-        chmod 755 linuxdeploy-plugin-qt-x86_64.AppImage
-        chmod 755 linuxdeploy-plugin-appimage-x86_64.AppImage
+	if [ ! -f linuxdeploy-plugin-appimage-${HOST_ARCH}.AppImage ]; then
+	wget -q -c 'https://github.com/linuxdeploy/linuxdeploy-plugin-appimage/releases/download/1-alpha-20230713-1/'linuxdeploy-plugin-appimage-${HOST_ARCH}.AppImage
+	fi
+        chmod 755 linuxdeploy-${HOST_ARCH}.AppImage
+        chmod 755 linuxdeploy-plugin-qt-${HOST_ARCH}.AppImage
+        chmod 755 linuxdeploy-plugin-appimage-${HOST_ARCH}.AppImage
 	
 	cat << EOF > apprun.sh
 #!/usr/bin/env bash
@@ -62,17 +69,28 @@ EOF
         chmod 755 apprun.sh
 	
 	
-	
-	LD_LIBRARY_PATH="$APPDIR/usr/lib:$APPDIR/usr/lib/opentoonz:$APPDIR/usr/lib64:$APPDIR/usr/lib/x86_64-linux-gnu:$APPDIR/usr/lib/pulseaudio:$APPDIR/usr/lib/pulse-11.1/modules" \
-	./linuxdeploy-x86_64.AppImage --appdir=$APPDIR --plugin=qt --output=appimage --custom-apprun=apprun.sh \
-        --executable=$APPDIR/usr/bin/lzocompress \
-        --executable=$APPDIR/usr/bin/lzodecompress \
-        --executable=$APPDIR/usr/bin/tcleanup \
-        --executable=$APPDIR/usr/bin/tcomposer \
-        --executable=$APPDIR/usr/bin/tconverter \
-        --executable=$APPDIR/usr/bin/tfarmcontroller \
-        --executable=$APPDIR/usr/bin/tfarmserver || bash
-        mv OpenToonz*.AppImage "$INSTALL_RELEASE_PACKET_DIR/$PK_APPDIR_NAME.appimage"
+	LD_LIBRARY_PATH="$APPDIR/usr/lib:$APPDIR/usr/lib/opentoonz:$APPDIR/usr/lib${ARCH}:$APPDIR/usr/lib/${HOST}:$APPDIR/usr/lib/pulseaudio:$APPDIR/usr/lib/pulse-11.1/modules" \
+	./linuxdeploy-${HOST_ARCH}.AppImage --appdir=$APPDIR --plugin=qt --output=appimage --custom-apprun=apprun.sh \
+		--executable=$APPDIR/usr/bin/lzocompress \
+		--executable=$APPDIR/usr/bin/lzodecompress \
+		--executable=$APPDIR/usr/bin/tcleanup \
+		--executable=$APPDIR/usr/bin/tcomposer \
+		--executable=$APPDIR/usr/bin/tconverter \
+		--executable=$APPDIR/usr/bin/tfarmcontroller \
+		--executable=$APPDIR/usr/bin/tfarmserver
+    
+	# 32bit build fails on first run, but if started second time it builds fine
+	[ -f OpenToonz-${HOST_ARCH}.AppImage ] || LD_LIBRARY_PATH="$APPDIR/usr/lib:$APPDIR/usr/lib/opentoonz:$APPDIR/usr/lib${ARCH}:$APPDIR/usr/lib/${HOST}:$APPDIR/usr/lib/pulseaudio:$APPDIR/usr/lib/pulse-11.1/modules" \
+	./linuxdeploy-${HOST_ARCH}.AppImage --appdir=$APPDIR --plugin=qt --output=appimage --custom-apprun=apprun.sh \
+		--executable=$APPDIR/usr/bin/lzocompress \
+		--executable=$APPDIR/usr/bin/lzodecompress \
+		--executable=$APPDIR/usr/bin/tcleanup \
+		--executable=$APPDIR/usr/bin/tcomposer \
+		--executable=$APPDIR/usr/bin/tconverter \
+		--executable=$APPDIR/usr/bin/tfarmcontroller \
+		--executable=$APPDIR/usr/bin/tfarmserver
+	[ -f OpenToonz-${HOST_ARCH}.AppImage ] || bash
+	mv OpenToonz-${HOST_ARCH}.AppImage "$INSTALL_RELEASE_PACKET_DIR/$PK_APPDIR_NAME.appimage"
 
 	#(cd "$INSTALL_RELEASE_PACKET_DIR" && tar -czf "$PK_APPDIR_NAME.tar.gz" "$PK_APPDIR_NAME.AppDir") || return 1
 	#AppImageAssistant "$APPDIR" "$INSTALL_RELEASE_PACKET_DIR/$PK_APPDIR_NAME.appimage" || return 1
