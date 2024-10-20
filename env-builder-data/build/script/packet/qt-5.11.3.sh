@@ -23,6 +23,12 @@ pkbuild() {
     if ! check_packet_function $NAME build.configure; then
         local LOCAL_OPTIONS=
         if [ "$PLATFORM" = "win" ]; then
+            
+            rm -f "qtbase/src/corelib/global/qrandom.cpp" || return 1
+            patch "$UNPACK_PACKET_DIR/$PK_DIRNAME/qtbase/src/corelib/global/qrandom.cpp" \
+             -i "$FILES_PACKET_DIR/qrandom-5.11.patch" -o - \
+             > "qtbase/src/corelib/global/qrandom.cpp" || return 1
+            
             rm -f "qtbase/mkspecs/win32-g++/qmake.conf" || return 1
             patch "$UNPACK_PACKET_DIR/$PK_DIRNAME/qtbase/mkspecs/win32-g++/qmake.conf" \
              -i "$FILES_PACKET_DIR/qmake.conf.patch" -o - \
@@ -33,10 +39,10 @@ pkbuild() {
              -i "$FILES_PACKET_DIR/idc.pro.patch" -o - \
              > "qtactiveqt/src/tools/idc/idc.pro"
 
-            rm -f "qtbase/src/plugins/platforms/direct2d/direct2d.pro" || return 1
-            patch "$UNPACK_PACKET_DIR/$PK_DIRNAME/qtbase/src/plugins/platforms/direct2d/direct2d.pro" \
-             -i "$FILES_PACKET_DIR/direct2d.pro.patch" -o - \
-             > "qtbase/src/plugins/platforms/direct2d/direct2d.pro"
+            #rm -f "qtbase/src/plugins/platforms/direct2d/direct2d.pro" || return 1
+            #patch "$UNPACK_PACKET_DIR/$PK_DIRNAME/qtbase/src/plugins/platforms/direct2d/direct2d.pro" \
+            # -i "$FILES_PACKET_DIR/direct2d.pro.patch" -o - \
+            # > "qtbase/src/plugins/platforms/direct2d/direct2d.pro"
             
             rm -f "qtdeclarative/src/plugins/scenegraph/scenegraph.pro" || return 1
             patch "$UNPACK_PACKET_DIR/$PK_DIRNAME/qtdeclarative/src/plugins/scenegraph/scenegraph.pro" \
