@@ -111,6 +111,7 @@ pkinstall() {
         copy_system_lib libfusion          "$TARGET" || return 1
         copy_system_lib libbz2             "$TARGET" || return 1
         copy_system_lib libselinux         "$TARGET" || return 1
+        copy_system_lib libsystemd         "$TARGET" || return 1
     fi
 }
 
