@@ -7,7 +7,7 @@ pkunpack() {
         if ! tar -xzf "$DOWNLOAD_PACKET_DIR/$PK_ARCHIVE"; then
             return 1
         fi
-    elif [ ${PK_ARCHIVE: -7} == ".tgz" ]; then
+    elif [ ${PK_ARCHIVE: -4} == ".tgz" ]; then
         if ! tar -xzf "$DOWNLOAD_PACKET_DIR/$PK_ARCHIVE"; then
             return 1
         fi
