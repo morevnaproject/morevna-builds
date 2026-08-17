@@ -61,7 +61,6 @@
 # . intltool      - from the system
 
 DEPS=" \
- synfigetl-master \
  jpeg-9b tiff-4.0.6 fftw-3.3.5 imagemagick-6.8.7 \
  ffmpeg-3.1.5 mlt-6.6.0 \
  boost-1.61.0 cairo-1.15.4 pango-1.40.3 \

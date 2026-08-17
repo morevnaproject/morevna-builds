@@ -26,9 +26,7 @@ run_appimage() {
     echo ""
     echo "Update and build synfigstudio for $PLATFORM-$ARCH"
     echo ""
-    $SCRIPT chain native update synfigetl-master \
-            chain native update synfigcore-master \
-            chain update synfigetl-master \
+    $SCRIPT chain native update synfigcore-master \
             chain update synfigcore-master \
             chain update synfigstudio-master \
             chain clean_before_do install_release synfigstudio-master-appimage
@@ -49,9 +47,7 @@ run_nsis() {
     echo ""
     echo "Update and build synfigstudio for $PLATFORM-$ARCH"
     echo ""
-    $SCRIPT chain native update synfigetl-master \
-            chain native update synfigcore-master \
-            chain update synfigetl-master \
+    $SCRIPT chain native update synfigcore-master \
             chain update synfigcore-master \
             chain update synfigstudio-master \
             chain clean_before_do install_release synfigstudio-master-nsis \

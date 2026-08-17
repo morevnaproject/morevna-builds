@@ -26,9 +26,7 @@ run_appimage() {
     echo ""
     echo "Update and build synfigstudio-debug for $PLATFORM-$ARCH"
     echo ""
-    $SCRIPT chain native update synfigetl-debug \
-            chain native update synfigcore-debug \
-            chain update synfigetl-debug \
+    $SCRIPT chain native update synfigcore-debug \
             chain update synfigcore-debug \
             chain update synfigstudio-debug \
             chain clean_before_do install_release synfigstudio-debugappimage
@@ -50,9 +48,7 @@ run_nsis() {
     echo "Update synfigstudio-debug for $PLATFORM-$ARCH"
     echo ""
     PLATFORM=win ARCH=32 $SCRIPT clean_before_do env zlib-1.2.13 # for NSIS
-    $SCRIPT chain native update synfigetl-debug \
-            chain native update synfigcore-debug \
-            chain update synfigetl-debug \
+    $SCRIPT chain native update synfigcore-debug \
             chain update synfigcore-debug \
             chain update synfigstudio-debug \
             chain clean_before_do install_release synfigstudio-debugnsis \
