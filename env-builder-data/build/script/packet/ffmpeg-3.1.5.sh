@@ -5,8 +5,9 @@
 # + theora
 # + vorbis
 # + x264
+# + vpx
 
-DEPS="lame-3.99.5 ogg-1.3.2 theora-1.1.1 vorbis-1.3.5 x264-master sdl-1.2.15"
+DEPS="lame-3.99.5 ogg-1.3.2 theora-1.1.1 vorbis-1.3.5 x264-master sdl-1.2.15 vpx-1.6.1"
 DEPS_NATIVE="yasm-1.3.0"
 
 PK_DIRNAME="ffmpeg-3.1.5"
@@ -25,7 +26,9 @@ PK_CONFIGURE_OPTIONS="
  --enable-libx264 \
  --enable-libmp3lame \
  --enable-libtheora \
- --enable-libvorbis"
+ --enable-libvorbis \
+ --enable-libopus \
+ --enable-libvpx"
 
 if [ "$PLATFORM" = "win" ]; then
     PK_CONFIGURE_OPTIONS="$PK_CONFIGURE_OPTIONS \
