@@ -81,11 +81,10 @@ else
         fi
     fi
 
-    # update library
+    # update app resources (library is user-controlled, copied once at first run)
     echo "update stuff" 
     mkdir -p "$CONFIG_DIR/stuff/config"
     mkdir -p "$CONFIG_DIR/stuff/profiles"
-    cp -ur "$BASE_DIR/share/opentoonz/stuff/library" "$CONFIG_DIR/stuff/" 
     cp -ur "$BASE_DIR/share/opentoonz/stuff/config/qss" "$CONFIG_DIR/stuff/config/" 
     cp -ur "$BASE_DIR/share/opentoonz/stuff/config/loc" "$CONFIG_DIR/stuff/config/" 
     cp -ur "$BASE_DIR/share/opentoonz/stuff/profiles/layouts" "$CONFIG_DIR/stuff/profiles/" 
