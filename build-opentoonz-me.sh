@@ -36,6 +36,14 @@ run_appimage() {
         "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-me-appimage/install_release" \
         "*.appimage" \
         "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-me-appimage/envdeps_release/version-opentoonz-me"
+
+    local TEMPLATE=`gen_name_template "OpenToonz" "$OPENTOONZ_TESTING_TAG" "$PLATFORM" "$ARCH" ".tar.bz2"`
+    "$PUBLISH_DIR/publish.sh" \
+        "opentoonz-me" \
+        "$TEMPLATE" \
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-me-appimage/install_release" \
+        "*.tar.bz2" \
+        "$PACKET_BUILD_DIR/$PLATFORM-$ARCH/opentoonz-me-appimage/envdeps_release/version-opentoonz-me"
 }
 
 run_nsis() {

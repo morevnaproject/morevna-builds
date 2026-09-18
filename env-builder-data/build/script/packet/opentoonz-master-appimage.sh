@@ -100,6 +100,17 @@ EOF
 	[ -f OpenToonz-${HOST_ARCH}.AppImage ] || bash
 	mv OpenToonz-${HOST_ARCH}.AppImage "$INSTALL_RELEASE_PACKET_DIR/$PK_APPDIR_NAME.appimage"
 
+	# pack portable tar.bz2 from the same AppDir
+	local PORTABLE_DIR="$INSTALL_RELEASE_PACKET_DIR/portable"
+	rm -rf "$PORTABLE_DIR" || return 1
+	mkdir -p "$PORTABLE_DIR" || return 1
+	cp -rf "$APPDIR/usr/." "$PORTABLE_DIR/" || return 1
+	rm -f "$PORTABLE_DIR"/version-* || return 1
+	cp --remove-destination "$FILES_PACKET_DIR/launch-opentoonz-portable.sh" "$PORTABLE_DIR/opentoonz" || return 1
+	chmod 755 "$PORTABLE_DIR/opentoonz" || return 1
+	(cd "$PORTABLE_DIR" && shopt -s dotglob nullglob && tar -cjf "$INSTALL_RELEASE_PACKET_DIR/$PK_APPDIR_NAME.tar.bz2" -- *) || return 1
+	rm -rf "$PORTABLE_DIR"
+
 	#(cd "$INSTALL_RELEASE_PACKET_DIR" && tar -czf "$PK_APPDIR_NAME.tar.gz" "$PK_APPDIR_NAME.AppDir") || return 1
 	#AppImageAssistant "$APPDIR" "$INSTALL_RELEASE_PACKET_DIR/$PK_APPDIR_NAME.appimage" || return 1
 	#rm -rf "$APPDIR"
